@@ -1,0 +1,103 @@
+package main
+
+import (
+	"net/http"
+	"testing"
+
+	"github.com/gavv/httpexpect/v2"
+)
+
+func TestGetTokenSuccess(t *testing.T) {
+	auth := map[string]interface{}{
+		"app_id":     "b44fc017043763eb5ac15f0069d77c",
+		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
+		"auth_type":  4,
+	}
+
+	e := httpexpect.New(t, BaseUrl)
+	obj := e.POST("/api/v1/get_access_token").
+		WithJSON(auth).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("授权成功")
+	obj.Value("data").Object().Value("AccessToken").NotNull()
+}
+
+func TestGetTokenErrorAuthType(t *testing.T) {
+	auth := map[string]interface{}{
+		"app_id":     "b44fc017043763eb5ac15f0069d77c",
+		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
+		"auth_type":  10,
+	}
+
+	e := httpexpect.New(t, BaseUrl)
+	obj := e.POST("/api/v1/get_access_token").
+		WithJSON(auth).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(400)
+	obj.Value("message").String().Equal("auth_type 错误!")
+	obj.Value("data").Null()
+}
+
+func TestGetTokenEmptyAppId(t *testing.T) {
+	auth := map[string]interface{}{
+		"app_id":     "",
+		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
+		"auth_type":  4,
+	}
+
+	e := httpexpect.New(t, BaseUrl)
+	obj := e.POST("/api/v1/get_access_token").
+		WithJSON(auth).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(400)
+	obj.Value("message").String().Equal("app_id 不能为空！")
+	obj.Value("data").Null()
+}
+
+func TestGetTokenEmptyAppSecret(t *testing.T) {
+	auth := map[string]interface{}{
+		"app_id":     "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
+		"app_secret": "",
+		"auth_type":  4,
+	}
+
+	e := httpexpect.New(t, BaseUrl)
+	obj := e.POST("/api/v1/get_access_token").
+		WithJSON(auth).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(400)
+	obj.Value("message").String().Equal("app_secret 不能为空！")
+	obj.Value("data").Null()
+}
+
+func TestGetTokenErrorAppSecretOrAppId(t *testing.T) {
+	auth := map[string]interface{}{
+		"app_id":     "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
+		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
+		"auth_type":  4,
+	}
+
+	e := httpexpect.New(t, BaseUrl)
+	obj := e.POST("/api/v1/get_access_token").
+		WithJSON(auth).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(401)
+	obj.Value("message").String().Equal("应用不存在!")
+	obj.Value("data").Null()
+}
