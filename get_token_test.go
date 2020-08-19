@@ -11,11 +11,12 @@ func TestGetTokenSuccess(t *testing.T) {
 	auth := map[string]interface{}{
 		"app_id":     "b44fc017043763eb5ac15f0069d77c",
 		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
-		"auth_type":  4,
 	}
 
 	e := httpexpect.New(t, BaseUrl)
 	obj := e.POST("/api/v1/get_access_token").
+		WithHeaders(map[string]string{"AuthType": "4"}).
+		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -24,17 +25,24 @@ func TestGetTokenSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("授权成功")
 	obj.Value("data").Object().Value("AccessToken").NotNull()
+
+	token := obj.Value("data").Object().Value("AccessToken").Raw()
+	data, ok := token.(string)
+	if ok {
+		Token = data
+	}
 }
 
 func TestGetTokenErrorAuthType(t *testing.T) {
 	auth := map[string]interface{}{
 		"app_id":     "b44fc017043763eb5ac15f0069d77c",
 		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
-		"auth_type":  10,
 	}
 
 	e := httpexpect.New(t, BaseUrl)
 	obj := e.POST("/api/v1/get_access_token").
+		WithHeaders(map[string]string{"AuthType": "10"}).
+		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -49,11 +57,12 @@ func TestGetTokenEmptyAppId(t *testing.T) {
 	auth := map[string]interface{}{
 		"app_id":     "",
 		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
-		"auth_type":  4,
 	}
 
 	e := httpexpect.New(t, BaseUrl)
 	obj := e.POST("/api/v1/get_access_token").
+		WithHeaders(map[string]string{"AuthType": "4"}).
+		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -68,11 +77,12 @@ func TestGetTokenEmptyAppSecret(t *testing.T) {
 	auth := map[string]interface{}{
 		"app_id":     "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
 		"app_secret": "",
-		"auth_type":  4,
 	}
 
 	e := httpexpect.New(t, BaseUrl)
 	obj := e.POST("/api/v1/get_access_token").
+		WithHeaders(map[string]string{"AuthType": "4"}).
+		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -87,11 +97,12 @@ func TestGetTokenErrorAppSecretOrAppId(t *testing.T) {
 	auth := map[string]interface{}{
 		"app_id":     "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
 		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
-		"auth_type":  4,
 	}
 
 	e := httpexpect.New(t, BaseUrl)
 	obj := e.POST("/api/v1/get_access_token").
+		WithHeaders(map[string]string{"AuthType": "4"}).
+		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

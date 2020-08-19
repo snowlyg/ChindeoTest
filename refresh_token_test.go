@@ -8,9 +8,11 @@ import (
 )
 
 func TestRefreshTokenSuccess(t *testing.T) {
+
 	e := httpexpect.New(t, BaseUrl)
 	obj := e.POST("/api/v1/refresh_access_token").
-		WithHeader("X-Token", Token).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -18,12 +20,20 @@ func TestRefreshTokenSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("刷新成功")
 	obj.Value("data").Object().Value("AccessToken").NotNull()
+
+	token := obj.Value("data").Object().Value("AccessToken").Raw()
+	data, ok := token.(string)
+	if ok {
+		Token = data
+	}
 }
 
 func TestRefreshTokenError(t *testing.T) {
+
 	e := httpexpect.New(t, BaseUrl)
 	obj := e.POST("/api/v1/refresh_access_token").
-		WithHeader("X-Token", "").
+		WithHeaders(map[string]string{"X-Token": "", "AuthType": "4"}).
+		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

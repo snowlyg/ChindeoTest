@@ -16,6 +16,7 @@ import (
 const BaseUrl = "https://diancan.t.chindeo.com"
 
 var Token string
+var PHPSESSID string
 
 type getToken struct {
 	Code    int    `json:"code"`
@@ -27,8 +28,10 @@ type getToken struct {
 
 //单元测试基境
 func TestMain(m *testing.M) {
-	var re getToken
 
+	println(fmt.Sprintf("main begain ======================"))
+
+	var re getToken
 	appid := "b44fc017043763eb5ac15f0069d77c"
 	appsecret := "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b"
 	result := DoPOST(fmt.Sprintf("%s/%s", BaseUrl, "api/v1/get_access_token"), fmt.Sprintf("app_id=%s&app_secret=%s&auth_type=%d", appid, appsecret, 4))
@@ -47,18 +50,28 @@ func TestMain(m *testing.M) {
 
 	Token = ""
 
+	println(fmt.Sprintf("main end ======================"))
+
 	os.Exit(exitCode)
 }
 
 func DoPOST(url string, data string) []byte {
 	client, req := getClient("POST", url, data)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+	req.Header.Set("AuthType", "4")
 
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Printf("请求出错：%v", err)
 	}
 	if resp != nil {
+
+		for _, c := range resp.Cookies() {
+			if c.Name == "PHPSESSID" {
+				PHPSESSID = c.Value
+			}
+		}
+
 		defer resp.Body.Close()
 		result, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
