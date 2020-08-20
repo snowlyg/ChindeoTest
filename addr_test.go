@@ -10,7 +10,13 @@ import (
 var addrId string
 
 func TestAddrListSuccess(t *testing.T) {
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.GET("/api/v1/outline/addr").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -37,7 +43,13 @@ func TestAddrAddSuccess(t *testing.T) {
 		"bed_num":       "05",
 		"hospital_no":   "9556854545",
 	}
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.POST("/api/v1/outline/addr/add").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -68,6 +80,51 @@ func TestAddrAddSuccess(t *testing.T) {
 	}
 }
 
+func TestAddrAddForOrderSuccess(t *testing.T) {
+	addr := map[string]interface{}{
+		"name":       "name",
+		"phone":      "13800138000",
+		"addr":       "addr",
+		"sex":        1,
+		"is_default": 1,
+	}
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
+	obj := e.POST("/api/v1/outline/addr/add").
+		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		WithJSON(addr).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("操作成功")
+	obj.Value("data").Object().Value("id").NotEqual(0)
+	obj.Value("data").Object().Value("name").Equal("name")
+	obj.Value("data").Object().Value("phone").Equal("13800138000")
+	obj.Value("data").Object().Value("addr").Equal("addr")
+	obj.Value("data").Object().Value("sex").Equal("男")
+	obj.Value("data").Object().Value("is_default").Equal("1")
+	obj.Value("data").Object().Value("hospital_name").Equal("")
+	obj.Value("data").Object().Value("age").Equal("")
+	obj.Value("data").Object().Value("disease").Equal("")
+	obj.Value("data").Object().Value("loc_name").Equal("")
+	obj.Value("data").Object().Value("bed_num").Equal("")
+	obj.Value("data").Object().Value("hospital_no").Equal("")
+
+	id := obj.Value("data").Object().Value("id").Raw()
+	data, ok := id.(string)
+	if ok {
+		addrId = data
+	}
+}
+
 func TestAddrAddError(t *testing.T) {
 	addr := map[string]interface{}{
 		"name":          "",
@@ -83,7 +140,13 @@ func TestAddrAddError(t *testing.T) {
 		"bed_num":       "05",
 		"hospital_no":   "9556854545",
 	}
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.POST("/api/v1/outline/addr/add").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -111,7 +174,13 @@ func TestAddrUpdateSuccess(t *testing.T) {
 		"bed_num":       "update",
 		"hospital_no":   "update",
 	}
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.POST("/api/v1/outline/addr/{id}", addrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -151,7 +220,13 @@ func TestAddrUpdateNoName(t *testing.T) {
 		"bed_num":       "update",
 		"hospital_no":   "update",
 	}
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.POST("/api/v1/outline/addr/{id}", addrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -179,7 +254,13 @@ func TestAddrUpdateErrorSex(t *testing.T) {
 		"bed_num":       "update",
 		"hospital_no":   "update",
 	}
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.POST("/api/v1/outline/addr/{id}", addrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -193,7 +274,13 @@ func TestAddrUpdateErrorSex(t *testing.T) {
 }
 
 func TestAddrDeleteSuccess(t *testing.T) {
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.DELETE("/api/v1/outline/addr/{id}", addrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -206,7 +293,13 @@ func TestAddrDeleteSuccess(t *testing.T) {
 }
 
 func TestAddrDeleteError(t *testing.T) {
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.DELETE("/api/v1/outline/addr/{id}", 0).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).

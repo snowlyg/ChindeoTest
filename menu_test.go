@@ -21,6 +21,9 @@ func TestMenuSuccess(t *testing.T) {
 	obj := e.GET("/api/v1/menu").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
+		WithQuery("menu_type_id", "3").
+		WithQuery("time_type", "3").
+		WithQuery("menu_tag_id", "3").
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

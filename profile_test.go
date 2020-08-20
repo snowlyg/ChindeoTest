@@ -8,7 +8,13 @@ import (
 )
 
 func TestProfileSuccess(t *testing.T) {
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.GET("/api/v1/profile").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -27,7 +33,13 @@ func TestProfileUpdateSuccess(t *testing.T) {
 		"id_card_no": "430923198901156623",
 	}
 
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.POST("/api/v1/profile/update").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -44,7 +56,13 @@ func TestProfileUpdateSuccess(t *testing.T) {
 }
 
 func TestProfileNoDevHeader(t *testing.T) {
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.GET("/api/v1/profile").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).

@@ -17,7 +17,13 @@ func TestOrderListSuccess(t *testing.T) {
 		"hospital_no": "9556854545",
 	}
 
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.POST("/api/v1/i_order").
 		WithQuery("page", 2).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -70,7 +76,13 @@ func TestOrderAddSuccess(t *testing.T) {
 			},
 		},
 	}
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.POST("/api/v1/i_order/add").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -133,7 +145,13 @@ func TestOrderAddErrorIdCardNo(t *testing.T) {
 			},
 		},
 	}
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.POST("/api/v1/i_order/add").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -147,7 +165,13 @@ func TestOrderAddErrorIdCardNo(t *testing.T) {
 }
 
 func TestOrderShowSuccess(t *testing.T) {
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.GET("/api/v1/i_order/{id}", orderId).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -159,7 +183,8 @@ func TestOrderShowSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("id").Equal(orderId)
 	obj.Value("data").Object().Value("order_no").String().Contains("I")
-	obj.Value("data").Object().Value("status").String().Equal("待付款")
+	obj.Value("data").Object().Value("status").Object().Value("value").Equal(1)
+	obj.Value("data").Object().Value("status").Object().Value("text").Equal("待付款")
 	obj.Value("data").Object().Value("amount").Number().Equal(12)
 	obj.Value("data").Object().Value("total").String().Equal("32.00")
 	obj.Value("data").Object().Value("is_return").String().Equal("有退款")
@@ -179,7 +204,13 @@ func TestOrderShowSuccess(t *testing.T) {
 }
 
 func TestOrderPaySuccess(t *testing.T) {
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.GET("/api/v1/i_order/pay/{id}", orderId).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -193,7 +224,13 @@ func TestOrderPaySuccess(t *testing.T) {
 }
 
 func TestOrderCancelSuccess(t *testing.T) {
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.GET("/api/v1/i_order/cancel/{id}", orderId).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).

@@ -9,7 +9,13 @@ import (
 
 func TestRefreshTokenSuccess(t *testing.T) {
 
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.POST("/api/v1/refresh_access_token").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
@@ -30,7 +36,13 @@ func TestRefreshTokenSuccess(t *testing.T) {
 
 func TestRefreshTokenError(t *testing.T) {
 
-	e := httpexpect.New(t, BaseUrl)
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: BaseUrl,
+	})
 	obj := e.POST("/api/v1/refresh_access_token").
 		WithHeaders(map[string]string{"X-Token": "", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
