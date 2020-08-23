@@ -29,7 +29,7 @@ type getToken struct {
 //单元测试基境
 func TestMain(m *testing.M) {
 
-	println(fmt.Sprintf("main begain ======================"))
+	println(fmt.Sprintf("-------------------main start-------------------"))
 
 	var re getToken
 	appid := "b44fc017043763eb5ac15f0069d77c"
@@ -50,7 +50,7 @@ func TestMain(m *testing.M) {
 
 	Token = ""
 
-	println(fmt.Sprintf("main end ======================"))
+	println(fmt.Sprintf("-------------------main end-------------------"))
 
 	os.Exit(exitCode)
 }

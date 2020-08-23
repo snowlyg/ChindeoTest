@@ -7,7 +7,8 @@ import (
 	"github.com/gavv/httpexpect/v2"
 )
 
-var addrId string
+var delAddrId string
+var addrId float64
 
 func TestAddrListSuccess(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
@@ -26,6 +27,11 @@ func TestAddrListSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
+	id := obj.Value("data").Array().First().Object().Value("id").Raw()
+	data, ok := id.(float64)
+	if ok {
+		addrId = data
+	}
 }
 
 func TestAddrAddSuccess(t *testing.T) {
@@ -76,7 +82,7 @@ func TestAddrAddSuccess(t *testing.T) {
 	id := obj.Value("data").Object().Value("id").Raw()
 	data, ok := id.(string)
 	if ok {
-		addrId = data
+		delAddrId = data
 	}
 }
 
@@ -121,7 +127,7 @@ func TestAddrAddForOrderSuccess(t *testing.T) {
 	id := obj.Value("data").Object().Value("id").Raw()
 	data, ok := id.(string)
 	if ok {
-		addrId = data
+		delAddrId = data
 	}
 }
 
@@ -181,7 +187,7 @@ func TestAddrUpdateSuccess(t *testing.T) {
 		},
 		BaseURL: BaseUrl,
 	})
-	obj := e.POST("/api/v1/outline/addr/{id}", addrId).
+	obj := e.POST("/api/v1/outline/addr/{id}", delAddrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(addr).
@@ -227,7 +233,7 @@ func TestAddrUpdateNoName(t *testing.T) {
 		},
 		BaseURL: BaseUrl,
 	})
-	obj := e.POST("/api/v1/outline/addr/{id}", addrId).
+	obj := e.POST("/api/v1/outline/addr/{id}", delAddrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(addr).
@@ -261,7 +267,7 @@ func TestAddrUpdateErrorSex(t *testing.T) {
 		},
 		BaseURL: BaseUrl,
 	})
-	obj := e.POST("/api/v1/outline/addr/{id}", addrId).
+	obj := e.POST("/api/v1/outline/addr/{id}", delAddrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(addr).
@@ -281,7 +287,7 @@ func TestAddrDeleteSuccess(t *testing.T) {
 		},
 		BaseURL: BaseUrl,
 	})
-	obj := e.DELETE("/api/v1/outline/addr/{id}", addrId).
+	obj := e.DELETE("/api/v1/outline/addr/{id}", delAddrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
