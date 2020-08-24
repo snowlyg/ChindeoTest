@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-const BaseUrl = "https://diancan.t.chindeo.com"
+const BaseUrl = "http://test.order.com"
 
 var Token string
 var PHPSESSID string
