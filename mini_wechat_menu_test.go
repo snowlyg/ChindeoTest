@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"testing"
 
@@ -15,7 +16,7 @@ func TestMiniWechatMenuSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/api/v1/outline/menu").
@@ -40,7 +41,7 @@ func TestMiniWechatMenuNoPageSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/api/v1/outline/menu").
@@ -67,7 +68,7 @@ func TestMiniWechatMenuShowSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/api/v1/outline/menu/{id}", miniWechatmenuId).
@@ -91,7 +92,7 @@ func TestMiniWechatMenuCollectAddSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/api/v1/outline/collect/add/{id}", miniWechatmenuId).
@@ -111,7 +112,7 @@ func TestMiniWechatMenuCollectSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/api/v1/outline/collect").
@@ -133,7 +134,7 @@ func TestMiniWechatMenuCollectCancelSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/api/v1/outline/collect/cancel/{id}", miniWechatmenuId).

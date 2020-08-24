@@ -9,11 +9,12 @@ import (
 )
 
 var Config = struct {
-	Name     string `env:"DBName" default:"local"`
-	Host     string `env:"DBHost" default:"localhost"`
-	Port     string `env:"DBPort" default:"3306"`
-	User     string `env:"DBUser" default:"root"`
-	Password string `env:"DBPassword" default:"123456"`
+	Url      string `env:"Url" default:"http://locahost"`
+	Name     string `env:"Name" default:"local"`
+	Host     string `env:"Host" default:"localhost"`
+	Port     string `env:"Port" default:"3306"`
+	User     string `env:"User" default:"root"`
+	Password string `env:"Password" default:"123456"`
 }{}
 
 func init() {

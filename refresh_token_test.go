@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"testing"
 
@@ -14,7 +15,7 @@ func TestRefreshTokenSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/refresh_access_token").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -40,7 +41,7 @@ func TestRefreshTokenError(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/refresh_access_token").
 		WithHeaders(map[string]string{"X-Token": "", "AuthType": "4"}).

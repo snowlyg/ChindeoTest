@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/snowlyg/ChindeoTest/common"
+	"github.com/snowlyg/ChindeoTest/config"
 	"github.com/snowlyg/ChindeoTest/model"
 	"io/ioutil"
 	"log"
@@ -18,7 +19,6 @@ import (
 )
 
 const AppId = 13
-const BaseUrl = "http://test.order.com"
 const IdCardNo = "430923198901156623"
 
 var Token string
@@ -55,7 +55,7 @@ func TestMain(m *testing.M) {
 	var re getToken
 	appid := "b44fc017043763eb5ac15f0069d77c"
 	appsecret := "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b"
-	result := DoPOST(fmt.Sprintf("%s/%s", BaseUrl, "api/v1/get_access_token"), fmt.Sprintf("app_id=%s&app_secret=%s&auth_type=%d", appid, appsecret, 4))
+	result := DoPOST(fmt.Sprintf("%s/%s", config.Config.Url, "api/v1/get_access_token"), fmt.Sprintf("app_id=%s&app_secret=%s&auth_type=%d", appid, appsecret, 4))
 	err := json.Unmarshal(result, &re)
 	if err != nil {
 		log.Printf("GetToken error：%v -result:%v", err, result)

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"testing"
 
@@ -13,7 +14,7 @@ func TestMiniWechatCnAreaSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/api/v1/outline/cnarea").

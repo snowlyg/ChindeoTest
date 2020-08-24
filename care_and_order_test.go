@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"strconv"
 	"testing"
@@ -22,7 +23,7 @@ func TestCareListSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/care/v1/inner/care").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -43,7 +44,7 @@ func TestCareListNoPageSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/care/v1/inner/care").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -83,7 +84,7 @@ func TestCareShowSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/care/v1/inner/care/{id}", careId).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -104,7 +105,7 @@ func TestCareOrderListSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/care/v1/inner/order").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -142,7 +143,7 @@ func TestCareOrderAddCareSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.POST("/care/v1/inner/order/add").
@@ -191,7 +192,7 @@ func TestCareOrderAddCareError(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.POST("/care/v1/inner/order/add").
@@ -212,7 +213,7 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/care/v1/inner/order/{id}", careOrderCareId).
@@ -261,7 +262,7 @@ func TestCareOrderPayCareSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/care/v1/inner/order/pay/{id}", careOrderCareId).
@@ -282,7 +283,7 @@ func TestCareOrderCancelCareSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/care/v1/inner/order/cancel/{id}", careOrderCareId).

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"testing"
 
@@ -13,7 +14,7 @@ func TestProfileSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/profile").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
@@ -38,7 +39,7 @@ func TestProfileUpdateSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/profile/update").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
@@ -61,7 +62,7 @@ func TestProfileNoDevHeader(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/profile").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).

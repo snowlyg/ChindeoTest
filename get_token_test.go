@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"testing"
 
@@ -18,7 +19,7 @@ func TestGetTokenSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/get_access_token").
 		WithHeaders(map[string]string{"AuthType": "4"}).
@@ -50,7 +51,7 @@ func TestGetTokenErrorAuthType(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/get_access_token").
 		WithHeaders(map[string]string{"AuthType": "10"}).
@@ -76,7 +77,7 @@ func TestGetTokenEmptyAppId(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/get_access_token").
 		WithHeaders(map[string]string{"AuthType": "4"}).
@@ -102,7 +103,7 @@ func TestGetTokenEmptyAppSecret(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/get_access_token").
 		WithHeaders(map[string]string{"AuthType": "4"}).
@@ -128,7 +129,7 @@ func TestGetTokenErrorAppSecretOrAppId(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/get_access_token").
 		WithHeaders(map[string]string{"AuthType": "4"}).

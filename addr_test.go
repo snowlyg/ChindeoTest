@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"testing"
 
@@ -23,7 +24,7 @@ func TestAddrAddForOrderSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/outline/addr/add").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
@@ -75,7 +76,7 @@ func TestAddrAddSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/outline/addr/add").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
@@ -113,7 +114,7 @@ func TestAddrListSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/outline/addr").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
@@ -152,7 +153,7 @@ func TestAddrAddError(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/outline/addr/add").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
@@ -186,7 +187,7 @@ func TestAddrUpdateSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/outline/addr/{id}", delAddrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
@@ -232,7 +233,7 @@ func TestAddrUpdateNoName(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/outline/addr/{id}", delAddrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
@@ -266,7 +267,7 @@ func TestAddrUpdateErrorSex(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/outline/addr/{id}", delAddrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
@@ -286,7 +287,7 @@ func TestAddrDeleteSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.DELETE("/api/v1/outline/addr/{id}", delAddrId).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
@@ -305,7 +306,7 @@ func TestAddrDeleteError(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.DELETE("/api/v1/outline/addr/{id}", 0).
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).

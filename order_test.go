@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/snowlyg/ChindeoTest/common"
+	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"strconv"
 	"testing"
@@ -52,7 +53,7 @@ func TestOrderAddSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/i_order/add").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -121,7 +122,7 @@ func TestOrderAddErrorIdCardNo(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/i_order/add").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -148,7 +149,7 @@ func TestOrderListSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/i_order").
 		WithQuery("page", 1).
@@ -179,7 +180,7 @@ func TestOrderShowSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/i_order/{id}", orderId).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -218,7 +219,7 @@ func TestOrderPaySuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/i_order/pay/{id}", orderId).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -239,7 +240,7 @@ func TestOrderCancelNoPaySuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/i_order/cancel/{id}", orderId).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -258,7 +259,7 @@ func TestOrderCancelPaySuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/i_order/cancel/{id}", Order.ID).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
@@ -277,7 +278,7 @@ func TestOrderShowReturnSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/i_order/{id}", Order.ID).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).

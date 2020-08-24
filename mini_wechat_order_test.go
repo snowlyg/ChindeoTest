@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"strconv"
 	"testing"
@@ -22,7 +23,7 @@ func TestMiniWechatOrderListSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/outline/o_order").
 		WithQuery("page", 2).
@@ -75,7 +76,7 @@ func TestMiniWechatOrderAddSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/outline/o_order/add").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4", "IsDev": "1"}).
@@ -137,7 +138,7 @@ func TestMiniWechatOrderAddNoApplicationId(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/outline/o_order/add").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4", "IsDev": "1"}).
@@ -185,7 +186,7 @@ func TestMiniWechatOrderAddNoAddrId(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/outline/o_order/add").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4", "IsDev": "1"}).
@@ -205,7 +206,7 @@ func TestMiniWechatOrderShowSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/outline/o_order/{id}", miniWechatOrderId).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4", "IsDev": "1"}).
@@ -236,7 +237,7 @@ func TestMiniWechatOrderPaySuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/outline/o_order/pay/{id}", miniWechatOrderId).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4", "IsDev": "1"}).
@@ -255,7 +256,7 @@ func TestMiniWechatOrderCancelSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/outline/o_order/cancel/{id}", miniWechatOrderId).
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4", "IsDev": "1"}).

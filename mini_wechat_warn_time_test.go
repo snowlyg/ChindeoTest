@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"strconv"
 	"testing"
@@ -21,7 +22,7 @@ func TestMiniWechatWarmTimeAddSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.POST("/api/v1/outline/warn_time/add").
@@ -57,7 +58,7 @@ func TestMiniWechatWarmTimeUpdateSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.POST("/api/v1/outline/warn_time/{id}", warmTimeId).
@@ -86,7 +87,7 @@ func TestMiniWechatWarmTimeStatusSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/api/v1/outline/warn_time/status/{id}", warmTimeId).
@@ -111,7 +112,7 @@ func TestMiniWechatWarmTimeSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.GET("/api/v1/outline/warn_time").
@@ -137,7 +138,7 @@ func TestMiniWechatWarmTimeDeleteSuccess(t *testing.T) {
 		Client: &http.Client{
 			Jar: httpexpect.NewJar(), // used by default if Client is nil
 		},
-		BaseURL: BaseUrl,
+		BaseURL: config.Config.Url,
 	})
 
 	obj := e.DELETE("/api/v1/outline/warn_time/{id}", warmTimeId).
