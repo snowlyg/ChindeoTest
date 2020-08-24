@@ -1,154 +1,156 @@
 package model
 
 import (
+	"database/sql"
+	"github.com/snowlyg/ChindeoTest/common"
 	"time"
 )
 
 // APIAddrs [...]
 type APIAddrs struct {
-	ID           int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name         string    `gorm:"column:name;type:varchar(50);not null"`  // 联系人姓名
-	Phone        string    `gorm:"column:phone;type:varchar(30);not null"` // 手机
-	Addr         string    `gorm:"column:addr;type:varchar(200);not null"` // 地址
-	Sex          int8      `gorm:"column:sex;type:tinyint;not null"`
-	IsDefault    bool      `gorm:"column:is_default;type:tinyint(1);not null"` // 默认地址
-	CreateAt     time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt     time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted    time.Time `gorm:"column:is_deleted;type:datetime"`
-	UserID       int       `gorm:"index:user_id;column:user_id;type:int;not null"` // user_id
-	HospitalName string    `gorm:"column:hospital_name;type:varchar(50);not null"` // 医院名称
-	LocName      string    `gorm:"column:loc_name;type:varchar(50);not null"`      // 病区名称
-	BedNum       string    `gorm:"column:bed_num;type:varchar(10);not null"`       // 床号
-	HospitalNo   string    `gorm:"column:hospital_no;type:varchar(20);not null"`   // 住院号
-	Disease      string    `gorm:"column:disease;type:varchar(150);not null"`      // 病种
-	Age          int       `gorm:"column:age;type:int;not null"`                   // 年龄
+	ID           int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name         string       `gorm:"column:name;type:varchar(50);not null"`  // 联系人姓名
+	Phone        string       `gorm:"column:phone;type:varchar(30);not null"` // 手机
+	Addr         string       `gorm:"column:addr;type:varchar(200);not null"` // 地址
+	Sex          int8         `gorm:"column:sex;type:tinyint;not null"`
+	IsDefault    bool         `gorm:"column:is_default;type:tinyint(1);not null"` // 默认地址
+	CreateAt     time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt     time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted    sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	UserID       int          `gorm:"index:user_id;column:user_id;type:int;not null"` // user_id
+	HospitalName string       `gorm:"column:hospital_name;type:varchar(50);not null"` // 医院名称
+	LocName      string       `gorm:"column:loc_name;type:varchar(50);not null"`      // 病区名称
+	BedNum       string       `gorm:"column:bed_num;type:varchar(10);not null"`       // 床号
+	HospitalNo   string       `gorm:"column:hospital_no;type:varchar(20);not null"`   // 住院号
+	Disease      string       `gorm:"column:disease;type:varchar(150);not null"`      // 病种
+	Age          int          `gorm:"column:age;type:int;not null"`                   // 年龄
 }
 
 // APIApplications [...]
 type APIApplications struct {
-	ID            int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name          string    `gorm:"column:name;type:varchar(50);not null"`
-	AppID         string    `gorm:"column:app_id;type:varchar(30);not null"`      // app_id
-	AppSecret     string    `gorm:"column:app_secret;type:varchar(100);not null"` // app_secret
-	Tel           string    `gorm:"column:tel;type:varchar(100);not null"`
-	Addr          string    `gorm:"column:addr;type:varchar(100);not null"`
-	Describle     string    `gorm:"column:describle;type:varchar(100);not null"` // 应用描述
-	AppType       string    `gorm:"column:app_type;type:varchar(50);not null"`   // app_type
-	CreateAt      time.Time `gorm:"column:create_at;type:timestamp;not null"`
-	IsDeleted     time.Time `gorm:"column:is_deleted;type:datetime"`
-	UserID        int       `gorm:"column:user_id;type:int;not null"`
-	CnareaID      int       `gorm:"column:cnarea_id;type:int;not null"`
-	UpdateAt      time.Time `gorm:"column:update_at;type:timestamp;not null"`
-	BusinessHours string    `gorm:"column:business_hours;type:varchar(50);not null"` // 营业时间
+	ID            int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name          string       `gorm:"column:name;type:varchar(50);not null"`
+	AppID         string       `gorm:"column:app_id;type:varchar(30);not null"`      // app_id
+	AppSecret     string       `gorm:"column:app_secret;type:varchar(100);not null"` // app_secret
+	Tel           string       `gorm:"column:tel;type:varchar(100);not null"`
+	Addr          string       `gorm:"column:addr;type:varchar(100);not null"`
+	Describle     string       `gorm:"column:describle;type:varchar(100);not null"` // 应用描述
+	AppType       string       `gorm:"column:app_type;type:varchar(50);not null"`   // app_type
+	CreateAt      time.Time    `gorm:"column:create_at;type:timestamp;not null"`
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	UserID        int          `gorm:"column:user_id;type:int;not null"`
+	CnareaID      int          `gorm:"column:cnarea_id;type:int;not null"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:timestamp;not null"`
+	BusinessHours string       `gorm:"column:business_hours;type:varchar(50);not null"` // 营业时间
 }
 
 // APIAuths [...]
 type APIAuths struct {
-	ID         int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name       string    `gorm:"column:name;type:varchar(30);not null"`        // 权限名称
-	Controller string    `gorm:"column:controller;type:varchar(100);not null"` // 控制器
-	Action     string    `gorm:"column:action;type:varchar(100);not null"`     // 操作方法
-	Method     string    `gorm:"column:method;type:varchar(100);not null"`     // 请求方法
-	Desc       string    `gorm:"column:desc;type:varchar(30);not null"`        // 描述
-	Remark     string    `gorm:"column:remark;type:varchar(100);not null"`     // 备注
-	Status     bool      `gorm:"column:status;type:tinyint(1);not null"`       // 账号状态
-	CreateAt   time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt   time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted  time.Time `gorm:"column:is_deleted;type:datetime"`
+	ID         int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name       string       `gorm:"column:name;type:varchar(30);not null"`        // 权限名称
+	Controller string       `gorm:"column:controller;type:varchar(100);not null"` // 控制器
+	Action     string       `gorm:"column:action;type:varchar(100);not null"`     // 操作方法
+	Method     string       `gorm:"column:method;type:varchar(100);not null"`     // 请求方法
+	Desc       string       `gorm:"column:desc;type:varchar(30);not null"`        // 描述
+	Remark     string       `gorm:"column:remark;type:varchar(100);not null"`     // 备注
+	Status     bool         `gorm:"column:status;type:tinyint(1);not null"`       // 账号状态
+	CreateAt   time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt   time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted  sql.NullTime `gorm:"column:is_deleted;type:datetime"`
 }
 
 // APIMenuTags [...]
 type APIMenuTags struct {
-	ID        int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name      string    `gorm:"column:name;type:varchar(50);not null"` // 标签名称
-	IsDeleted time.Time `gorm:"column:is_deleted;type:datetime"`
-	CreateAt  time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt  time.Time `gorm:"column:update_at;type:datetime;not null"`
+	ID        int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name      string       `gorm:"column:name;type:varchar(50);not null"` // 标签名称
+	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null"`
 }
 
 // APIMenuTypes [...]
 type APIMenuTypes struct {
-	ID            int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name          string    `gorm:"column:name;type:varchar(50);not null"` // 菜品类型名称
-	CreateAt      time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt      time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted     time.Time `gorm:"column:is_deleted;type:datetime"`
-	ApplicationID int       `gorm:"column:application_id;type:int;not null"`
+	ID            int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name          string       `gorm:"column:name;type:varchar(50);not null"` // 菜品类型名称
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	ApplicationID int          `gorm:"column:application_id;type:int;not null"`
 }
 
 // APIMenus [...]
 type APIMenus struct {
-	ID            int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name          string    `gorm:"column:name;type:varchar(50);not null"`    // 菜品名称
-	TimeType      int       `gorm:"column:time_type;type:int;not null"`       // 菜品时段类型
-	Desc          string    `gorm:"column:desc;type:varchar(100);not null"`   // 菜品介绍
-	Status        bool      `gorm:"column:status;type:tinyint(1);not null"`   // 菜品状态：上下架
-	Amount        int       `gorm:"column:amount;type:int;not null"`          // 销量
-	Price         float64   `gorm:"column:price;type:decimal(10,2);not null"` // 价格
-	Cover         string    `gorm:"column:cover;type:varchar(1200);not null"` // 封面
-	Sort          int       `gorm:"column:sort;type:int;not null"`            // 排序
-	Pics          string    `gorm:"column:pics;type:varchar(1200);not null"`  // 餐品图片
-	CreateAt      time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt      time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted     time.Time `gorm:"column:is_deleted;type:datetime"`
-	ApplicationID int       `gorm:"column:application_id;type:int;not null"`
-	MenuTypeID    int       `gorm:"index:menu_type_id;column:menu_type_id;type:int;not null"` // menu_type_id
+	ID            int                 `gorm:"primary_key;column:id;type:int;not null"`
+	Name          string              `gorm:"column:name;type:varchar(50);not null"`    // 菜品名称
+	TimeType      common.MenuTimeType `gorm:"column:time_type;type:int;not null"`       // 菜品时段类型
+	Desc          string              `gorm:"column:desc;type:varchar(100);not null"`   // 菜品介绍
+	Status        bool                `gorm:"column:status;type:tinyint(1);not null"`   // 菜品状态：上下架
+	Amount        int                 `gorm:"column:amount;type:int;not null"`          // 销量
+	Price         float64             `gorm:"column:price;type:decimal(10,2);not null"` // 价格
+	Cover         string              `gorm:"column:cover;type:varchar(1200);not null"` // 封面
+	Sort          int                 `gorm:"column:sort;type:int;not null"`            // 排序
+	Pics          string              `gorm:"column:pics;type:varchar(1200);not null"`  // 餐品图片
+	CreateAt      time.Time           `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt      time.Time           `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted     sql.NullTime        `gorm:"column:is_deleted;type:datetime"`
+	ApplicationID int                 `gorm:"column:application_id;type:int;not null"`
+	MenuTypeID    int                 `gorm:"index:menu_type_id;column:menu_type_id;type:int;not null"` // menu_type_id
 }
 
 // APIOOrderAddrs [...]
 type APIOOrderAddrs struct {
-	ID           int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name         string    `gorm:"column:name;type:varchar(50);not null"`  // 联系人姓名
-	Phone        string    `gorm:"column:phone;type:varchar(30);not null"` // 手机
-	Addr         string    `gorm:"column:addr;type:varchar(200);not null"` // 地址
-	Sex          int       `gorm:"column:sex;type:int;not null"`           // 性别:1:男,0:女
-	CreateAt     time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt     time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted    time.Time `gorm:"column:is_deleted;type:datetime"`
-	OOrderID     int       `gorm:"index:o_order_id;column:o_order_id;type:int;not null"` // o_order_id
-	HospitalName string    `gorm:"column:hospital_name;type:varchar(50);not null"`       // 医院名称
-	LocName      string    `gorm:"column:loc_name;type:varchar(50);not null"`            // 病区名称
-	BedNum       string    `gorm:"column:bed_num;type:varchar(10);not null"`             // 床号
-	HospitalNo   string    `gorm:"column:hospital_no;type:varchar(20);not null"`         // 住院号
-	Disease      string    `gorm:"column:disease;type:varchar(150);not null"`            // 病种
-	Age          int       `gorm:"column:age;type:int;not null"`                         // 年龄
+	ID           int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name         string       `gorm:"column:name;type:varchar(50);not null"`  // 联系人姓名
+	Phone        string       `gorm:"column:phone;type:varchar(30);not null"` // 手机
+	Addr         string       `gorm:"column:addr;type:varchar(200);not null"` // 地址
+	Sex          int          `gorm:"column:sex;type:int;not null"`           // 性别:1:男,0:女
+	CreateAt     time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt     time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted    sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	OOrderID     int          `gorm:"index:o_order_id;column:o_order_id;type:int;not null"` // o_order_id
+	HospitalName string       `gorm:"column:hospital_name;type:varchar(50);not null"`       // 医院名称
+	LocName      string       `gorm:"column:loc_name;type:varchar(50);not null"`            // 病区名称
+	BedNum       string       `gorm:"column:bed_num;type:varchar(10);not null"`             // 床号
+	HospitalNo   string       `gorm:"column:hospital_no;type:varchar(20);not null"`         // 住院号
+	Disease      string       `gorm:"column:disease;type:varchar(150);not null"`            // 病种
+	Age          int          `gorm:"column:age;type:int;not null"`                         // 年龄
 }
 
 // APIOOrderMenus [...]
 type APIOOrderMenus struct {
-	ID           int       `gorm:"primary_key;column:id;type:int;not null"`
-	MenuName     string    `gorm:"column:menu_name;type:varchar(50);not null"`        // 菜品名称
-	MenuType     string    `gorm:"column:menu_type;type:varchar(30);not null"`        // 菜品类型
-	MenuTimeType string    `gorm:"column:menu_time_type;type:varchar(30);not null"`   // 菜品时段类型
-	MenuDesc     string    `gorm:"column:menu_desc;type:varchar(100);not null"`       // 菜品介绍
-	MenuID       int       `gorm:"index:o_order_id;column:menu_id;type:int;not null"` // menu_id
-	Price        float64   `gorm:"column:price;type:decimal(10,0);not null"`          // 价格
-	Amount       int       `gorm:"column:amount;type:int;not null"`                   // 数量
-	Cover        string    `gorm:"column:cover;type:varchar(255);not null"`           // 菜品图片
-	CreateAt     time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt     time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted    time.Time `gorm:"column:is_deleted;type:datetime"`
-	OOrderID     int       `gorm:"index:o_order_id;column:o_order_id;type:int;not null"` // o_order_id
+	ID           int          `gorm:"primary_key;column:id;type:int;not null"`
+	MenuName     string       `gorm:"column:menu_name;type:varchar(50);not null"`        // 菜品名称
+	MenuType     string       `gorm:"column:menu_type;type:varchar(30);not null"`        // 菜品类型
+	MenuTimeType string       `gorm:"column:menu_time_type;type:varchar(30);not null"`   // 菜品时段类型
+	MenuDesc     string       `gorm:"column:menu_desc;type:varchar(100);not null"`       // 菜品介绍
+	MenuID       int          `gorm:"index:o_order_id;column:menu_id;type:int;not null"` // menu_id
+	Price        float64      `gorm:"column:price;type:decimal(10,0);not null"`          // 价格
+	Amount       int          `gorm:"column:amount;type:int;not null"`                   // 数量
+	Cover        string       `gorm:"column:cover;type:varchar(255);not null"`           // 菜品图片
+	CreateAt     time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt     time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted    sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	OOrderID     int          `gorm:"index:o_order_id;column:o_order_id;type:int;not null"` // o_order_id
 }
 
 // APIOOrders [...]
 type APIOOrders struct {
-	ID            int       `gorm:"primary_key;column:id;type:int;not null"`
-	OrderNo       string    `gorm:"index:user_id;column:order_no;type:varchar(50);not null"` // 订单号
-	Status        int       `gorm:"column:status;type:int;not null"`                         // 订单状态：1：待付款，2：已付款，3，配送中，4：已取消，5：已完成
-	Amount        int       `gorm:"column:amount;type:int;not null"`                         // 总数量
-	Total         float64   `gorm:"column:total;type:decimal(10,2);not null"`                // 总金额
-	PayType       bool      `gorm:"column:pay_type;type:tinyint(1);not null"`
-	Rmk           string    `gorm:"column:rmk;type:varchar(500)"`                // 备注
-	AppType       int       `gorm:"column:app_type;type:int;not null"`           // 订单应用类型，1：小程序，2：床旁
-	OpenID        string    `gorm:"column:open_id;type:varchar(100);not null"`   // open_id
-	TradeType     string    `gorm:"column:trade_type;type:varchar(10);not null"` // JSAPI、NATIVE、APP
-	CreateAt      time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt      time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted     time.Time `gorm:"column:is_deleted;type:datetime"`
-	IsReturn      bool      `gorm:"column:is_return;type:tinyint(1);not null"`             // 是否退款
-	ApplicationID int       `gorm:"index:user_id;column:application_id;type:int;not null"` // application_id
-	UserID        int       `gorm:"index:user_id;column:user_id;type:int;not null"`        // user_id
+	ID            int          `gorm:"primary_key;column:id;type:int;not null"`
+	OrderNo       string       `gorm:"index:user_id;column:order_no;type:varchar(50);not null"` // 订单号
+	Status        int          `gorm:"column:status;type:int;not null"`                         // 订单状态：1：待付款，2：已付款，3，配送中，4：已取消，5：已完成
+	Amount        int          `gorm:"column:amount;type:int;not null"`                         // 总数量
+	Total         float64      `gorm:"column:total;type:decimal(10,2);not null"`                // 总金额
+	PayType       int          `gorm:"column:pay_type;type:tinyint(1);not null"`
+	Rmk           string       `gorm:"column:rmk;type:varchar(500)"`                // 备注
+	AppType       int          `gorm:"column:app_type;type:int;not null"`           // 订单应用类型，1：小程序，2：床旁
+	OpenID        string       `gorm:"column:open_id;type:varchar(100);not null"`   // open_id
+	TradeType     string       `gorm:"column:trade_type;type:varchar(10);not null"` // JSAPI、NATIVE、APP
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	IsReturn      bool         `gorm:"column:is_return;type:tinyint(1);not null"`             // 是否退款
+	ApplicationID int          `gorm:"index:user_id;column:application_id;type:int;not null"` // application_id
+	UserID        int          `gorm:"index:user_id;column:user_id;type:int;not null"`        // user_id
 }
 
 // APIOReturnOrderAddrs [...]
@@ -191,51 +193,51 @@ type APIOReturnOrderMenus struct {
 
 // APIOReturnOrders [...]
 type APIOReturnOrders struct {
-	ID            int       `gorm:"primary_key;column:id;type:int;not null"`
-	OrderNo       string    `gorm:"index:o_order_id;column:order_no;type:varchar(50);not null"` // 订单号
-	Status        int       `gorm:"column:status;type:int;not null"`                            // 订单状态：1，待审核，2：审核通过，3：审核驳回，4：退款成功，5：退款失败，
-	Amount        int       `gorm:"column:amount;type:int;not null"`                            // 总数量
-	Total         float64   `gorm:"column:total;type:decimal(10,0);not null"`                   // 总金额
-	OpenID        string    `gorm:"column:open_id;type:varchar(100);not null"`                  // open_id
-	AppType       int       `gorm:"column:app_type;type:int;not null"`                          // 订单应用类型，1：小程序，2：床旁
-	TradeType     string    `gorm:"column:trade_type;type:varchar(10);not null"`                // JSAPI、NATIVE、APP
-	CreateAt      time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt      time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted     time.Time `gorm:"column:is_deleted;type:datetime"`
-	OOrderID      int       `gorm:"index:o_order_id;column:o_order_id;type:int;not null"`     // o_order_id
-	ApplicationID int       `gorm:"index:o_order_id;column:application_id;type:int;not null"` // application_id
-	PayType       bool      `gorm:"column:pay_type;type:tinyint(1);not null"`
-	UserID        int       `gorm:"column:user_id;type:int;not null"` // user_id
+	ID            int          `gorm:"primary_key;column:id;type:int;not null"`
+	OrderNo       string       `gorm:"index:o_order_id;column:order_no;type:varchar(50);not null"` // 订单号
+	Status        int          `gorm:"column:status;type:int;not null"`                            // 订单状态：1，待审核，2：审核通过，3：审核驳回，4：退款成功，5：退款失败，
+	Amount        int          `gorm:"column:amount;type:int;not null"`                            // 总数量
+	Total         float64      `gorm:"column:total;type:decimal(10,0);not null"`                   // 总金额
+	OpenID        string       `gorm:"column:open_id;type:varchar(100);not null"`                  // open_id
+	AppType       int          `gorm:"column:app_type;type:int;not null"`                          // 订单应用类型，1：小程序，2：床旁
+	TradeType     string       `gorm:"column:trade_type;type:varchar(10);not null"`                // JSAPI、NATIVE、APP
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	OOrderID      int          `gorm:"index:o_order_id;column:o_order_id;type:int;not null"`     // o_order_id
+	ApplicationID int          `gorm:"index:o_order_id;column:application_id;type:int;not null"` // application_id
+	PayType       bool         `gorm:"column:pay_type;type:tinyint(1);not null"`
+	UserID        int          `gorm:"column:user_id;type:int;not null"` // user_id
 }
 
 // APIProfiles [...]
 type APIProfiles struct {
-	ID           int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name         string    `gorm:"column:name;type:varchar(50);not null"`          // 联系人姓名
-	Phone        string    `gorm:"column:phone;type:varchar(30);not null"`         // 手机
-	Sex          int       `gorm:"column:sex;type:int;not null"`                   // 性别:1:男,0:女
-	HospitalName string    `gorm:"column:hospital_name;type:varchar(50);not null"` // 医院名称
-	LocName      string    `gorm:"column:loc_name;type:varchar(50);not null"`      // 病区名称
-	BedNum       string    `gorm:"column:bed_num;type:varchar(10);not null"`       // 床号
-	HospitalNo   string    `gorm:"column:hospital_no;type:varchar(20);not null"`   // 住院号
-	Disease      string    `gorm:"column:disease;type:varchar(150);not null"`      // 病种
-	Age          int       `gorm:"column:age;type:int;not null"`                   // 年龄
-	CreateAt     time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt     time.Time `gorm:"column:update_at;type:datetime;not null"`
-	UserID       int       `gorm:"column:user_id;type:int;not null"`
-	IsDeleted    time.Time `gorm:"column:is_deleted;type:datetime"`
+	ID           int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name         string       `gorm:"column:name;type:varchar(50);not null"`          // 联系人姓名
+	Phone        string       `gorm:"column:phone;type:varchar(30);not null"`         // 手机
+	Sex          int          `gorm:"column:sex;type:int;not null"`                   // 性别:1:男,0:女
+	HospitalName string       `gorm:"column:hospital_name;type:varchar(50);not null"` // 医院名称
+	LocName      string       `gorm:"column:loc_name;type:varchar(50);not null"`      // 病区名称
+	BedNum       string       `gorm:"column:bed_num;type:varchar(10);not null"`       // 床号
+	HospitalNo   string       `gorm:"column:hospital_no;type:varchar(20);not null"`   // 住院号
+	Disease      string       `gorm:"column:disease;type:varchar(150);not null"`      // 病种
+	Age          int          `gorm:"column:age;type:int;not null"`                   // 年龄
+	CreateAt     time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt     time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	UserID       int          `gorm:"column:user_id;type:int;not null"`
+	IsDeleted    sql.NullTime `gorm:"column:is_deleted;type:datetime"`
 }
 
 // APIRoles [...]
 type APIRoles struct {
-	ID        int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name      string    `gorm:"column:name;type:varchar(30);not null"`    // 角色名称
-	Desc      string    `gorm:"column:desc;type:varchar(30);not null"`    // 描述
-	Remark    string    `gorm:"column:remark;type:varchar(100);not null"` // 备注
-	Status    bool      `gorm:"column:status;type:tinyint(1);not null"`   // 账号状态
-	CreateAt  time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt  time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted time.Time `gorm:"column:is_deleted;type:datetime"`
+	ID        int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name      string       `gorm:"column:name;type:varchar(30);not null"`    // 角色名称
+	Desc      string       `gorm:"column:desc;type:varchar(30);not null"`    // 描述
+	Remark    string       `gorm:"column:remark;type:varchar(100);not null"` // 备注
+	Status    bool         `gorm:"column:status;type:tinyint(1);not null"`   // 账号状态
+	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime"`
 }
 
 // APIUsers [...]
@@ -264,14 +266,14 @@ type APIUsers struct {
 
 // APIWarnTimes [...]
 type APIWarnTimes struct {
-	ID        int       `gorm:"primary_key;column:id;type:int;not null"`
-	Weeks     string    `gorm:"column:weeks;type:varchar(30);not null"` // 星期
-	Time      string    `gorm:"column:time;type:varchar(20);not null"`  // 提醒时间
-	Status    bool      `gorm:"column:status;type:tinyint(1);not null"` // 是否启用
-	CreateAt  time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt  time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted time.Time `gorm:"column:is_deleted;type:datetime"`
-	UserID    int       `gorm:"index:user_id;column:user_id;type:int;not null"` // user_id
+	ID        int          `gorm:"primary_key;column:id;type:int;not null"`
+	Weeks     string       `gorm:"column:weeks;type:varchar(30);not null"` // 星期
+	Time      string       `gorm:"column:time;type:varchar(20);not null"`  // 提醒时间
+	Status    bool         `gorm:"column:status;type:tinyint(1);not null"` // 是否启用
+	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	UserID    int          `gorm:"index:user_id;column:user_id;type:int;not null"` // user_id
 }
 
 // CareCareTag 护理标签和护理关系中间表
@@ -285,21 +287,21 @@ type CareCareTag struct {
 
 // CareOrderAddrs 订单地址表
 type CareOrderAddrs struct {
-	ID           int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name         string    `gorm:"column:name;type:varchar(50);not null"`          // 联系人姓名
-	Phone        string    `gorm:"column:phone;type:varchar(30);not null"`         // 手机
-	Addr         string    `gorm:"column:addr;type:varchar(200);not null"`         // 地址
-	Sex          int       `gorm:"column:sex;type:int;not null"`                   // 性别:1:男,0:女
-	HospitalName string    `gorm:"column:hospital_name;type:varchar(50);not null"` // 医院名称
-	LocName      string    `gorm:"column:loc_name;type:varchar(50);not null"`      // 病区名称
-	BedNum       string    `gorm:"column:bed_num;type:varchar(10);not null"`       // 床号
-	HospitalNo   string    `gorm:"column:hospital_no;type:varchar(20);not null"`   // 住院号
-	Disease      string    `gorm:"column:disease;type:varchar(150);not null"`      // 病种
-	IsDeleted    time.Time `gorm:"column:is_deleted;type:datetime"`
-	CareOrderID  int       `gorm:"index:care_order_id;column:care_order_id;type:int;not null"` // care_order_id
-	CreateAt     time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt     time.Time `gorm:"column:update_at;type:datetime;not null"`
-	Age          int       `gorm:"column:age;type:int;not null"` // 年龄
+	ID           int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name         string       `gorm:"column:name;type:varchar(50);not null"`          // 联系人姓名
+	Phone        string       `gorm:"column:phone;type:varchar(30);not null"`         // 手机
+	Addr         string       `gorm:"column:addr;type:varchar(200);not null"`         // 地址
+	Sex          int          `gorm:"column:sex;type:int;not null"`                   // 性别:1:男,0:女
+	HospitalName string       `gorm:"column:hospital_name;type:varchar(50);not null"` // 医院名称
+	LocName      string       `gorm:"column:loc_name;type:varchar(50);not null"`      // 病区名称
+	BedNum       string       `gorm:"column:bed_num;type:varchar(10);not null"`       // 床号
+	HospitalNo   string       `gorm:"column:hospital_no;type:varchar(20);not null"`   // 住院号
+	Disease      string       `gorm:"column:disease;type:varchar(150);not null"`      // 病种
+	IsDeleted    sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	CareOrderID  int          `gorm:"index:care_order_id;column:care_order_id;type:int;not null"` // care_order_id
+	CreateAt     time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt     time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	Age          int          `gorm:"column:age;type:int;not null"` // 年龄
 }
 
 // CareOrderCarerInfos 订单护工信息表
@@ -343,24 +345,24 @@ type CareOrderInfos struct {
 
 // CareOrders 护理订单表
 type CareOrders struct {
-	ID            int       `gorm:"primary_key;column:id;type:int;not null"`
-	OrderNo       string    `gorm:"column:order_no;type:varchar(50);not null"`             // 订单号
-	Status        int       `gorm:"column:status;type:int;not null"`                       // 订单状态：1：待付款，2：已付款，3，进行中，4：已取消，5：已完成
-	PayType       int       `gorm:"column:pay_type;type:int;not null"`                     // 订单支付类型：1：微信，2：支付宝
-	Total         float64   `gorm:"column:total;type:decimal(10,2);not null"`              // 总金额
-	Rmk           string    `gorm:"column:rmk;type:varchar(500);not null"`                 // 备注
-	StartAt       time.Time `gorm:"column:start_at;type:datetime;not null"`                // 服务开始时间
-	EndAt         time.Time `gorm:"column:end_at;type:datetime;not null"`                  // 服务结束时间
-	OpenID        string    `gorm:"column:open_id;type:varchar(100);not null"`             // open_id
-	TradeType     string    `gorm:"column:trade_type;type:varchar(10);not null"`           // JSAPI、NATIVE、APP
-	IsReturn      bool      `gorm:"column:is_return;type:tinyint(1);not null"`             // 是否退款
-	ApplicationID int       `gorm:"index:user_id;column:application_id;type:int;not null"` // application_id
-	UserID        int       `gorm:"index:user_id;column:user_id;type:int;not null"`        // user_id
-	IsDeleted     time.Time `gorm:"column:is_deleted;type:datetime"`
-	CreateAt      time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt      time.Time `gorm:"column:update_at;type:datetime;not null"`
-	AppType       int       `gorm:"column:app_type;type:int;not null"`                // 订单应用类型，1：小程序，2：床旁
-	CarerID       int       `gorm:"index:carer_id;column:carer_id;type:int;not null"` // 护工id
+	ID            int          `gorm:"primary_key;column:id;type:int;not null"`
+	OrderNo       string       `gorm:"column:order_no;type:varchar(50);not null"`             // 订单号
+	Status        int          `gorm:"column:status;type:int;not null"`                       // 订单状态：1：待付款，2：已付款，3，进行中，4：已取消，5：已完成
+	PayType       int          `gorm:"column:pay_type;type:int;not null"`                     // 订单支付类型：1：微信，2：支付宝
+	Total         float64      `gorm:"column:total;type:decimal(10,2);not null"`              // 总金额
+	Rmk           string       `gorm:"column:rmk;type:varchar(500);not null"`                 // 备注
+	StartAt       time.Time    `gorm:"column:start_at;type:datetime;not null"`                // 服务开始时间
+	EndAt         time.Time    `gorm:"column:end_at;type:datetime;not null"`                  // 服务结束时间
+	OpenID        string       `gorm:"column:open_id;type:varchar(100);not null"`             // open_id
+	TradeType     string       `gorm:"column:trade_type;type:varchar(10);not null"`           // JSAPI、NATIVE、APP
+	IsReturn      bool         `gorm:"column:is_return;type:tinyint(1);not null"`             // 是否退款
+	ApplicationID int          `gorm:"index:user_id;column:application_id;type:int;not null"` // application_id
+	UserID        int          `gorm:"index:user_id;column:user_id;type:int;not null"`        // user_id
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	AppType       int          `gorm:"column:app_type;type:int;not null"`                // 订单应用类型，1：小程序，2：床旁
+	CarerID       int          `gorm:"index:carer_id;column:carer_id;type:int;not null"` // 护工id
 }
 
 // CareReturnOrderAddrs 退款订单地址表
@@ -424,43 +426,43 @@ type CareReturnOrderInfos struct {
 
 // CareReturnOrders 退款订单表
 type CareReturnOrders struct {
-	ID            int       `gorm:"primary_key;column:id;type:int;not null"`
-	OrderNo       string    `gorm:"column:order_no;type:varchar(50);not null"`   // 订单号
-	Status        int       `gorm:"column:status;type:int;not null"`             // 订单状态：1，待审核，2：审核通过，3：审核驳回，4：退款成功，5：退款失败，
-	PayType       int       `gorm:"column:pay_type;type:int;not null"`           // 订单支付类型：1：微信，2：支付宝
-	Total         float64   `gorm:"column:total;type:decimal(10,2);not null"`    // 总金额
-	OpenID        string    `gorm:"column:open_id;type:varchar(100);not null"`   // open_id
-	TradeType     string    `gorm:"column:trade_type;type:varchar(10);not null"` // JSAPI、NATIVE、APP
-	CreateAt      time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt      time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted     time.Time `gorm:"column:is_deleted;type:datetime"`
-	CareOrderID   int       `gorm:"index:care_order_id;column:care_order_id;type:int;not null"`  // care_order_id
-	ApplicationID int       `gorm:"index:care_order_id;column:application_id;type:int;not null"` // application_id
-	UserID        int       `gorm:"column:user_id;type:int;not null"`                            // user_id
-	AppType       int       `gorm:"column:app_type;type:int;not null"`                           // 订单应用类型，1：小程序，2：床旁
-	CarerID       int       `gorm:"index:carer_id;column:carer_id;type:int;not null"`            // 护工id
+	ID            int          `gorm:"primary_key;column:id;type:int;not null"`
+	OrderNo       string       `gorm:"column:order_no;type:varchar(50);not null"`   // 订单号
+	Status        int          `gorm:"column:status;type:int;not null"`             // 订单状态：1，待审核，2：审核通过，3：审核驳回，4：退款成功，5：退款失败，
+	PayType       int          `gorm:"column:pay_type;type:int;not null"`           // 订单支付类型：1：微信，2：支付宝
+	Total         float64      `gorm:"column:total;type:decimal(10,2);not null"`    // 总金额
+	OpenID        string       `gorm:"column:open_id;type:varchar(100);not null"`   // open_id
+	TradeType     string       `gorm:"column:trade_type;type:varchar(10);not null"` // JSAPI、NATIVE、APP
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	CareOrderID   int          `gorm:"index:care_order_id;column:care_order_id;type:int;not null"`  // care_order_id
+	ApplicationID int          `gorm:"index:care_order_id;column:application_id;type:int;not null"` // application_id
+	UserID        int          `gorm:"column:user_id;type:int;not null"`                            // user_id
+	AppType       int          `gorm:"column:app_type;type:int;not null"`                           // 订单应用类型，1：小程序，2：床旁
+	CarerID       int          `gorm:"index:carer_id;column:carer_id;type:int;not null"`            // 护工id
 }
 
 // CareTags 护理标签表
 type CareTags struct {
-	ID        int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name      string    `gorm:"column:name;type:varchar(50);not null"` // 名称
-	IsDeleted time.Time `gorm:"column:is_deleted;type:datetime"`
-	CreateAt  time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt  time.Time `gorm:"column:update_at;type:datetime;not null"`
-	Icon      string    `gorm:"column:icon;type:varchar(200);not null"` // 图标
+	ID        int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name      string       `gorm:"column:name;type:varchar(50);not null"` // 名称
+	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	Icon      string       `gorm:"column:icon;type:varchar(200);not null"` // 图标
 }
 
 // CareTypes 护理类型表
 type CareTypes struct {
-	ID        int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name      string    `gorm:"column:name;type:varchar(50);not null"`    // 名称
-	EnName    string    `gorm:"column:en_name;type:varchar(50);not null"` // 英文名称
-	Status    bool      `gorm:"column:status;type:tinyint(1);not null"`   // 状态：启用，禁用
-	CreateAt  time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt  time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted time.Time `gorm:"column:is_deleted;type:datetime"`
-	Icon      string    `gorm:"column:icon;type:varchar(200);not null"` // 图标
+	ID        int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name      string       `gorm:"column:name;type:varchar(50);not null"`    // 名称
+	EnName    string       `gorm:"column:en_name;type:varchar(50);not null"` // 英文名称
+	Status    bool         `gorm:"column:status;type:tinyint(1);not null"`   // 状态：启用，禁用
+	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	Icon      string       `gorm:"column:icon;type:varchar(200);not null"` // 图标
 }
 
 // CarerCarerTag 护工标签和护工关系中间表
@@ -487,54 +489,54 @@ type CarerServerTimes struct {
 
 // CarerTags 护工标签表
 type CarerTags struct {
-	ID        int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name      string    `gorm:"column:name;type:varchar(50);not null"` // 名称
-	CreateAt  time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt  time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted time.Time `gorm:"column:is_deleted;type:datetime"`
-	Icon      string    `gorm:"column:icon;type:varchar(200);not null"` // 图标
+	ID        int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name      string       `gorm:"column:name;type:varchar(50);not null"` // 名称
+	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	Icon      string       `gorm:"column:icon;type:varchar(200);not null"` // 图标
 }
 
 // Carers 护工表
 type Carers struct {
-	ID            int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name          string    `gorm:"column:name;type:varchar(50);not null"`    // 姓名
-	Age           int       `gorm:"column:age;type:int;not null"`             // 年龄
-	WorkExp       int       `gorm:"column:work_exp;type:int;not null"`        // 工作年限
-	Price         float64   `gorm:"column:price;type:decimal(10,2);not null"` // 价格
-	Sex           int       `gorm:"column:sex;type:int;not null"`             // 性别:1:男,0:女
-	Phone         string    `gorm:"column:phone;type:varchar(30);not null"`   // 手机
-	Desc          string    `gorm:"column:desc;type:varchar(500);not null"`   // 简介
-	Avatar        string    `gorm:"column:avatar;type:varchar(200);not null"` // 头像
-	Amount        int       `gorm:"column:amount;type:int;not null"`          // 服务数量
-	CreateAt      time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt      time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted     time.Time `gorm:"column:is_deleted;type:datetime"`
-	ApplicationID int       `gorm:"index:application_id;column:application_id;type:int;not null"` // application_id
-	Status        bool      `gorm:"column:status;type:tinyint(1);not null"`                       // 状态：上下架
-	TimeType      string    `gorm:"column:time_type;type:varchar(5);not null"`                    // 时间类型：时，天，月
-	CarerDetail   string    `gorm:"column:carer_detail;type:varchar(2000);not null"`              // 服务内容:采用富文本
-	CardNo        string    `gorm:"column:card_no;type:varchar(12);not null"`                     // 工号
+	ID            int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name          string       `gorm:"column:name;type:varchar(50);not null"`    // 姓名
+	Age           int          `gorm:"column:age;type:int;not null"`             // 年龄
+	WorkExp       int          `gorm:"column:work_exp;type:int;not null"`        // 工作年限
+	Price         float64      `gorm:"column:price;type:decimal(10,2);not null"` // 价格
+	Sex           int          `gorm:"column:sex;type:int;not null"`             // 性别:1:男,0:女
+	Phone         string       `gorm:"column:phone;type:varchar(30);not null"`   // 手机
+	Desc          string       `gorm:"column:desc;type:varchar(500);not null"`   // 简介
+	Avatar        string       `gorm:"column:avatar;type:varchar(200);not null"` // 头像
+	Amount        int          `gorm:"column:amount;type:int;not null"`          // 服务数量
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	ApplicationID int          `gorm:"index:application_id;column:application_id;type:int;not null"` // application_id
+	Status        bool         `gorm:"column:status;type:tinyint(1);not null"`                       // 状态：上下架
+	TimeType      string       `gorm:"column:time_type;type:varchar(5);not null"`                    // 时间类型：时，天，月
+	CarerDetail   string       `gorm:"column:carer_detail;type:varchar(2000);not null"`              // 服务内容:采用富文本
+	CardNo        string       `gorm:"column:card_no;type:varchar(12);not null"`                     // 工号
 }
 
 // Cares 护理项目表
 type Cares struct {
-	ID            int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name          string    `gorm:"column:name;type:varchar(50);not null"`          // 名称
-	Desc          string    `gorm:"column:desc;type:varchar(100);not null"`         // 简介
-	TimeType      string    `gorm:"column:time_type;type:varchar(5);not null"`      // 时间类型：时，天，月
-	Status        bool      `gorm:"column:status;type:tinyint(1);not null"`         // 状态：上下架
-	Amount        int       `gorm:"column:amount;type:int;not null"`                // 销量
-	MinPrice      float64   `gorm:"column:min_price;type:decimal(10,2);not null"`   // 最小价格
-	MaxPrice      float64   `gorm:"column:max_price;type:decimal(10,2);not null"`   // 最大价格
-	Cover         string    `gorm:"column:cover;type:varchar(1200);not null"`       // 封面
-	Sort          int       `gorm:"column:sort;type:int;not null"`                  // 排序
-	CareDetail    string    `gorm:"column:care_detail;type:varchar(2000);not null"` // 服务内容:采用富文本
-	CreateAt      time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt      time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted     time.Time `gorm:"column:is_deleted;type:datetime"`
-	CareTypeID    int       `gorm:"index:care_type_id;column:care_type_id;type:int;not null"`   // care_type_id
-	ApplicationID int       `gorm:"index:care_type_id;column:application_id;type:int;not null"` // application_id
+	ID            int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name          string       `gorm:"column:name;type:varchar(50);not null"`          // 名称
+	Desc          string       `gorm:"column:desc;type:varchar(100);not null"`         // 简介
+	TimeType      string       `gorm:"column:time_type;type:varchar(5);not null"`      // 时间类型：时，天，月
+	Status        bool         `gorm:"column:status;type:tinyint(1);not null"`         // 状态：上下架
+	Amount        int          `gorm:"column:amount;type:int;not null"`                // 销量
+	MinPrice      float64      `gorm:"column:min_price;type:decimal(10,2);not null"`   // 最小价格
+	MaxPrice      float64      `gorm:"column:max_price;type:decimal(10,2);not null"`   // 最大价格
+	Cover         string       `gorm:"column:cover;type:varchar(1200);not null"`       // 封面
+	Sort          int          `gorm:"column:sort;type:int;not null"`                  // 排序
+	CareDetail    string       `gorm:"column:care_detail;type:varchar(2000);not null"` // 服务内容:采用富文本
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	CareTypeID    int          `gorm:"index:care_type_id;column:care_type_id;type:int;not null"`   // care_type_id
+	ApplicationID int          `gorm:"index:care_type_id;column:application_id;type:int;not null"` // application_id
 }
 
 // Cnareas 中国行政地区表
@@ -573,15 +575,15 @@ type Migrations struct {
 
 // MiniApps [...]
 type MiniApps struct {
-	ID        int       `gorm:"primary_key;column:id;type:int;not null"`
-	AppID     string    `gorm:"unique_index:uuid;column:app_id;type:varchar(100);not null"` // app_id
-	AppSecret string    `gorm:"column:app_secret;type:varchar(100);not null"`               // app_secret
-	UUID      string    `gorm:"unique_index:uuid;column:uuid;type:varchar(100);not null"`   // uuid
-	Name      string    `gorm:"index:name;column:name;type:varchar(50);not null"`           // 应用名称
-	Describle string    `gorm:"column:describle;type:varchar(100);not null"`                // 应用描述
-	CreateAt  time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt  time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted time.Time `gorm:"column:is_deleted;type:datetime"`
+	ID        int          `gorm:"primary_key;column:id;type:int;not null"`
+	AppID     string       `gorm:"unique_index:uuid;column:app_id;type:varchar(100);not null"` // app_id
+	AppSecret string       `gorm:"column:app_secret;type:varchar(100);not null"`               // app_secret
+	UUID      string       `gorm:"unique_index:uuid;column:uuid;type:varchar(100);not null"`   // uuid
+	Name      string       `gorm:"index:name;column:name;type:varchar(50);not null"`           // 应用名称
+	Describle string       `gorm:"column:describle;type:varchar(100);not null"`                // 应用描述
+	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime"`
 }
 
 // Rules [...]

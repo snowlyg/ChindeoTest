@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"time"
@@ -100,8 +101,8 @@ func (obj *_APIMenusMgr) WithUpdateAt(updateAt time.Time) Option {
 }
 
 // WithIsDeleted is_deleted获取
-func (obj *_APIMenusMgr) WithIsDeleted(isDeleted time.Time) Option {
-	return optionFunc(func(o *options) { o.query["is_deleted"] = isDeleted })
+func (obj *_APIMenusMgr) WithIsDeleted(IsDeleted sql.NullTime) Option {
+	return optionFunc(func(o *options) { o.query["is_deleted"] = IsDeleted })
 }
 
 // WithApplicationID application_id获取
@@ -313,8 +314,8 @@ func (obj *_APIMenusMgr) GetBatchFromUpdateAt(updateAts []time.Time) (results []
 }
 
 // GetFromIsDeleted 通过is_deleted获取内容
-func (obj *_APIMenusMgr) GetFromIsDeleted(isDeleted time.Time) (results []*APIMenus, err error) {
-	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", isDeleted).Find(&results).Error
+func (obj *_APIMenusMgr) GetFromIsDeleted(IsDeleted sql.NullTime) (results []*APIMenus, err error) {
+	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", IsDeleted).Find(&results).Error
 
 	return
 }

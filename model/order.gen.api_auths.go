@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"time"
@@ -90,8 +91,8 @@ func (obj *_APIAuthsMgr) WithUpdateAt(updateAt time.Time) Option {
 }
 
 // WithIsDeleted is_deleted获取
-func (obj *_APIAuthsMgr) WithIsDeleted(isDeleted time.Time) Option {
-	return optionFunc(func(o *options) { o.query["is_deleted"] = isDeleted })
+func (obj *_APIAuthsMgr) WithIsDeleted(IsDeleted sql.NullTime) Option {
+	return optionFunc(func(o *options) { o.query["is_deleted"] = IsDeleted })
 }
 
 // GetByOption 功能选项模式获取
@@ -265,8 +266,8 @@ func (obj *_APIAuthsMgr) GetBatchFromUpdateAt(updateAts []time.Time) (results []
 }
 
 // GetFromIsDeleted 通过is_deleted获取内容
-func (obj *_APIAuthsMgr) GetFromIsDeleted(isDeleted time.Time) (results []*APIAuths, err error) {
-	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", isDeleted).Find(&results).Error
+func (obj *_APIAuthsMgr) GetFromIsDeleted(IsDeleted sql.NullTime) (results []*APIAuths, err error) {
+	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", IsDeleted).Find(&results).Error
 
 	return
 }

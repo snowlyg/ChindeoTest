@@ -21,9 +21,9 @@ func TestMenuSuccess(t *testing.T) {
 	obj := e.GET("/api/v1/menu").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
-		WithQuery("menu_type_id", "3").
-		WithQuery("time_type", "3").
-		WithQuery("menu_tag_id", "3").
+		WithQuery("menu_type_id", MenuType.ID).
+		WithQuery("time_type", Menu.TimeType).
+		WithQuery("menu_tag_id", MenuTag.ID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -31,6 +31,8 @@ func TestMenuSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("data").Array().First().Object().Value("id").Equal(Menu.ID)
 }
 
 func TestMenuNoPageSuccess(t *testing.T) {

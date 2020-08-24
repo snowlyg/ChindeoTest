@@ -35,7 +35,6 @@ func TestRefreshTokenSuccess(t *testing.T) {
 }
 
 func TestRefreshTokenError(t *testing.T) {
-
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
 		Client: &http.Client{

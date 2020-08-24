@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"time"
@@ -75,8 +76,8 @@ func (obj *_APIRolesMgr) WithUpdateAt(updateAt time.Time) Option {
 }
 
 // WithIsDeleted is_deleted获取
-func (obj *_APIRolesMgr) WithIsDeleted(isDeleted time.Time) Option {
-	return optionFunc(func(o *options) { o.query["is_deleted"] = isDeleted })
+func (obj *_APIRolesMgr) WithIsDeleted(IsDeleted sql.NullTime) Option {
+	return optionFunc(func(o *options) { o.query["is_deleted"] = IsDeleted })
 }
 
 // GetByOption 功能选项模式获取
@@ -208,8 +209,8 @@ func (obj *_APIRolesMgr) GetBatchFromUpdateAt(updateAts []time.Time) (results []
 }
 
 // GetFromIsDeleted 通过is_deleted获取内容
-func (obj *_APIRolesMgr) GetFromIsDeleted(isDeleted time.Time) (results []*APIRoles, err error) {
-	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", isDeleted).Find(&results).Error
+func (obj *_APIRolesMgr) GetFromIsDeleted(IsDeleted sql.NullTime) (results []*APIRoles, err error) {
+	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", IsDeleted).Find(&results).Error
 
 	return
 }

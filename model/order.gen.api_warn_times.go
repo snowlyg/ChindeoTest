@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"time"
@@ -70,8 +71,8 @@ func (obj *_APIWarnTimesMgr) WithUpdateAt(updateAt time.Time) Option {
 }
 
 // WithIsDeleted is_deleted获取
-func (obj *_APIWarnTimesMgr) WithIsDeleted(isDeleted time.Time) Option {
-	return optionFunc(func(o *options) { o.query["is_deleted"] = isDeleted })
+func (obj *_APIWarnTimesMgr) WithIsDeleted(IsDeleted sql.NullTime) Option {
+	return optionFunc(func(o *options) { o.query["is_deleted"] = IsDeleted })
 }
 
 // WithUserID user_id获取 user_id
@@ -194,8 +195,8 @@ func (obj *_APIWarnTimesMgr) GetBatchFromUpdateAt(updateAts []time.Time) (result
 }
 
 // GetFromIsDeleted 通过is_deleted获取内容
-func (obj *_APIWarnTimesMgr) GetFromIsDeleted(isDeleted time.Time) (results []*APIWarnTimes, err error) {
-	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", isDeleted).Find(&results).Error
+func (obj *_APIWarnTimesMgr) GetFromIsDeleted(IsDeleted sql.NullTime) (results []*APIWarnTimes, err error) {
+	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", IsDeleted).Find(&results).Error
 
 	return
 }

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"time"
@@ -105,8 +106,8 @@ func (obj *_CaresMgr) WithUpdateAt(updateAt time.Time) Option {
 }
 
 // WithIsDeleted is_deleted获取
-func (obj *_CaresMgr) WithIsDeleted(isDeleted time.Time) Option {
-	return optionFunc(func(o *options) { o.query["is_deleted"] = isDeleted })
+func (obj *_CaresMgr) WithIsDeleted(IsDeleted sql.NullTime) Option {
+	return optionFunc(func(o *options) { o.query["is_deleted"] = IsDeleted })
 }
 
 // WithCareTypeID care_type_id获取 care_type_id
@@ -332,8 +333,8 @@ func (obj *_CaresMgr) GetBatchFromUpdateAt(updateAts []time.Time) (results []*Ca
 }
 
 // GetFromIsDeleted 通过is_deleted获取内容
-func (obj *_CaresMgr) GetFromIsDeleted(isDeleted time.Time) (results []*Cares, err error) {
-	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", isDeleted).Find(&results).Error
+func (obj *_CaresMgr) GetFromIsDeleted(IsDeleted sql.NullTime) (results []*Cares, err error) {
+	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", IsDeleted).Find(&results).Error
 
 	return
 }

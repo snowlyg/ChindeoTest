@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"time"
@@ -95,8 +96,8 @@ func (obj *_APIOReturnOrderMenusMgr) WithUpdateAt(updateAt time.Time) Option {
 }
 
 // WithIsDeleted is_deleted获取
-func (obj *_APIOReturnOrderMenusMgr) WithIsDeleted(isDeleted time.Time) Option {
-	return optionFunc(func(o *options) { o.query["is_deleted"] = isDeleted })
+func (obj *_APIOReturnOrderMenusMgr) WithIsDeleted(IsDeleted sql.NullTime) Option {
+	return optionFunc(func(o *options) { o.query["is_deleted"] = IsDeleted })
 }
 
 // WithApplicationID application_id获取 application_id
@@ -294,8 +295,8 @@ func (obj *_APIOReturnOrderMenusMgr) GetBatchFromUpdateAt(updateAts []time.Time)
 }
 
 // GetFromIsDeleted 通过is_deleted获取内容
-func (obj *_APIOReturnOrderMenusMgr) GetFromIsDeleted(isDeleted time.Time) (results []*APIOReturnOrderMenus, err error) {
-	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", isDeleted).Find(&results).Error
+func (obj *_APIOReturnOrderMenusMgr) GetFromIsDeleted(IsDeleted sql.NullTime) (results []*APIOReturnOrderMenus, err error) {
+	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", IsDeleted).Find(&results).Error
 
 	return
 }

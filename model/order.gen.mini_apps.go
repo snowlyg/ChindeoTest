@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"time"
@@ -80,8 +81,8 @@ func (obj *_MiniAppsMgr) WithUpdateAt(updateAt time.Time) Option {
 }
 
 // WithIsDeleted is_deleted获取
-func (obj *_MiniAppsMgr) WithIsDeleted(isDeleted time.Time) Option {
-	return optionFunc(func(o *options) { o.query["is_deleted"] = isDeleted })
+func (obj *_MiniAppsMgr) WithIsDeleted(IsDeleted sql.NullTime) Option {
+	return optionFunc(func(o *options) { o.query["is_deleted"] = IsDeleted })
 }
 
 // GetByOption 功能选项模式获取
@@ -227,8 +228,8 @@ func (obj *_MiniAppsMgr) GetBatchFromUpdateAt(updateAts []time.Time) (results []
 }
 
 // GetFromIsDeleted 通过is_deleted获取内容
-func (obj *_MiniAppsMgr) GetFromIsDeleted(isDeleted time.Time) (results []*MiniApps, err error) {
-	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", isDeleted).Find(&results).Error
+func (obj *_MiniAppsMgr) GetFromIsDeleted(IsDeleted sql.NullTime) (results []*MiniApps, err error) {
+	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", IsDeleted).Find(&results).Error
 
 	return
 }

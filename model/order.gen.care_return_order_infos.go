@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"time"
@@ -105,8 +106,8 @@ func (obj *_CareReturnOrderInfosMgr) WithUpdateAt(updateAt time.Time) Option {
 }
 
 // WithIsDeleted is_deleted获取
-func (obj *_CareReturnOrderInfosMgr) WithIsDeleted(isDeleted time.Time) Option {
-	return optionFunc(func(o *options) { o.query["is_deleted"] = isDeleted })
+func (obj *_CareReturnOrderInfosMgr) WithIsDeleted(IsDeleted sql.NullTime) Option {
+	return optionFunc(func(o *options) { o.query["is_deleted"] = IsDeleted })
 }
 
 // WithCareReturnOrderID care_return_order_id获取 care_return_order_id
@@ -327,8 +328,8 @@ func (obj *_CareReturnOrderInfosMgr) GetBatchFromUpdateAt(updateAts []time.Time)
 }
 
 // GetFromIsDeleted 通过is_deleted获取内容
-func (obj *_CareReturnOrderInfosMgr) GetFromIsDeleted(isDeleted time.Time) (results []*CareReturnOrderInfos, err error) {
-	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", isDeleted).Find(&results).Error
+func (obj *_CareReturnOrderInfosMgr) GetFromIsDeleted(IsDeleted sql.NullTime) (results []*CareReturnOrderInfos, err error) {
+	err = obj.DB.Table(obj.GetTableName()).Where("is_deleted = ?", IsDeleted).Find(&results).Error
 
 	return
 }

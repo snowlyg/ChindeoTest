@@ -10,7 +10,14 @@ import (
 var delAddrId string
 var addrId float64
 
-func TestAddrListSuccess(t *testing.T) {
+func TestAddrAddForOrderSuccess(t *testing.T) {
+	addr := map[string]interface{}{
+		"name":       "name",
+		"phone":      "13800138000",
+		"addr":       "addr",
+		"sex":        1,
+		"is_default": 1,
+	}
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
 		Client: &http.Client{
@@ -18,19 +25,33 @@ func TestAddrListSuccess(t *testing.T) {
 		},
 		BaseURL: BaseUrl,
 	})
-	obj := e.GET("/api/v1/outline/addr").
+	obj := e.POST("/api/v1/outline/addr/add").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
+		WithJSON(addr).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
-	obj.Value("message").String().Equal("请求成功")
-	id := obj.Value("data").Array().First().Object().Value("id").Raw()
-	data, ok := id.(float64)
+	obj.Value("message").String().Equal("操作成功")
+	obj.Value("data").Object().Value("id").NotEqual(0)
+	obj.Value("data").Object().Value("name").Equal("name")
+	obj.Value("data").Object().Value("phone").Equal("13800138000")
+	obj.Value("data").Object().Value("addr").Equal("addr")
+	obj.Value("data").Object().Value("sex").Equal("男")
+	obj.Value("data").Object().Value("is_default").Equal("1")
+	obj.Value("data").Object().Value("hospital_name").Equal("")
+	obj.Value("data").Object().Value("age").Equal("")
+	obj.Value("data").Object().Value("disease").Equal("")
+	obj.Value("data").Object().Value("loc_name").Equal("")
+	obj.Value("data").Object().Value("bed_num").Equal("")
+	obj.Value("data").Object().Value("hospital_no").Equal("")
+
+	id := obj.Value("data").Object().Value("id").Raw()
+	data, ok := id.(string)
 	if ok {
-		addrId = data
+		delAddrId = data
 	}
 }
 
@@ -86,14 +107,7 @@ func TestAddrAddSuccess(t *testing.T) {
 	}
 }
 
-func TestAddrAddForOrderSuccess(t *testing.T) {
-	addr := map[string]interface{}{
-		"name":       "name",
-		"phone":      "13800138000",
-		"addr":       "addr",
-		"sex":        1,
-		"is_default": 1,
-	}
+func TestAddrListSuccess(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
 		Client: &http.Client{
@@ -101,33 +115,20 @@ func TestAddrAddForOrderSuccess(t *testing.T) {
 		},
 		BaseURL: BaseUrl,
 	})
-	obj := e.POST("/api/v1/outline/addr/add").
+	obj := e.GET("/api/v1/outline/addr").
 		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
 		WithCookie("PHPSESSID", PHPSESSID).
-		WithJSON(addr).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
-	obj.Value("message").String().Equal("操作成功")
-	obj.Value("data").Object().Value("id").NotEqual(0)
-	obj.Value("data").Object().Value("name").Equal("name")
-	obj.Value("data").Object().Value("phone").Equal("13800138000")
-	obj.Value("data").Object().Value("addr").Equal("addr")
-	obj.Value("data").Object().Value("sex").Equal("男")
-	obj.Value("data").Object().Value("is_default").Equal("1")
-	obj.Value("data").Object().Value("hospital_name").Equal("")
-	obj.Value("data").Object().Value("age").Equal("")
-	obj.Value("data").Object().Value("disease").Equal("")
-	obj.Value("data").Object().Value("loc_name").Equal("")
-	obj.Value("data").Object().Value("bed_num").Equal("")
-	obj.Value("data").Object().Value("hospital_no").Equal("")
-
-	id := obj.Value("data").Object().Value("id").Raw()
-	data, ok := id.(string)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Array().Length().Equal(2)
+	id := obj.Value("data").Array().First().Object().Value("id").Raw()
+	data, ok := id.(float64)
 	if ok {
-		delAddrId = data
+		addrId = data
 	}
 }
 
