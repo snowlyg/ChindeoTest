@@ -411,6 +411,25 @@ func TestOrderDeleteSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 }
 
+func TestOrderDeleteReturnSuccess(t *testing.T) {
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+	obj := e.DELETE("/api/v1/i_order/{id}", Order.ID).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+}
+
 func TestOrderDeleteError(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
