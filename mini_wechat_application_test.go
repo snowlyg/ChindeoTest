@@ -1,14 +1,14 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/common"
 	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
+	"strconv"
 	"testing"
 
 	"github.com/gavv/httpexpect/v2"
 )
-
-var applicationId float64
 
 func TestMiniWechatApplicationSuccess(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
@@ -19,21 +19,18 @@ func TestMiniWechatApplicationSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 
-	obj := e.GET("/api/v1/outline/application/0").
-		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := e.GET("/api/v1/outline/application/482024").
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	obj.Value("data").Array().NotEmpty()
+	obj.Value("data").Array().Length().Equal(2)
 
-	id := obj.Value("data").Array().First().Object().Value("id").Raw()
-	data, ok := id.(float64)
-	if ok {
-		applicationId = data
-	}
+	firstId := obj.Value("data").Array().First().Object().Value("id")
+	firstId.Equal(AppId)
 
 }

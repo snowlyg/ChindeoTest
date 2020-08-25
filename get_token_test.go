@@ -1,8 +1,10 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/common"
 	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
+	"strconv"
 	"testing"
 
 	"github.com/gavv/httpexpect/v2"
@@ -22,8 +24,7 @@ func TestGetTokenSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -55,7 +56,6 @@ func TestGetTokenErrorAuthType(t *testing.T) {
 	})
 	obj := e.POST("/api/v1/get_access_token").
 		WithHeaders(map[string]string{"AuthType": "10"}).
-		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -80,8 +80,7 @@ func TestGetTokenEmptyAppId(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -106,8 +105,7 @@ func TestGetTokenEmptyAppSecret(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -132,8 +130,7 @@ func TestGetTokenErrorAppSecretOrAppId(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

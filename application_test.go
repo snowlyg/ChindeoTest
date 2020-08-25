@@ -1,8 +1,10 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/common"
 	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
+	"strconv"
 	"testing"
 
 	"github.com/gavv/httpexpect/v2"
@@ -18,7 +20,7 @@ func TestApplicationSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/api/v1/application").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

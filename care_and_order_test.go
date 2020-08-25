@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/snowlyg/ChindeoTest/common"
 	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"strconv"
@@ -13,7 +14,6 @@ import (
 )
 
 var careOrderCareId float64
-var careId float64
 var carePrice decimal.Decimal
 var careTimeTypeText string
 
@@ -26,7 +26,7 @@ func TestCareListSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/care/v1/inner/care").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -35,6 +35,24 @@ func TestCareListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+
+	fitst := obj.Value("data").Object().Value("data").Array().First().Object()
+	fitst.Value("id").Equal(Care.ID)
+	fitst.Value("name").Equal(Care.Name)
+	fitst.Value("desc").Equal(Care.Desc)
+	fitst.Value("time_type").Equal(Care.TimeType)
+	fitst.Value("amount").Equal(Care.Amount)
+	fitst.Value("cover").Equal(Care.Cover)
+	fitst.Value("care_type_id").Equal(Care.CareTypeID)
+
+	careType := fitst.Value("type").Object()
+	careType.Value("id").Equal(CareType.ID)
+	careType.Value("name").Equal(CareType.Name)
+
+	carePriceF, _ := strconv.ParseFloat(common.GetS(fitst.Value("max_price").Raw()), 10)
+	carePrice = decimal.NewFromFloat(carePriceF)
+	careTimeTypeText = common.GetS(fitst.Value("time_type").Raw())
 
 }
 
@@ -47,7 +65,7 @@ func TestCareListNoPageSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/care/v1/inner/care").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		WithQuery("page_size", "-1").
 		Expect().
@@ -56,24 +74,20 @@ func TestCareListNoPageSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	id := obj.Value("data").Array().First().Object().Value("id").Raw()
-	data, ok := id.(float64)
-	if ok {
-		careId = data
-	}
+	obj.Value("data").Array().Length().Equal(1)
 
-	maxPrice := obj.Value("data").Array().First().Object().Value("max_price").Raw()
-	total, ok := maxPrice.(string)
-	if ok {
-		carePriceF, _ := strconv.ParseFloat(total, 10)
-		carePrice = decimal.NewFromFloat(carePriceF)
-	}
+	fitst := obj.Value("data").Array().First().Object()
+	fitst.Value("id").Equal(Care.ID)
+	fitst.Value("name").Equal(Care.Name)
+	fitst.Value("desc").Equal(Care.Desc)
+	fitst.Value("time_type").Equal(Care.TimeType)
+	fitst.Value("amount").Equal(Care.Amount)
+	fitst.Value("cover").Equal(Care.Cover)
+	fitst.Value("care_type_id").Equal(Care.CareTypeID)
 
-	timeType := obj.Value("data").Array().First().Object().Value("time_type").Raw()
-	tt, ok := timeType.(string)
-	if ok {
-		careTimeTypeText = tt
-	}
+	careType := fitst.Value("type").Object()
+	careType.Value("id").Equal(CareType.ID)
+	careType.Value("name").Equal(CareType.Name)
 
 }
 
@@ -86,8 +100,8 @@ func TestCareShowSuccess(t *testing.T) {
 		},
 		BaseURL: config.Config.Url,
 	})
-	obj := e.GET("/care/v1/inner/care/{id}", careId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+	obj := e.GET("/care/v1/inner/care/{id}", Care.ID).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -95,8 +109,17 @@ func TestCareShowSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	obj.Value("data").Object().Value("id").Equal(careId)
+	obj.Value("data").Object().Value("id").Equal(Care.ID)
+	obj.Value("data").Object().Value("name").Equal(Care.Name)
+	obj.Value("data").Object().Value("desc").Equal(Care.Desc)
+	obj.Value("data").Object().Value("time_type").Equal(Care.TimeType)
+	obj.Value("data").Object().Value("amount").Equal(CareAmount)
+	obj.Value("data").Object().Value("cover").Equal(Care.Cover)
+	obj.Value("data").Object().Value("care_type_id").Equal(Care.CareTypeID)
 
+	careType := obj.Value("data").Object().Value("type").Object()
+	careType.Value("id").Equal(CareType.ID)
+	careType.Value("name").Equal(CareType.Name)
 }
 
 func TestCareOrderListSuccess(t *testing.T) {
@@ -108,7 +131,7 @@ func TestCareOrderListSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/care/v1/inner/order").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -116,6 +139,8 @@ func TestCareOrderListSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
 }
 
 var careStartAt time.Time
@@ -131,7 +156,7 @@ func TestCareOrderAddCareSuccess(t *testing.T) {
 		"bed_num":      "05",
 		"hospital_no":  "9556854545",
 		"disease":      "玩玩",
-		"care_id":      careId,
+		"care_id":      Care.ID,
 		"start_at":     careStartAt.Format("2006-01-02 15:04:05"),
 		"end_at":       careEndAt.Format("2006-01-02 15:04:05"),
 		"rmk":          "年轻貌美",
@@ -147,7 +172,7 @@ func TestCareOrderAddCareSuccess(t *testing.T) {
 	})
 
 	obj := e.POST("/care/v1/inner/order/add").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(careOrder).
 		Expect().
@@ -163,12 +188,40 @@ func TestCareOrderAddCareSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
 	obj.Value("data").Object().Value("app_type").Equal(2)
 	obj.Value("data").Object().Value("application_id").Equal(13)
+	careOrderCareId, _ = strconv.ParseFloat(common.GetS(obj.Value("data").Object().Value("id").Raw()), 10)
+}
 
-	id := obj.Value("data").Object().Value("id").Raw()
-	data, ok := id.(string)
-	if ok {
-		careOrderCareId, _ = strconv.ParseFloat(data, 10)
-	}
+func TestCareShowAfterOrderAddSuccess(t *testing.T) {
+
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+	obj := e.GET("/care/v1/inner/care/{id}", Care.ID).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Value("id").Equal(Care.ID)
+	obj.Value("data").Object().Value("name").Equal(Care.Name)
+	obj.Value("data").Object().Value("desc").Equal(Care.Desc)
+	obj.Value("data").Object().Value("time_type").Equal(Care.TimeType)
+	obj.Value("data").Object().Value("amount").Equal(CareAmount + 1)
+	CareAmount++
+	obj.Value("data").Object().Value("cover").Equal(Care.Cover)
+	obj.Value("data").Object().Value("care_type_id").Equal(Care.CareTypeID)
+
+	careType := obj.Value("data").Object().Value("type").Object()
+	careType.Value("id").Equal(CareType.ID)
+	careType.Value("name").Equal(CareType.Name)
+
 }
 
 func TestCareOrderAddCareError(t *testing.T) {
@@ -183,7 +236,7 @@ func TestCareOrderAddCareError(t *testing.T) {
 		"start_at":     startAt.Format("2006-01-02 15:04:05"),
 		"end_at":       endAt.Format("2006-01-02 15:04:05"),
 		"rmk":          "年轻貌美",
-		"care_id":      careId,
+		"care_id":      Care.ID,
 		"id_card_no":   "456952158962254456",
 	}
 
@@ -196,7 +249,7 @@ func TestCareOrderAddCareError(t *testing.T) {
 	})
 
 	obj := e.POST("/care/v1/inner/order/add").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(careOrder).
 		Expect().
@@ -217,7 +270,7 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/care/v1/inner/order/{id}", careOrderCareId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -231,6 +284,7 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("待付款")
 	obj.Value("data").Object().Value("start_at").Equal(careStartAt.Format("2006-01-02 15:04:05"))
 	obj.Value("data").Object().Value("end_at").Equal(careEndAt.Format("2006-01-02 15:04:05"))
+
 	var total decimal.Decimal
 	sub := int(careEndAt.Sub(careStartAt).Hours())
 	if careTimeTypeText == "天" {
@@ -238,8 +292,10 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 	} else if careTimeTypeText == "时" {
 		total = carePrice.Mul(decimal.NewFromFloat(float64(sub)))
 	}
+
 	f, _ := total.Float64()
-	obj.Value("data").Object().Value("total").Equal(fmt.Sprintf("%.2f", f))
+
+	obj.Value("data").Object().Value("total").Equal(common.Ftos(f))
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
 	obj.Value("data").Object().Value("pay_type").Equal(1)
 	obj.Value("data").Object().Value("is_return").Equal(0)
@@ -266,7 +322,7 @@ func TestCareOrderPayCareSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/care/v1/inner/order/pay/{id}", careOrderCareId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -277,7 +333,7 @@ func TestCareOrderPayCareSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("qrcode").NotNull()
 }
 
-func TestCareOrderCancelCareSuccess(t *testing.T) {
+func TestCareOrderCancelNoPayCareSuccess(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
 		Client: &http.Client{
@@ -287,7 +343,180 @@ func TestCareOrderCancelCareSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/care/v1/inner/order/cancel/{id}", careOrderCareId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Contains("请求成功")
+}
+
+func TestCareOrderCancelPayCareSuccess(t *testing.T) {
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+
+	obj := e.GET("/care/v1/inner/order/cancel/{id}", CareOrder.ID).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Contains("请求成功")
+}
+
+func TestCareOrderShowReturnSuccess(t *testing.T) {
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+	obj := e.GET("/care/v1/inner/order/{id}", CareOrder.ID).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Value("id").Equal(CareOrder.ID)
+	obj.Value("data").Object().Value("order_no").String().Contains("O")
+	obj.Value("data").Object().Value("status").Object().Value("value").Equal(4)
+	obj.Value("data").Object().Value("status").Object().Value("text").Equal("已取消")
+	obj.Value("data").Object().Value("total").Equal(common.Ftos(CareOrder.Total))
+	obj.Value("data").Object().Value("start_at").String().Contains(CareOrder.StartAt.Format("2006-01-02 15:04"))
+	obj.Value("data").Object().Value("end_at").String().Contains(CareOrder.EndAt.Format("2006-01-02 15:04"))
+
+	var total decimal.Decimal
+	sub := int(CareOrder.EndAt.Sub(CareOrder.StartAt).Hours())
+	maxCarePrice := decimal.NewFromFloat(Care.MaxPrice)
+	if Care.TimeType == "天" {
+		total = maxCarePrice.Mul(decimal.NewFromFloat(float64(sub / 24)))
+	} else if Care.TimeType == "时" {
+		total = maxCarePrice.Mul(decimal.NewFromFloat(float64(sub)))
+	}
+	f, _ := total.Float64()
+
+	obj.Value("data").Object().Value("total").Equal(fmt.Sprintf("%.2f", f))
+	obj.Value("data").Object().Value("rmk").Equal(CareOrder.Rmk)
+	obj.Value("data").Object().Value("pay_type").Equal(CareOrder.PayType)
+	obj.Value("data").Object().Value("is_return").Equal(1)
+	obj.Value("data").Object().Value("order_carer_info").Null()
+
+	orderInfo := obj.Value("data").Object().Value("order_info").Object()
+	orderInfo.Value("id").NotNull()
+	orderInfo.Value("name").Equal(CareOrderInfo.Name)
+	orderInfo.Value("desc").Equal(CareOrderInfo.Desc)
+	orderInfo.Value("application_name").Equal(CareOrderInfo.ApplicationName)
+	orderInfo.Value("time_type").Equal(CareOrderInfo.TimeType)
+	orderInfo.Value("care_detail").Equal(CareOrderInfo.CareDetail)
+	orderInfo.Value("care_tags").Equal(CareOrderInfo.CareTags)
+	orderInfo.Value("min_price").Equal(common.Ftos(CareOrderInfo.MinPrice))
+	orderInfo.Value("max_price").Equal(common.Ftos(CareOrderInfo.MaxPrice))
+	orderInfo.Value("cover").Equal(CareOrderInfo.Cover)
+	orderInfo.Value("care_type").Equal(CareOrderInfo.CareType)
+	orderInfo.Value("care_order_id").Equal(CareOrder.ID)
+
+	addr := obj.Value("data").Object().Value("addr").Object()
+	addr.Value("id").NotNull()
+	addr.Value("name").Equal(CareOrderAddr.Name)
+	addr.Value("loc_name").Equal(CareOrderAddr.LocName)
+	addr.Value("bed_num").Equal(CareOrderAddr.BedNum)
+	addr.Value("hospital_no").Equal(CareOrderAddr.HospitalNo)
+	addr.Value("disease").Equal(CareOrderAddr.Disease)
+	addr.Value("care_order_id").Equal(CareOrderAddr.CareOrderID)
+	addr.Value("sex").Equal(CareOrderAddr.Sex)
+	addr.Value("hospital_name").Equal(CareOrderAddr.HospitalName)
+	addr.Value("phone").Equal(CareOrderAddr.Phone)
+	addr.Value("age").Equal(CareOrderAddr.Age)
+	addr.Value("addr").Equal(CareOrderAddr.Addr)
+
+	orderReturn := obj.Value("data").Object().Value("return_order").Object()
+	orderReturn.Value("id").NotNull()
+	orderReturn.Value("order_no").String().Contains("RC")
+	orderReturn.Value("status").Object().Value("value").Equal(common.I_RETURN_ORDER_STATUS_FOR_AUDIT)
+	orderReturn.Value("status").Object().Value("text").Equal("待审核")
+	orderReturn.Value("total").Equal(common.Ftos(CareOrder.Total))
+	orderReturn.Value("open_id").Equal("")
+	orderReturn.Value("app_type").Equal(CareOrder.AppType)
+	orderReturn.Value("trade_type").Equal("")
+	orderReturn.Value("care_order_id").Equal(CareOrder.ID)
+	orderReturn.Value("application_id").Equal(CareOrder.ApplicationID)
+	orderReturn.Value("pay_type").Equal(CareOrder.PayType)
+	orderReturn.Value("user_id").Equal(CareOrder.UserID)
+	orderReturn.Value("carer_id").Equal(CareOrder.CarerID)
+
+	returnAddr := orderReturn.Value("addr").Object()
+	returnAddr.Value("id").NotNull()
+	returnAddr.Value("name").Equal(CareOrderAddr.Name)
+	returnAddr.Value("sex").Equal(CareOrderAddr.Sex)
+	returnAddr.Value("care_return_order_id").NotNull()
+	returnAddr.Value("loc_name").Equal(CareOrderAddr.LocName)
+	returnAddr.Value("hospital_no").Equal(CareOrderAddr.HospitalNo)
+	returnAddr.Value("hospital_name").Equal(CareOrderAddr.HospitalName)
+	returnAddr.Value("age").Equal(CareOrderAddr.Age)
+	returnAddr.Value("disease").Equal(CareOrderAddr.Disease)
+	returnAddr.Value("phone").Equal(CareOrderAddr.Phone)
+	returnAddr.Value("addr").Equal(CareOrderAddr.Addr)
+
+	returnOrderInfo := orderReturn.Value("order_info").Object()
+	returnOrderInfo.Value("id").NotNull()
+	returnOrderInfo.Value("name").Equal(CareOrderInfo.Name)
+	returnOrderInfo.Value("desc").Equal(CareOrderInfo.Desc)
+	returnOrderInfo.Value("application_name").Equal(CareOrderInfo.ApplicationName)
+	returnOrderInfo.Value("time_type").Equal(CareOrderInfo.TimeType)
+	returnOrderInfo.Value("care_detail").Equal(CareOrderInfo.CareDetail)
+	returnOrderInfo.Value("care_tags").Equal(CareOrderInfo.CareTags)
+	returnOrderInfo.Value("min_price").Equal(common.Ftos(CareOrderInfo.MinPrice))
+	returnOrderInfo.Value("max_price").Equal(common.Ftos(CareOrderInfo.MaxPrice))
+	returnOrderInfo.Value("cover").Equal(CareOrderInfo.Cover)
+	returnOrderInfo.Value("care_type").Equal(CareOrderInfo.CareType)
+	returnOrderInfo.Value("care_return_order_id").NotNull()
+
+}
+
+func TestCareOrderDeleteCareSuccess(t *testing.T) {
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+
+	obj := e.DELETE("/care/v1/inner/order/{id}", careOrderCareId).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Contains("请求成功")
+}
+
+func TestCareOrderDeleteCareRetrunSuccess(t *testing.T) {
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+
+	obj := e.DELETE("/care/v1/inner/order/{id}", CareOrder.ID).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/shopspring/decimal"
+	"github.com/snowlyg/ChindeoTest/common"
 	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"strconv"
@@ -26,7 +27,7 @@ func TestCarrListSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/care/v1/inner/carer").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -47,7 +48,7 @@ func TestCarrListNoPageSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/care/v1/inner/carer").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		WithQuery("page_size", "-1").
 		Expect().
@@ -85,7 +86,7 @@ func TestCarrShowSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/care/v1/inner/carer/{id}", carerId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -125,7 +126,7 @@ func TestCarrOrderAddCarerSuccess(t *testing.T) {
 	})
 
 	obj := e.POST("/care/v1/inner/order/add").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(careOrder).
 		Expect().
@@ -174,7 +175,7 @@ func TestCarrOrderAddCarerError(t *testing.T) {
 	})
 
 	obj := e.POST("/care/v1/inner/order/add").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(careOrder).
 		Expect().
@@ -210,7 +211,7 @@ func TestCarrOrderAddCarerErrorTime(t *testing.T) {
 	})
 
 	obj := e.POST("/care/v1/inner/order/add").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		WithJSON(careOrder).
 		Expect().
@@ -231,7 +232,7 @@ func TestCarrOrderShowCarerSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/care/v1/inner/order/{id}", careOrderCarerId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -281,7 +282,7 @@ func TestCarrOrderPayCareSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/care/v1/inner/order/pay/{id}", careOrderCarerId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -302,7 +303,7 @@ func TestCarrOrderCancelCarerSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/care/v1/inner/order/cancel/{id}", careOrderCarerId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

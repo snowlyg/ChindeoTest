@@ -10,7 +10,10 @@ import (
 	"github.com/gavv/httpexpect/v2"
 )
 
-func TestRefreshTokenSuccess(t *testing.T) {
+func TestMiniWechatRefreshTokenSuccess(t *testing.T) {
+	auth := map[string]interface{}{
+		"uuid": "5205857593c2eacc6f6c1da376b32ca3",
+	}
 
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
@@ -20,8 +23,9 @@ func TestRefreshTokenSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/refresh_access_token").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -33,11 +37,11 @@ func TestRefreshTokenSuccess(t *testing.T) {
 	token := obj.Value("data").Object().Value("AccessToken").Raw()
 	data, ok := token.(string)
 	if ok {
-		Token = data
+		MiniWechatToken = data
 	}
 }
 
-func TestRefreshTokenError(t *testing.T) {
+func TestMiniWechatRefreshTokenError(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
 		Client: &http.Client{
@@ -46,8 +50,8 @@ func TestRefreshTokenError(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/refresh_access_token").
-		WithHeaders(map[string]string{"X-Token": "", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"X-Token": "", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

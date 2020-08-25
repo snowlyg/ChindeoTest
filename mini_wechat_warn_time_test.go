@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/common"
 	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
 	"strconv"
@@ -26,8 +27,8 @@ func TestMiniWechatWarmTimeAddSuccess(t *testing.T) {
 	})
 
 	obj := e.POST("/api/v1/outline/warn_time/add").
-		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
 		WithJSON(warmTime).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -62,8 +63,8 @@ func TestMiniWechatWarmTimeUpdateSuccess(t *testing.T) {
 	})
 
 	obj := e.POST("/api/v1/outline/warn_time/{id}", warmTimeId).
-		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
 		WithJSON(warmTime).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -91,8 +92,8 @@ func TestMiniWechatWarmTimeStatusSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/api/v1/outline/warn_time/status/{id}", warmTimeId).
-		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
 		WithJSON(warmTime).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -116,8 +117,8 @@ func TestMiniWechatWarmTimeSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/api/v1/outline/warn_time").
-		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -142,8 +143,8 @@ func TestMiniWechatWarmTimeDeleteSuccess(t *testing.T) {
 	})
 
 	obj := e.DELETE("/api/v1/outline/warn_time/{id}", warmTimeId).
-		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
 		WithJSON(warmTime).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

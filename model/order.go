@@ -326,21 +326,21 @@ type CareOrderCarerInfos struct {
 
 // CareOrderInfos 护理项目表
 type CareOrderInfos struct {
-	ID              int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name            string    `gorm:"column:name;type:varchar(50);not null"`             // 名称
-	Desc            string    `gorm:"column:desc;type:varchar(100);not null"`            // 简介
-	TimeType        string    `gorm:"column:time_type;type:varchar(5);not null"`         // 时间类型：时，天，月
-	CareType        string    `gorm:"column:care_type;type:varchar(30);not null"`        // 类型
-	CareTags        string    `gorm:"column:care_tags;type:varchar(80);not null"`        // 标签：用 | 分隔
-	MinPrice        float64   `gorm:"column:min_price;type:decimal(10,2);not null"`      // 最小价格
-	MaxPrice        float64   `gorm:"column:max_price;type:decimal(10,2);not null"`      // 最大价格
-	Cover           string    `gorm:"column:cover;type:varchar(1200);not null"`          // 封面
-	CareDetail      string    `gorm:"column:care_detail;type:varchar(2000);not null"`    // 服务内容:采用富文本
-	ApplicationName string    `gorm:"column:application_name;type:varchar(50);not null"` // 医院名称
-	CreateAt        time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt        time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted       time.Time `gorm:"column:is_deleted;type:datetime"`
-	CareOrderID     int       `gorm:"index:care_order_id;column:care_order_id;type:int;not null"` // care_order_id
+	ID              int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name            string       `gorm:"column:name;type:varchar(50);not null"`             // 名称
+	Desc            string       `gorm:"column:desc;type:varchar(100);not null"`            // 简介
+	TimeType        string       `gorm:"column:time_type;type:varchar(5);not null"`         // 时间类型：时，天，月
+	CareType        string       `gorm:"column:care_type;type:varchar(30);not null"`        // 类型
+	CareTags        string       `gorm:"column:care_tags;type:varchar(80);not null"`        // 标签：用 | 分隔
+	MinPrice        float64      `gorm:"column:min_price;type:decimal(10,2);not null"`      // 最小价格
+	MaxPrice        float64      `gorm:"column:max_price;type:decimal(10,2);not null"`      // 最大价格
+	Cover           string       `gorm:"column:cover;type:varchar(1200);not null"`          // 封面
+	CareDetail      string       `gorm:"column:care_detail;type:varchar(2000);not null"`    // 服务内容:采用富文本
+	ApplicationName string       `gorm:"column:application_name;type:varchar(50);not null"` // 医院名称
+	CreateAt        time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt        time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted       sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	CareOrderID     int          `gorm:"index:care_order_id;column:care_order_id;type:int;not null"` // care_order_id
 }
 
 // CareOrders 护理订单表

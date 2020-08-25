@@ -1,14 +1,16 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/common"
 	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
+	"strconv"
 	"testing"
 
 	"github.com/gavv/httpexpect/v2"
 )
 
-func TestProfileSuccess(t *testing.T) {
+func TestMiniWechatProfileSuccess(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
 		Client: &http.Client{
@@ -17,8 +19,8 @@ func TestProfileSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/profile").
-		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -28,7 +30,7 @@ func TestProfileSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("id").Equal(15)
 }
 
-func TestProfileUpdateSuccess(t *testing.T) {
+func TestMiniWechatProfileUpdateSuccess(t *testing.T) {
 	info := map[string]interface{}{
 		"realname":   "小样",
 		"id_card_no": "430923198901156623",
@@ -42,8 +44,8 @@ func TestProfileUpdateSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.POST("/api/v1/profile/update").
-		WithHeaders(map[string]string{"X-Token": Token, "IsDev": "1", "AuthType": "4"}).
-		WithCookie("PHPSESSID", PHPSESSID).
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
 		WithJSON(info).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -56,7 +58,7 @@ func TestProfileUpdateSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("realname").Equal("小样")
 }
 
-func TestProfileNoDevHeader(t *testing.T) {
+func TestMiniWechatProfileNoDevHeader(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
 		Client: &http.Client{
@@ -65,7 +67,7 @@ func TestProfileNoDevHeader(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 	obj := e.GET("/api/v1/profile").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

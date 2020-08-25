@@ -1,14 +1,13 @@
 package main
 
 import (
+	"github.com/gavv/httpexpect/v2"
+	"github.com/snowlyg/ChindeoTest/common"
 	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
+	"strconv"
 	"testing"
-
-	"github.com/gavv/httpexpect/v2"
 )
-
-var menuId float64
 
 func TestMenuSuccess(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
@@ -20,7 +19,7 @@ func TestMenuSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/api/v1/menu").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		WithQuery("menu_type_id", MenuType.ID).
 		WithQuery("time_type", Menu.TimeType).
@@ -46,7 +45,7 @@ func TestMenuNoPageSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/api/v1/menu?page_size=-1").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -54,11 +53,8 @@ func TestMenuNoPageSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	id := obj.Value("data").Array().First().Object().Value("id").Raw()
-	data, ok := id.(float64)
-	if ok {
-		menuId = data
-	}
+	obj.Value("data").Array().First().Object().Value("id").Equal(Menu.ID)
+
 }
 
 func TestMenuShowSuccess(t *testing.T) {
@@ -70,8 +66,8 @@ func TestMenuShowSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 
-	obj := e.GET("/api/v1/menu/{id}", menuId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+	obj := e.GET("/api/v1/menu/{id}", Menu.ID).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -79,6 +75,24 @@ func TestMenuShowSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	obj.Value("data").Object().Value("id").Equal(menuId)
-	obj.Value("data").Object().Keys().ContainsOnly("id", "name", "menu_type_id", "time_type", "desc", "amount", "price", "cover", "pics", "create_at", "update_at", "type", "tags")
+	obj.Value("data").Object().Value("id").Equal(Menu.ID)
+	obj.Value("data").Object().Value("name").Equal(Menu.Name)
+	obj.Value("data").Object().Value("time_type").Equal(Menu.TimeType.String())
+	obj.Value("data").Object().Value("menu_type_id").Equal(Menu.MenuTypeID)
+	obj.Value("data").Object().Value("desc").Equal(Menu.Desc)
+	obj.Value("data").Object().Value("amount").Equal(Menu.Amount)
+	obj.Value("data").Object().Value("price").Equal("10.00")
+	obj.Value("data").Object().Value("cover").Equal(Menu.Cover)
+	obj.Value("data").Object().Value("pics").Array().Length().Equal(0)
+	obj.Value("data").Object().Value("create_at").String().Contains(Menu.CreateAt.Format("2006-01-02 15:04"))
+	obj.Value("data").Object().Value("create_at").String().Contains(Menu.UpdateAt.Format("2006-01-02 15:04"))
+
+	menuType := obj.Value("data").Object().Value("type").Object()
+	menuType.Value("id").Equal(MenuType.ID)
+	menuType.Value("name").Equal(MenuType.Name)
+
+	obj.Value("data").Object().Value("tags").Array().Length().Equal(1)
+	menuTag := obj.Value("data").Object().Value("tags").Array().First().Object()
+	menuTag.Value("id").Equal(MenuTag.ID)
+	menuTag.Value("name").Equal(MenuTag.Name)
 }

@@ -1,5 +1,15 @@
 package common
 
+import (
+	"fmt"
+	"github.com/shopspring/decimal"
+)
+
+const AUTH_TYPE_MINIWECHAT = 1 // 小程序
+const AUTH_TYPE_APP = 2        //APP
+const AUTH_TYPE_WECHAT = 3     //公众号
+const AUTH_TYPE_SERVER = 4     //服务
+
 const I_ORDER_STATUS_FOR_PAY = 1         // 待付款
 const I_ORDER_STATUS_FOR_DELIVERY = 2    // 已付款
 const I_ORDER_STATUS_FOR_DELIVERYING = 3 // 配送中/进行中
@@ -22,7 +32,8 @@ const I_RETURN_ORDER_STATUS_FOR_FAULT = 5  // 退款失败
 type MenuTimeType int
 
 const (
-	MENU_TIME_TYPE_B MenuTimeType = iota // 早餐
+	MENU_TIME_TYPE_O MenuTimeType = iota // 早餐
+	MENU_TIME_TYPE_B                     // 早餐
 	MENU_TIME_TYPE_M                     // 中餐
 	MENU_TIME_TYPE_N                     // 晚餐
 )
@@ -38,4 +49,17 @@ func (m MenuTimeType) String() string {
 	}
 
 	return ""
+}
+
+func GetS(i interface{}) string {
+	tt, ok := i.(string)
+	if ok {
+		return tt
+	}
+	return ""
+}
+
+func Ftos(f float64) string {
+	df, _ := decimal.NewFromFloat(f).Float64()
+	return fmt.Sprintf("%.2f", df)
 }

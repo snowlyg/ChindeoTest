@@ -1,8 +1,10 @@
 package main
 
 import (
+	"github.com/snowlyg/ChindeoTest/common"
 	"github.com/snowlyg/ChindeoTest/config"
 	"net/http"
+	"strconv"
 	"testing"
 
 	"github.com/gavv/httpexpect/v2"
@@ -18,7 +20,7 @@ func TestMenuTypeSuccess(t *testing.T) {
 	})
 
 	obj := e.GET("/api/v1/menu_type").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": "4"}).
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -28,4 +30,5 @@ func TestMenuTypeSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Array().Length().Equal(1)
 	obj.Value("data").Array().First().Object().Value("id").Equal(MenuType.ID)
+	obj.Value("data").Array().First().Object().Value("name").Equal(MenuType.Name)
 }
