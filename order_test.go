@@ -95,7 +95,7 @@ func TestOrderAddSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("amount").Equal(12)
 	obj.Value("data").Object().Value("total").Equal(32)
 	obj.Value("data").Object().Value("rmk").String().Equal("455445455544")
-	obj.Value("data").Object().Value("app_type").Number().Equal(2)
+	obj.Value("data").Object().Value("app_type").Number().Equal(common.ORDER_APP_TYPE_BED)
 	obj.Value("data").Object().Value("pay_type").Number().Equal(0)
 	obj.Value("data").Object().Value("application_id").Number().Equal(13)
 

@@ -42,6 +42,7 @@ var Order *model.APIOOrders
 var OrderAddr *model.APIOOrderAddrs
 var OrderMenus []*model.APIOOrderMenus
 
+var CareOrderCount int
 var CareAmount int
 var CareType *model.CareTypes
 var CareTag *model.CareTags
@@ -49,6 +50,9 @@ var Care *model.Cares
 var CareOrder *model.CareOrders
 var CareOrderAddr *model.CareOrderAddrs
 var CareOrderInfo *model.CareOrderInfos
+var MiniCareOrder *model.CareOrders
+var MiniCareOrderAddr *model.CareOrderAddrs
+var MiniCareOrderInfo *model.CareOrderInfos
 
 var CarerAmount int
 var CarerTag *model.CarerTags
@@ -56,6 +60,9 @@ var Carer *model.Carers
 var CarerOrder *model.CareOrders
 var CarerOrderAddr *model.CareOrderAddrs
 var CarerOrderCarerInfo *model.CareOrderCarerInfos
+var MiniCarerOrder *model.CareOrders
+var MiniCarerOrderAddr *model.CareOrderAddrs
+var MiniCarerOrderCarerInfo *model.CareOrderCarerInfos
 
 type getToken struct {
 	Code    int    `json:"code"`
@@ -84,10 +91,12 @@ func TestMain(m *testing.M) {
 	CreateCareTag(db)
 	CreateCareType(db)
 	CreateCare(db)
+	CreateMiniCareOrder(db)
 	CreateCareOrder(db)
 
 	CreateCarerTag(db)
 	CreateCarer(db)
+	CreateMiniCarerOrder(db)
 	CreateCarerOrder(db)
 
 	data := fmt.Sprintf("app_id=%s&app_secret=%s", "b44fc017043763eb5ac15f0069d77c", "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b")
@@ -190,10 +199,32 @@ func CreateCare(db *gorm.DB) {
 		UpdateAt:      time.Now(),
 		IsDeleted:     sql.NullTime{},
 	}
+
 	if err := db.Create(&care).Error; err != nil {
 		fmt.Println(fmt.Sprintf("care create error :%v", err))
 	}
 	Care = &care
+
+	care_no_tag := model.Cares{
+		Name:          "护理项目名称",
+		Desc:          "护理项目名称",
+		TimeType:      "时",
+		Status:        true,
+		Amount:        CareAmount,
+		MinPrice:      CareMiniPrice,
+		MaxPrice:      CareMaxPrice,
+		Cover:         "sdfsdfds",
+		CareDetail:    "dsfsdfdsf",
+		CareTypeID:    CareType.ID,
+		ApplicationID: AppId,
+		CreateAt:      time.Now(),
+		UpdateAt:      time.Now(),
+		IsDeleted:     sql.NullTime{},
+	}
+
+	if err := db.Create(&care_no_tag).Error; err != nil {
+		fmt.Println(fmt.Sprintf("care_no_tag create error :%v", err))
+	}
 
 	tagCare := model.CareCareTag{CareID: Care.ID, CareTagID: CareTag.ID, UpdateAt: time.Now(), CreateAt: time.Now()}
 	if err := db.Table("care_care_tag").Create(&tagCare).Error; err != nil {
@@ -202,6 +233,7 @@ func CreateCare(db *gorm.DB) {
 }
 
 func CreateCareOrder(db *gorm.DB) {
+	CareOrderCount++
 	tt := time.Now()
 	var dd decimal.Decimal
 	sub := int(tt.AddDate(0, 0, 1).Sub(tt).Hours())
@@ -281,6 +313,87 @@ func CreateCareOrder(db *gorm.DB) {
 	CareOrder = &order
 }
 
+func CreateMiniCareOrder(db *gorm.DB) {
+	CareOrderCount++
+	tt := time.Now()
+	var dd decimal.Decimal
+	sub := int(tt.AddDate(0, 0, 1).Sub(tt).Hours())
+	maxCarePrice := decimal.NewFromFloat(CareMaxPrice)
+	if Care.TimeType == "天" {
+		dd = maxCarePrice.Mul(decimal.NewFromFloat(float64(sub / 24)))
+	} else if Care.TimeType == "时" {
+		dd = maxCarePrice.Mul(decimal.NewFromFloat(float64(sub)))
+	}
+	total, _ := dd.Float64()
+
+	order := model.CareOrders{
+		OrderNo:       "C202008241612348468756914",
+		Status:        common.I_ORDER_STATUS_FOR_DELIVERY,
+		Total:         total,
+		ApplicationID: AppId,
+		PayType:       common.I_ORDER_PAY_TYPE_WECHAT,
+		Rmk:           "备注",
+		AppType:       common.ORDER_APP_TYPE_MINI,
+		StartAt:       tt,
+		EndAt:         tt.AddDate(0, 0, 1),
+		OpenID:        "",
+		TradeType:     "",
+		IsReturn:      false,
+		CreateAt:      tt,
+		UpdateAt:      tt,
+		IsDeleted:     sql.NullTime{},
+		UserID:        User.ID,
+		CarerID:       0,
+	}
+	if err := db.Create(&order).Error; err != nil {
+		fmt.Println(fmt.Sprintf("order create error :%v", err))
+	}
+
+	orderAddr := model.CareOrderAddrs{
+		Name:         "name",
+		Phone:        "13412569874",
+		Addr:         "",
+		Sex:          1,
+		CareOrderID:  order.ID,
+		HospitalName: "HospitalName",
+		LocName:      "LocName",
+		BedNum:       "BedNum",
+		HospitalNo:   "9556854545",
+		Disease:      "Disease",
+		Age:          10,
+		CreateAt:     time.Now(),
+		UpdateAt:     time.Now(),
+		IsDeleted:    sql.NullTime{},
+	}
+	if err := db.Create(&orderAddr).Error; err != nil {
+		fmt.Println(fmt.Sprintf("orderAddr create error :%v", err))
+	}
+
+	orderInfo := model.CareOrderInfos{
+		Name:            Care.Name,
+		Desc:            Care.Desc,
+		TimeType:        Care.TimeType,
+		CareType:        CareType.Name,
+		CareTags:        CareTag.Name,
+		MinPrice:        Care.MinPrice,
+		MaxPrice:        Care.MaxPrice,
+		CareDetail:      Care.CareDetail,
+		ApplicationName: "name",
+		Cover:           Care.Cover,
+		CareOrderID:     order.ID,
+		CreateAt:        time.Now(),
+		UpdateAt:        time.Now(),
+		IsDeleted:       sql.NullTime{},
+	}
+	if err := db.Create(&orderInfo).Error; err != nil {
+		fmt.Println(fmt.Sprintf("orderInfo create error :%v", err))
+	}
+
+	MiniCareOrderInfo = &orderInfo
+	MiniCareOrderAddr = &orderAddr
+	MiniCareOrder = &order
+}
+
 func CreateCarerTag(db *gorm.DB) {
 	carerTag := model.CarerTags{Name: "护工标签", CreateAt: time.Now(), UpdateAt: time.Now(), IsDeleted: sql.NullTime{}, Icon: "icon"}
 	if err := db.Create(&carerTag).Error; err != nil {
@@ -309,13 +422,32 @@ func CreateCarer(db *gorm.DB) {
 	}
 	Carer = &carer
 
-	tagCarer := model.CarerCarerTag{CarerID: Care.ID, CarerTagID: CarerTag.ID, UpdateAt: time.Now(), CreateAt: time.Now()}
+	carer_no_tag := model.Carers{
+		Name:          "护理项目名称",
+		Desc:          "护理项目名称",
+		TimeType:      "时",
+		Status:        true,
+		Amount:        CareAmount,
+		Price:         CarerPrice,
+		Avatar:        "dsfsdfs",
+		CarerDetail:   "dfsdfsf",
+		ApplicationID: AppId,
+		CreateAt:      time.Now(),
+		UpdateAt:      time.Now(),
+		IsDeleted:     sql.NullTime{},
+	}
+	if err := db.Create(&carer_no_tag).Error; err != nil {
+		fmt.Println(fmt.Sprintf("carer_no_tag create error :%v", err))
+	}
+
+	tagCarer := model.CarerCarerTag{CarerID: Carer.ID, CarerTagID: CarerTag.ID, UpdateAt: time.Now(), CreateAt: time.Now()}
 	if err := db.Table("carer_carer_tag").Create(&tagCarer).Error; err != nil {
 		fmt.Println(fmt.Sprintf("tagCarer create error :%v", err))
 	}
 }
 
 func CreateCarerOrder(db *gorm.DB) {
+	CareOrderCount++
 	tt := time.Now()
 	var dd decimal.Decimal
 	sub := int(tt.AddDate(0, 0, 1).Sub(tt).Hours())
@@ -395,6 +527,89 @@ func CreateCarerOrder(db *gorm.DB) {
 	CarerOrderCarerInfo = &orderCarerInfo
 	CarerOrderAddr = &orderAddr
 	CarerOrder = &order
+}
+
+func CreateMiniCarerOrder(db *gorm.DB) {
+	CareOrderCount++
+	tt := time.Now()
+	var dd decimal.Decimal
+	sub := int(tt.AddDate(0, 0, 1).Sub(tt).Hours())
+	carerPrice := decimal.NewFromFloat(CarerPrice)
+	if Care.TimeType == "天" {
+		dd = carerPrice.Mul(decimal.NewFromFloat(float64(sub / 24)))
+	} else if Care.TimeType == "时" {
+		dd = carerPrice.Mul(decimal.NewFromFloat(float64(sub)))
+	}
+	total, _ := dd.Float64()
+
+	order := model.CareOrders{
+		OrderNo:       "C202008241612348468756914",
+		Status:        common.I_ORDER_STATUS_FOR_DELIVERY,
+		Total:         total,
+		ApplicationID: AppId,
+		PayType:       common.I_ORDER_PAY_TYPE_WECHAT,
+		Rmk:           "备注",
+		AppType:       common.ORDER_APP_TYPE_MINI,
+		StartAt:       tt,
+		EndAt:         tt.AddDate(0, 0, 1),
+		OpenID:        "",
+		TradeType:     "",
+		IsReturn:      false,
+		CreateAt:      tt,
+		UpdateAt:      tt,
+		IsDeleted:     sql.NullTime{},
+		UserID:        User.ID,
+		CarerID:       0,
+	}
+	if err := db.Create(&order).Error; err != nil {
+		fmt.Println(fmt.Sprintf("order create error :%v", err))
+	}
+
+	orderAddr := model.CareOrderAddrs{
+		Name:         "name",
+		Phone:        "13412569874",
+		Addr:         "",
+		Sex:          1,
+		CareOrderID:  order.ID,
+		HospitalName: "HospitalName",
+		LocName:      "LocName",
+		BedNum:       "BedNum",
+		HospitalNo:   "9556854545",
+		Disease:      "Disease",
+		Age:          10,
+		CreateAt:     time.Now(),
+		UpdateAt:     time.Now(),
+		IsDeleted:    sql.NullTime{},
+	}
+	if err := db.Create(&orderAddr).Error; err != nil {
+		fmt.Println(fmt.Sprintf("orderAddr create error :%v", err))
+	}
+
+	orderCarerInfo := model.CareOrderCarerInfos{
+		Name:            Carer.Name,
+		Desc:            Carer.Desc,
+		TimeType:        Carer.TimeType,
+		CarerTags:       CarerTag.Name,
+		Price:           Carer.Price,
+		Age:             Carer.Age,
+		WorkExp:         Carer.WorkExp,
+		Sex:             Carer.Sex,
+		Phone:           Carer.Phone,
+		CarerDetail:     Carer.CarerDetail,
+		ApplicationName: "name",
+		Avatar:          Carer.Avatar,
+		CareOrderID:     order.ID,
+		CreateAt:        time.Now(),
+		UpdateAt:        time.Now(),
+		IsDeleted:       sql.NullTime{},
+	}
+	if err := db.Create(&orderCarerInfo).Error; err != nil {
+		fmt.Println(fmt.Sprintf("orderInfo create error :%v", err))
+	}
+
+	MiniCarerOrderCarerInfo = &orderCarerInfo
+	MiniCarerOrderAddr = &orderAddr
+	MiniCarerOrder = &order
 }
 
 func CreateMenuType(db *gorm.DB) {

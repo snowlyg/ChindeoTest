@@ -17,6 +17,40 @@ var careOrderCareId float64
 var carePrice decimal.Decimal
 var careTimeTypeText string
 
+func TestCareNoTagIdListSuccess(t *testing.T) {
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+	obj := e.GET("/care/v1/inner/care").
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(2)
+
+	fitst := obj.Value("data").Object().Value("data").Array().Last().Object()
+	fitst.Value("id").Equal(Care.ID)
+	fitst.Value("name").Equal(Care.Name)
+	fitst.Value("desc").Equal(Care.Desc)
+	fitst.Value("time_type").Equal(Care.TimeType)
+	fitst.Value("amount").Equal(Care.Amount)
+	fitst.Value("cover").Equal(Care.Cover)
+	fitst.Value("care_type_id").Equal(Care.CareTypeID)
+
+	careType := fitst.Value("type").Object()
+	careType.Value("id").Equal(CareType.ID)
+	careType.Value("name").Equal(CareType.Name)
+}
+
 func TestCareListSuccess(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
@@ -28,6 +62,8 @@ func TestCareListSuccess(t *testing.T) {
 	obj := e.GET("/care/v1/inner/care").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
+		WithQuery("care_type_id", CareType.ID).
+		WithQuery("care_tag_id", CareTag.ID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -49,7 +85,6 @@ func TestCareListSuccess(t *testing.T) {
 	careType := fitst.Value("type").Object()
 	careType.Value("id").Equal(CareType.ID)
 	careType.Value("name").Equal(CareType.Name)
-
 }
 
 func TestCareListNoPageSuccess(t *testing.T) {
@@ -63,6 +98,8 @@ func TestCareListNoPageSuccess(t *testing.T) {
 	obj := e.GET("/care/v1/inner/care").
 		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
 		WithCookie("PHPSESSID", PHPSESSID).
+		WithQuery("care_type_id", CareType.ID).
+		WithQuery("care_tag_id", CareTag.ID).
 		WithQuery("page_size", "-1").
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -72,7 +109,7 @@ func TestCareListNoPageSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Array().Length().Equal(1)
 
-	fitst := obj.Value("data").Array().First().Object()
+	fitst := obj.Value("data").Array().Last().Object()
 	fitst.Value("id").Equal(Care.ID)
 	fitst.Value("name").Equal(Care.Name)
 	fitst.Value("desc").Equal(Care.Desc)
@@ -136,7 +173,7 @@ func TestCareOrderListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(2)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(CareOrderCount)
 }
 
 var careStartAt time.Time
@@ -182,7 +219,7 @@ func TestCareOrderAddCareSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("start_at").Equal(careStartAt.Format("2006-01-02 15:04:05"))
 	obj.Value("data").Object().Value("end_at").Equal(careEndAt.Format("2006-01-02 15:04:05"))
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
-	obj.Value("data").Object().Value("app_type").Equal(2)
+	obj.Value("data").Object().Value("app_type").Equal(common.ORDER_APP_TYPE_BED)
 	obj.Value("data").Object().Value("application_id").Equal(13)
 	careOrderCareId, _ = strconv.ParseFloat(common.GetS(obj.Value("data").Object().Value("id").Raw()), 10)
 }
@@ -541,4 +578,5 @@ func TestCareOrderDeleteCareRetrunSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Contains("请求成功")
+	CareOrderCount--
 }

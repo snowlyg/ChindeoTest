@@ -38,6 +38,7 @@ func TestMiniWechatOrderListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+
 	order := obj.Value("data").Object().Value("data").Array().First().Object()
 	order.Value("id").Equal(Order.ID)
 	order.Value("order_no").String().Contains("O")
@@ -48,17 +49,19 @@ func TestMiniWechatOrderListSuccess(t *testing.T) {
 	order.Value("is_return").String().Equal("未退款")
 	order.Value("menus").Array().Length().Equal(1)
 	order.Value("return_order").Null()
-	order.Value("addr").Object().Value("id").Equal(OrderAddr.ID)
-	order.Value("addr").Object().Value("name").Equal(OrderAddr.Name)
-	order.Value("addr").Object().Value("sex").Equal(OrderAddr.Sex)
-	order.Value("addr").Object().Value("o_order_id").Equal(OrderAddr.OOrderID)
-	order.Value("addr").Object().Value("loc_name").Equal(OrderAddr.LocName)
-	order.Value("addr").Object().Value("hospital_no").Equal(OrderAddr.HospitalNo)
-	order.Value("addr").Object().Value("hospital_name").Equal(OrderAddr.HospitalName)
-	order.Value("addr").Object().Value("age").Equal(OrderAddr.Age)
-	order.Value("addr").Object().Value("disease").Equal(OrderAddr.Disease)
-	order.Value("addr").Object().Value("phone").Equal(OrderAddr.Phone)
-	order.Value("addr").Object().Value("addr").Equal(OrderAddr.Addr)
+
+	addr := order.Value("addr").Object()
+	addr.Value("id").Equal(OrderAddr.ID)
+	addr.Value("name").Equal(OrderAddr.Name)
+	addr.Value("sex").Equal(OrderAddr.Sex)
+	addr.Value("o_order_id").Equal(OrderAddr.OOrderID)
+	addr.Value("loc_name").Equal(OrderAddr.LocName)
+	addr.Value("hospital_no").Equal(OrderAddr.HospitalNo)
+	addr.Value("hospital_name").Equal(OrderAddr.HospitalName)
+	addr.Value("age").Equal(OrderAddr.Age)
+	addr.Value("disease").Equal(OrderAddr.Disease)
+	addr.Value("phone").Equal(OrderAddr.Phone)
+	addr.Value("addr").Equal(OrderAddr.Addr)
 }
 
 func TestMiniWechatOrderAddSuccess(t *testing.T) {
@@ -103,7 +106,7 @@ func TestMiniWechatOrderAddSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("amount").Equal(12)
 	obj.Value("data").Object().Value("total").Equal(32)
 	obj.Value("data").Object().Value("rmk").String().Equal("455445455544")
-	obj.Value("data").Object().Value("app_type").Number().Equal(1)
+	obj.Value("data").Object().Value("app_type").Number().Equal(common.ORDER_APP_TYPE_MINI)
 	obj.Value("data").Object().Value("pay_type").Number().Equal(0)
 	obj.Value("data").Object().Value("application_id").Equal(AppId)
 
