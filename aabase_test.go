@@ -50,6 +50,7 @@ var CareOrder *model.CareOrders
 var CareOrderAddr *model.CareOrderAddrs
 var CareOrderInfo *model.CareOrderInfos
 
+var CarerAmount int
 var CarerTag *model.CarerTags
 var Carer *model.Carers
 var CarerOrder *model.CareOrders
@@ -181,8 +182,8 @@ func CreateCare(db *gorm.DB) {
 		Amount:        CareAmount,
 		MinPrice:      CareMiniPrice,
 		MaxPrice:      CareMaxPrice,
-		Cover:         "",
-		CareDetail:    "",
+		Cover:         "sdfsdfds",
+		CareDetail:    "dsfsdfdsf",
 		CareTypeID:    CareType.ID,
 		ApplicationID: AppId,
 		CreateAt:      time.Now(),
@@ -296,8 +297,8 @@ func CreateCarer(db *gorm.DB) {
 		Status:        true,
 		Amount:        CareAmount,
 		Price:         CarerPrice,
-		Avatar:        "",
-		CarerDetail:   "",
+		Avatar:        "dsfsdfs",
+		CarerDetail:   "dfsdfsf",
 		ApplicationID: AppId,
 		CreateAt:      time.Now(),
 		UpdateAt:      time.Now(),

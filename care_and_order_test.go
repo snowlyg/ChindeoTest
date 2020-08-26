@@ -50,10 +50,6 @@ func TestCareListSuccess(t *testing.T) {
 	careType.Value("id").Equal(CareType.ID)
 	careType.Value("name").Equal(CareType.Name)
 
-	carePriceF, _ := strconv.ParseFloat(common.GetS(fitst.Value("max_price").Raw()), 10)
-	carePrice = decimal.NewFromFloat(carePriceF)
-	careTimeTypeText = common.GetS(fitst.Value("time_type").Raw())
-
 }
 
 func TestCareListNoPageSuccess(t *testing.T) {
@@ -222,6 +218,10 @@ func TestCareShowAfterOrderAddSuccess(t *testing.T) {
 	careType.Value("id").Equal(CareType.ID)
 	careType.Value("name").Equal(CareType.Name)
 
+	carePriceF, _ := strconv.ParseFloat(common.GetS(obj.Value("data").Object().Value("max_price").Raw()), 10)
+	carePrice = decimal.NewFromFloat(carePriceF)
+	careTimeTypeText = common.GetS(obj.Value("data").Object().Value("time_type").Raw())
+
 }
 
 func TestCareOrderAddCareError(t *testing.T) {
@@ -303,13 +303,30 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("return_order").Null()
 	orderInfo := obj.Value("data").Object().Value("order_info").Object()
 	orderInfo.Value("id").NotNull()
+	orderInfo.Value("name").Equal(CareOrderInfo.Name)
+	orderInfo.Value("desc").Equal(CareOrderInfo.Desc)
+	orderInfo.Value("application_name").Equal("我的医院")
+	orderInfo.Value("time_type").Equal(CareOrderInfo.TimeType)
+	orderInfo.Value("care_detail").Equal(CareOrderInfo.CareDetail)
+	orderInfo.Value("care_tags").Equal(CareOrderInfo.CareTags)
+	orderInfo.Value("min_price").Equal(common.Ftos(CareOrderInfo.MinPrice))
+	orderInfo.Value("max_price").Equal(common.Ftos(CareOrderInfo.MaxPrice))
+	orderInfo.Value("cover").Equal(CareOrderInfo.Cover)
+	orderInfo.Value("care_type").Equal(CareOrderInfo.CareType)
+	orderInfo.Value("care_order_id").Equal(careOrderCareId)
+
 	addr := obj.Value("data").Object().Value("addr").Object()
-	addr.Value("id").NotNull()
 	addr.Value("name").Equal("操蛋")
 	addr.Value("loc_name").Equal("泥马")
 	addr.Value("bed_num").Equal("05")
 	addr.Value("hospital_no").Equal("9556854545")
 	addr.Value("disease").Equal("玩玩")
+	addr.Value("care_order_id").Equal(careOrderCareId)
+	addr.Value("sex").Equal(1)
+	addr.Value("hospital_name").Equal("我的医院")
+	addr.Value("phone").Equal("")
+	addr.Value("age").Equal(0)
+	addr.Value("addr").Equal("")
 }
 
 func TestCareOrderPayCareSuccess(t *testing.T) {
