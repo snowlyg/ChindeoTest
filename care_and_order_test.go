@@ -140,7 +140,7 @@ func TestCareOrderListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(2)
 }
 
 var careStartAt time.Time
@@ -391,7 +391,7 @@ func TestCareOrderShowReturnSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("id").Equal(CareOrder.ID)
-	obj.Value("data").Object().Value("order_no").String().Contains("O")
+	obj.Value("data").Object().Value("order_no").String().Contains("C")
 	obj.Value("data").Object().Value("status").Object().Value("value").Equal(4)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("已取消")
 	obj.Value("data").Object().Value("total").Equal(common.Ftos(CareOrder.Total))

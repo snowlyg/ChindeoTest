@@ -306,22 +306,23 @@ type CareOrderAddrs struct {
 
 // CareOrderCarerInfos 订单护工信息表
 type CareOrderCarerInfos struct {
-	ID              int       `gorm:"primary_key;column:id;type:int;not null"`
-	Name            string    `gorm:"column:name;type:varchar(50);not null"`             // 姓名
-	Age             int       `gorm:"column:age;type:int;not null"`                      // 年龄
-	WorkExp         int       `gorm:"column:work_exp;type:int;not null"`                 // 工作年限
-	Price           float64   `gorm:"column:price;type:decimal(10,2);not null"`          // 价格
-	Sex             int       `gorm:"column:sex;type:int;not null"`                      // 性别:1:男,0:女
-	Phone           string    `gorm:"column:phone;type:varchar(30);not null"`            // 手机
-	Desc            string    `gorm:"column:desc;type:varchar(500);not null"`            // 简介
-	Avatar          string    `gorm:"column:avatar;type:varchar(200);not null"`          // 头像
-	CarerTags       string    `gorm:"column:carer_tags;type:varchar(200);not null"`      // 标签
-	ApplicationName string    `gorm:"column:application_name;type:varchar(50);not null"` // 医院名称
-	CreateAt        time.Time `gorm:"column:create_at;type:datetime;not null"`
-	UpdateAt        time.Time `gorm:"column:update_at;type:datetime;not null"`
-	IsDeleted       time.Time `gorm:"column:is_deleted;type:datetime"`
-	CareOrderID     int       `gorm:"index:care_order_id;column:care_order_id;type:int;not null"` // care_order_id
-	TimeType        string    `gorm:"column:time_type;type:varchar(5);not null"`                  // 时间类型：时，天，月
+	ID              int          `gorm:"primary_key;column:id;type:int;not null"`
+	Name            string       `gorm:"column:name;type:varchar(50);not null"`             // 姓名
+	Age             int          `gorm:"column:age;type:int;not null"`                      // 年龄
+	WorkExp         int          `gorm:"column:work_exp;type:int;not null"`                 // 工作年限
+	Price           float64      `gorm:"column:price;type:decimal(10,2);not null"`          // 价格
+	Sex             int          `gorm:"column:sex;type:int;not null"`                      // 性别:1:男,0:女
+	Phone           string       `gorm:"column:phone;type:varchar(30);not null"`            // 手机
+	Desc            string       `gorm:"column:desc;type:varchar(500);not null"`            // 简介
+	Avatar          string       `gorm:"column:avatar;type:varchar(200);not null"`          // 头像
+	CarerTags       string       `gorm:"column:carer_tags;type:varchar(200);not null"`      // 标签
+	ApplicationName string       `gorm:"column:application_name;type:varchar(50);not null"` // 医院名称
+	CarerDetail     string       `gorm:"column:carer_detail;type:varchar(2000);not null"`   // 服务内容:采用富文本
+	CreateAt        time.Time    `gorm:"column:create_at;type:datetime;not null"`
+	UpdateAt        time.Time    `gorm:"column:update_at;type:datetime;not null"`
+	IsDeleted       sql.NullTime `gorm:"column:is_deleted;type:datetime"`
+	CareOrderID     int          `gorm:"index:care_order_id;column:care_order_id;type:int;not null"` // care_order_id
+	TimeType        string       `gorm:"column:time_type;type:varchar(5);not null"`                  // 时间类型：时，天，月
 }
 
 // CareOrderInfos 护理项目表
