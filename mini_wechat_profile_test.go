@@ -33,7 +33,7 @@ func TestMiniWechatProfileSuccess(t *testing.T) {
 func TestMiniWechatProfileUpdateSuccess(t *testing.T) {
 	info := map[string]interface{}{
 		"realname":   "小样",
-		"id_card_no": "430923198901156623",
+		"id_card_no": "456952158962254456",
 	}
 
 	e := httpexpect.WithConfig(httpexpect.Config{
@@ -54,7 +54,7 @@ func TestMiniWechatProfileUpdateSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("操作成功")
 	obj.Value("data").Object().Value("id").Equal(15)
-	obj.Value("data").Object().Value("id_card_no").Equal("430923198901156623")
+	obj.Value("data").Object().Value("id_card_no").Equal("456952158962254456")
 	obj.Value("data").Object().Value("realname").Equal("小样")
 }
 

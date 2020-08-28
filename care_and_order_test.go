@@ -297,6 +297,150 @@ func TestCareOrderAddCareError(t *testing.T) {
 	obj.Value("message").String().Equal("患者名称不能为空！")
 }
 
+func TestCareOrderCommentSuccess(t *testing.T) {
+	comment := map[string]interface{}{
+		"star":       1,
+		"content":    "content",
+		"id_card_no": "456952158962254456",
+		"pics":       Pics,
+		"order_id":   careOrderCareId,
+	}
+
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+
+	obj := e.POST("/common/v1/inner/comment/care").
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		WithJSON(comment).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("评论成功")
+}
+
+func TestCareOrderCommentNoContentError(t *testing.T) {
+	comment := map[string]interface{}{
+		"star":       1,
+		"content":    "",
+		"id_card_no": "456952158962254456",
+		"pics":       Pics,
+		"order_id":   careOrderCareId,
+	}
+
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+
+	obj := e.POST("/common/v1/inner/comment/care").
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		WithJSON(comment).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(400)
+	obj.Value("message").String().Equal("评论内容不能为空！")
+}
+
+func TestCareOrderCommentOrderExistsError(t *testing.T) {
+	comment := map[string]interface{}{
+		"star":       1,
+		"content":    "sdfsdfs",
+		"id_card_no": "456952158962254456",
+		"pics":       Pics,
+		"order_id":   9999,
+	}
+
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+
+	obj := e.POST("/common/v1/inner/comment/care").
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		WithJSON(comment).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(400)
+	obj.Value("message").String().Equal("订单 9999 不存在")
+}
+
+func TestCareOrderCommentNoIdCardNoError(t *testing.T) {
+	comment := map[string]interface{}{
+		"star":       1,
+		"content":    "456952158962254456",
+		"id_card_no": "",
+		"pics":       Pics,
+		"order_id":   careOrderCareId,
+	}
+
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+
+	obj := e.POST("/common/v1/inner/comment/care").
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		WithJSON(comment).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("评论成功")
+}
+
+func TestCareOrderCommentNoOrderIdError(t *testing.T) {
+	comment := map[string]interface{}{
+		"star":       1,
+		"content":    "456952158962254456",
+		"id_card_no": "456952158962254456",
+		"pics":       Pics,
+	}
+
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+
+	obj := e.POST("/common/v1/inner/comment/care").
+		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+		WithCookie("PHPSESSID", PHPSESSID).
+		WithJSON(comment).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(400)
+	obj.Value("message").String().Equal("评论订单不能为空！")
+}
+
 func TestCareOrderShowCareSuccess(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
@@ -339,7 +483,7 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 
 	obj.Value("data").Object().Value("order_carer_info").Null()
 	obj.Value("data").Object().Value("return_order").Null()
-	obj.Value("data").Object().Value("comments").Array().Length().Equal(0)
+	obj.Value("data").Object().Value("comments").Array().Length().Equal(2)
 	orderInfo := obj.Value("data").Object().Value("order_info").Object()
 	orderInfo.Value("id").NotNull()
 	orderInfo.Value("name").Equal(CareOrderInfo.Name)
