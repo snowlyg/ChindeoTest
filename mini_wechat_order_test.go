@@ -1,13 +1,10 @@
 package main
 
 import (
-	"github.com/snowlyg/ChindeoTest/common"
-	"github.com/snowlyg/ChindeoTest/config"
+	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
 	"strconv"
 	"testing"
-
-	"github.com/gavv/httpexpect/v2"
 )
 
 var miniWechatOrderId int
@@ -16,20 +13,13 @@ func TestMiniWechatOrderListSuccess(t *testing.T) {
 	re := map[string]interface{}{
 		"status":         2,
 		"page_size":      10,
-		"application_id": AppId,
+		"application_id": model.AppId,
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/outline/o_order").
+	obj := model.GetE(t).POST("/api/v1/outline/o_order").
 		WithQuery("page", 1).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(re).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -37,12 +27,12 @@ func TestMiniWechatOrderListSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(OrderCount)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.OrderCount)
 
 	order := obj.Value("data").Object().Value("data").Array().First().Object()
 	order.Value("id").Equal(MiniOrder.ID)
 	order.Value("order_no").String().Contains("O")
-	order.Value("status").Object().Value("value").Equal(common.I_ORDER_STATUS_FOR_DELIVERY)
+	order.Value("status").Object().Value("value").Equal(model.I_ORDER_STATUS_FOR_DELIVERY)
 	order.Value("status").Object().Value("text").Equal("已付款")
 	order.Value("amount").Number().Equal(MiniOrder.Amount)
 	order.Value("total").String().Equal("10.00")
@@ -69,7 +59,7 @@ func TestMiniWechatOrderAddSuccess(t *testing.T) {
 		"amount":         12,
 		"total":          32.00,
 		"addr_id":        Addr.ID,
-		"application_id": AppId,
+		"application_id": model.AppId,
 		"rmk":            "455445455544",
 		"menus": []map[string]interface{}{
 			{
@@ -84,16 +74,10 @@ func TestMiniWechatOrderAddSuccess(t *testing.T) {
 			},
 		},
 	}
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/outline/o_order/add").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+
+	obj := model.GetE(t).POST("/api/v1/outline/o_order/add").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(order).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -106,16 +90,16 @@ func TestMiniWechatOrderAddSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("amount").Equal(12)
 	obj.Value("data").Object().Value("total").Equal(32)
 	obj.Value("data").Object().Value("rmk").String().Equal("455445455544")
-	obj.Value("data").Object().Value("app_type").Number().Equal(common.ORDER_APP_TYPE_MINI)
+	obj.Value("data").Object().Value("app_type").Number().Equal(model.ORDER_APP_TYPE_MINI)
 	obj.Value("data").Object().Value("pay_type").Number().Equal(0)
-	obj.Value("data").Object().Value("application_id").Equal(AppId)
+	obj.Value("data").Object().Value("application_id").Equal(model.AppId)
 
 	id := obj.Value("data").Object().Value("id").Raw()
 	data, ok := id.(string)
 	if ok {
 		miniWechatOrderId, _ = strconv.Atoi(data)
 	}
-	OrderCount++
+	model.OrderCount++
 }
 
 func TestMiniWechatOrderAddNoApplicationId(t *testing.T) {
@@ -147,16 +131,10 @@ func TestMiniWechatOrderAddNoApplicationId(t *testing.T) {
 			},
 		},
 	}
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/outline/o_order/add").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+
+	obj := model.GetE(t).POST("/api/v1/outline/o_order/add").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(order).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -170,7 +148,7 @@ func TestMiniWechatOrderAddNoAddrId(t *testing.T) {
 	order := map[string]interface{}{
 		"amount":         12,
 		"total":          32.00,
-		"application_id": AppId,
+		"application_id": model.AppId,
 		"rmk":            "455445455544",
 		"menus": []map[string]interface{}{
 			{
@@ -195,16 +173,10 @@ func TestMiniWechatOrderAddNoAddrId(t *testing.T) {
 			},
 		},
 	}
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/outline/o_order/add").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+
+	obj := model.GetE(t).POST("/api/v1/outline/o_order/add").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(order).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -216,18 +188,11 @@ func TestMiniWechatOrderAddNoAddrId(t *testing.T) {
 }
 
 func TestMiniWechatOrderAfterOrderAddMenuShowSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
 
-	obj := e.GET("/api/v1/outline/menu/{id}", Menu.ID).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
-		WithQuery("application_id", AppId).
+	obj := model.GetE(t).GET("/api/v1/outline/menu/{id}", Menu.ID).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -239,8 +204,8 @@ func TestMiniWechatOrderAfterOrderAddMenuShowSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("time_type").Equal(Menu.TimeType.String())
 	obj.Value("data").Object().Value("menu_type_id").Equal(Menu.MenuTypeID)
 	obj.Value("data").Object().Value("desc").Equal(Menu.Desc)
-	obj.Value("data").Object().Value("amount").Equal(MenuAmount + 1)
-	MenuAmount++
+	obj.Value("data").Object().Value("amount").Equal(model.MenuAmount + 1)
+	model.MenuAmount++
 	obj.Value("data").Object().Value("price").Equal("10.00")
 	obj.Value("data").Object().Value("cover").Equal(Menu.Cover)
 	obj.Value("data").Object().Value("pics").Array().Length().Equal(0)
@@ -258,16 +223,10 @@ func TestMiniWechatOrderAfterOrderAddMenuShowSuccess(t *testing.T) {
 }
 
 func TestMiniWechatOrderShowSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/api/v1/outline/o_order/{id}", miniWechatOrderId).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+
+	obj := model.GetE(t).GET("/api/v1/outline/o_order/{id}", miniWechatOrderId).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -276,7 +235,7 @@ func TestMiniWechatOrderShowSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("id").Equal(miniWechatOrderId)
 	obj.Value("data").Object().Value("order_no").String().Contains("O")
-	obj.Value("data").Object().Value("status").Object().Value("value").Equal(common.I_ORDER_STATUS_FOR_PAY)
+	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.I_ORDER_STATUS_FOR_PAY)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("待付款")
 	obj.Value("data").Object().Value("amount").Number().Equal(12)
 	obj.Value("data").Object().Value("total").String().Equal("32.00")
@@ -298,16 +257,10 @@ func TestMiniWechatOrderShowSuccess(t *testing.T) {
 }
 
 func TestMiniWechatOrderPaySuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/api/v1/outline/o_order/pay/{id}", miniWechatOrderId).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+
+	obj := model.GetE(t).GET("/api/v1/outline/o_order/pay/{id}", miniWechatOrderId).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -317,16 +270,10 @@ func TestMiniWechatOrderPaySuccess(t *testing.T) {
 }
 
 func TestMiniWechatOrderCancelSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/api/v1/outline/o_order/cancel/{id}", miniWechatOrderId).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+
+	obj := model.GetE(t).GET("/api/v1/outline/o_order/cancel/{id}", miniWechatOrderId).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -336,16 +283,10 @@ func TestMiniWechatOrderCancelSuccess(t *testing.T) {
 }
 
 func TestMiniWechatOrderCancelPaySuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/api/v1/outline/o_order/cancel/{id}", MiniOrder.ID).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+
+	obj := model.GetE(t).GET("/api/v1/outline/o_order/cancel/{id}", MiniOrder.ID).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -355,16 +296,10 @@ func TestMiniWechatOrderCancelPaySuccess(t *testing.T) {
 }
 
 func TestMiniWechatOrderShowReturnSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/api/v1/outline/o_order/{id}", MiniOrder.ID).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+
+	obj := model.GetE(t).GET("/api/v1/outline/o_order/{id}", MiniOrder.ID).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -373,17 +308,17 @@ func TestMiniWechatOrderShowReturnSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("id").Equal(MiniOrder.ID)
 	obj.Value("data").Object().Value("order_no").String().Contains("O")
-	obj.Value("data").Object().Value("status").Object().Value("value").Equal(common.I_ORDER_STATUS_FOR_CANCEL)
+	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.I_ORDER_STATUS_FOR_CANCEL)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("已取消")
 	obj.Value("data").Object().Value("amount").Number().Equal(MiniOrder.Amount)
 	obj.Value("data").Object().Value("total").Equal("10.00")
 	obj.Value("data").Object().Value("is_return").String().Equal("有退款")
 
-	obj.Value("data").Object().Value("comments").Array().Length().Equal(MiniOrderCommentCount)
+	obj.Value("data").Object().Value("comments").Array().Length().Equal(2)
 	comment := obj.Value("data").Object().Value("comments").Array().First().Object()
 	comment.Value("id").NotNull()
 	comment.Value("user_id").Equal(User.ID)
-	comment.Value("application_id").Equal(AppId)
+	comment.Value("application_id").Equal(model.AppId)
 	comment.Value("content").Equal(MiniOrderComment.Content)
 	comment.Value("star").Equal(5)
 	comment.Value("pics").Array().Length().Equal(2)
@@ -419,7 +354,7 @@ func TestMiniWechatOrderShowReturnSuccess(t *testing.T) {
 	orderReturn := obj.Value("data").Object().Value("return_order").Object()
 	orderReturn.Value("id").NotNull()
 	orderReturn.Value("order_no").String().Contains("RO")
-	orderReturn.Value("status").Object().Value("value").Equal(common.I_RETURN_ORDER_STATUS_FOR_AUDIT)
+	orderReturn.Value("status").Object().Value("value").Equal(model.I_RETURN_ORDER_STATUS_FOR_AUDIT)
 	orderReturn.Value("status").Object().Value("text").Equal("待审核")
 	orderReturn.Value("amount").Equal(MiniOrder.Amount)
 	orderReturn.Value("total").Equal("10")
@@ -458,56 +393,37 @@ func TestMiniWechatOrderShowReturnSuccess(t *testing.T) {
 }
 
 func TestMiniWechatOrderDeleteSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.DELETE("/api/v1/outline/o_order/{id}", miniWechatOrderId).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+
+	obj := model.GetE(t).DELETE("/api/v1/outline/o_order/{id}", miniWechatOrderId).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	OrderCount--
+	model.OrderCount--
 }
 
 func TestMiniWechatOrderDeleteReturnSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.DELETE("/api/v1/outline/o_order/{id}", MiniOrder.ID).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+
+	obj := model.GetE(t).DELETE("/api/v1/outline/o_order/{id}", MiniOrder.ID).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	OrderCount--
+	model.OrderCount--
 }
 
 func TestMiniWechatOrderDeleteErrorForZore(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.DELETE("/api/v1/outline/o_order/{id}", 0).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).DELETE("/api/v1/outline/o_order/{id}", 0).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -517,16 +433,9 @@ func TestMiniWechatOrderDeleteErrorForZore(t *testing.T) {
 }
 
 func TestMiniWechatOrderDeleteError(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.DELETE("/api/v1/outline/o_order/{id}", 99999).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).DELETE("/api/v1/outline/o_order/{id}", 99999).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

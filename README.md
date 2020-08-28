@@ -12,7 +12,7 @@ gormt
 ```
 
 修改 `time.Time` 为 	`sql.NullTime`
-修改 `TimeType      string` 为 	`TimeType      common.MenuTimeType`
+修改 `TimeType      string` 为 	`TimeType      model.MenuTimeType`
 
 ```shell script
 #全部执行

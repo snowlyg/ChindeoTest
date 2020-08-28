@@ -1,24 +1,12 @@
 package main
 
 import (
-	"github.com/snowlyg/ChindeoTest/common"
-	"github.com/snowlyg/ChindeoTest/config"
+	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
-	"strconv"
 	"testing"
-
-	"github.com/gavv/httpexpect/v2"
 )
 
 func TestMiniWechatOnlineQualAddSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
 	data := map[string]interface{}{
 		"loc":           "科室名称",
 		"hospital":      "医院名称",
@@ -28,9 +16,9 @@ func TestMiniWechatOnlineQualAddSuccess(t *testing.T) {
 		"loc_img":       "00/cc1513a9d57701c86848159f6ed5c9.png",
 	}
 
-	obj := e.POST("/online/v1/qual/add").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).POST("/online/v1/qual/add").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -48,14 +36,6 @@ func TestMiniWechatOnlineQualAddSuccess(t *testing.T) {
 }
 
 func TestMiniWechatOnlineQualAddNoLocError(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
 	data := map[string]interface{}{
 		"loc":           "",
 		"hospital":      "医院名称",
@@ -65,9 +45,9 @@ func TestMiniWechatOnlineQualAddNoLocError(t *testing.T) {
 		"loc_img":       "00/cc1513a9d57701c86848159f6ed5c9.png",
 	}
 
-	obj := e.POST("/online/v1/qual/add").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).POST("/online/v1/qual/add").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -78,14 +58,6 @@ func TestMiniWechatOnlineQualAddNoLocError(t *testing.T) {
 }
 
 func TestMiniWechatOnlineQualAddNoHospitalError(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
 	data := map[string]interface{}{
 		"loc":           "医院名称",
 		"hospital":      "",
@@ -95,9 +67,9 @@ func TestMiniWechatOnlineQualAddNoHospitalError(t *testing.T) {
 		"loc_img":       "00/cc1513a9d57701c86848159f6ed5c9.png",
 	}
 
-	obj := e.POST("/online/v1/qual/add").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).POST("/online/v1/qual/add").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -108,14 +80,6 @@ func TestMiniWechatOnlineQualAddNoHospitalError(t *testing.T) {
 }
 
 func TestMiniWechatOnlineQualAddNoQualImgError(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
 	data := map[string]interface{}{
 		"loc":           "医院名称",
 		"hospital":      "职位名称",
@@ -125,9 +89,9 @@ func TestMiniWechatOnlineQualAddNoQualImgError(t *testing.T) {
 		"loc_img":       "00/cc1513a9d57701c86848159f6ed5c9.png",
 	}
 
-	obj := e.POST("/online/v1/qual/add").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).POST("/online/v1/qual/add").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -138,14 +102,6 @@ func TestMiniWechatOnlineQualAddNoQualImgError(t *testing.T) {
 }
 
 func TestMiniWechatOnlineQualAddNoPostionError(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
 	data := map[string]interface{}{
 		"loc":           "医院名称",
 		"hospital":      "职位名称",
@@ -155,9 +111,9 @@ func TestMiniWechatOnlineQualAddNoPostionError(t *testing.T) {
 		"loc_img":       "00/cc1513a9d57701c86848159f6ed5c9.png",
 	}
 
-	obj := e.POST("/online/v1/qual/add").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).POST("/online/v1/qual/add").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -168,14 +124,6 @@ func TestMiniWechatOnlineQualAddNoPostionError(t *testing.T) {
 }
 
 func TestMiniWechatOnlineQualAddNoExpertiseImgError(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
 	data := map[string]interface{}{
 		"loc":           "医院名称",
 		"hospital":      "职位名称",
@@ -185,9 +133,9 @@ func TestMiniWechatOnlineQualAddNoExpertiseImgError(t *testing.T) {
 		"loc_img":       "00/cc1513a9d57701c86848159f6ed5c9.png",
 	}
 
-	obj := e.POST("/online/v1/qual/add").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).POST("/online/v1/qual/add").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -198,14 +146,6 @@ func TestMiniWechatOnlineQualAddNoExpertiseImgError(t *testing.T) {
 }
 
 func TestMiniWechatOnlineQualAddNoLocImgError(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
 	data := map[string]interface{}{
 		"loc":           "医院名称",
 		"hospital":      "职位名称",
@@ -215,9 +155,9 @@ func TestMiniWechatOnlineQualAddNoLocImgError(t *testing.T) {
 		"loc_img":       "",
 	}
 
-	obj := e.POST("/online/v1/qual/add").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).POST("/online/v1/qual/add").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

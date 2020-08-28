@@ -1,26 +1,15 @@
 package main
 
 import (
-	"github.com/snowlyg/ChindeoTest/common"
-	"github.com/snowlyg/ChindeoTest/config"
+	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
-	"strconv"
 	"testing"
-
-	"github.com/gavv/httpexpect/v2"
 )
 
 func TestMiniWechatProfileSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/api/v1/profile").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).GET("/api/v1/profile").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -36,16 +25,9 @@ func TestMiniWechatProfileUpdateSuccess(t *testing.T) {
 		"id_card_no": "456952158962254456",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/profile/update").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).POST("/api/v1/profile/update").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(info).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -65,16 +47,9 @@ func TestMiniWechatProfileSetServerSuccess(t *testing.T) {
 		"server_end_at":   "17:00",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/profile/set_server").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).POST("/api/v1/profile/set_server").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(info).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -85,16 +60,9 @@ func TestMiniWechatProfileSetServerSuccess(t *testing.T) {
 }
 
 func TestMiniWechatProfileNoDevHeader(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/api/v1/profile").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).GET("/api/v1/profile").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -104,17 +72,9 @@ func TestMiniWechatProfileNoDevHeader(t *testing.T) {
 }
 
 func TestMiniWechatProfileSetServerOpenSuccess(t *testing.T) {
-
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/api/v1/profile/set_server_open").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).GET("/api/v1/profile/set_server_open").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -124,17 +84,9 @@ func TestMiniWechatProfileSetServerOpenSuccess(t *testing.T) {
 }
 
 func TestMiniWechatProfileAuthSuccess(t *testing.T) {
-
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/api/v1/profile/auth").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).GET("/api/v1/profile/auth").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

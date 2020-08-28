@@ -1,26 +1,17 @@
 package main
 
 import (
-	"github.com/gavv/httpexpect/v2"
-	"github.com/snowlyg/ChindeoTest/common"
-	"github.com/snowlyg/ChindeoTest/config"
+	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
-	"strconv"
+
 	"testing"
 )
 
 func TestMenuSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
 
-	obj := e.GET("/api/v1/menu").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).GET("/api/v1/menu").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("menu_type_id", MenuType.ID).
 		WithQuery("time_type", Menu.TimeType).
 		WithQuery("menu_tag_id", MenuTag.ID).
@@ -36,17 +27,10 @@ func TestMenuSuccess(t *testing.T) {
 }
 
 func TestMenuNoPageSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
 
-	obj := e.GET("/api/v1/menu?page_size=-1").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).GET("/api/v1/menu?page_size=-1").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -58,17 +42,10 @@ func TestMenuNoPageSuccess(t *testing.T) {
 }
 
 func TestMenuShowSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
 
-	obj := e.GET("/api/v1/menu/{id}", Menu.ID).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).GET("/api/v1/menu/{id}", Menu.ID).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

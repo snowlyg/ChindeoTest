@@ -2,7 +2,6 @@ package model
 
 import (
 	"database/sql"
-	"github.com/snowlyg/ChindeoTest/common"
 	"time"
 )
 
@@ -81,21 +80,21 @@ type APIMenuTypes struct {
 
 // APIMenus [...]
 type APIMenus struct {
-	ID            int                 `gorm:"primary_key;column:id;type:int;not null" json:"-"`
-	Name          string              `gorm:"column:name;type:varchar(50);not null" json:"name"`     // 菜品名称
-	TimeType      common.MenuTimeType `gorm:"column:time_type;type:int;not null" json:"time_type"`   // 菜品时段类型
-	Desc          string              `gorm:"column:desc;type:varchar(100);not null" json:"desc"`    // 菜品介绍
-	Status        bool                `gorm:"column:status;type:tinyint(1);not null" json:"status"`  // 菜品状态：上下架
-	Amount        int                 `gorm:"column:amount;type:int;not null" json:"amount"`         // 销量
-	Price         float64             `gorm:"column:price;type:decimal(10,2);not null" json:"price"` // 价格
-	Cover         string              `gorm:"column:cover;type:varchar(1200);not null" json:"cover"` // 封面
-	Sort          int                 `gorm:"column:sort;type:int;not null" json:"sort"`             // 排序
-	Pics          string              `gorm:"column:pics;type:varchar(1200);not null" json:"pics"`   // 餐品图片
-	CreateAt      time.Time           `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
-	UpdateAt      time.Time           `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
-	IsDeleted     sql.NullTime        `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
-	ApplicationID int                 `gorm:"column:application_id;type:int;not null" json:"application_id"`
-	MenuTypeID    int                 `gorm:"index:menu_type_id;column:menu_type_id;type:int;not null" json:"menu_type_id"` // menu_type_id
+	ID            int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	Name          string       `gorm:"column:name;type:varchar(50);not null" json:"name"`     // 菜品名称
+	TimeType      MenuTimeType `gorm:"column:time_type;type:int;not null" json:"time_type"`   // 菜品时段类型
+	Desc          string       `gorm:"column:desc;type:varchar(100);not null" json:"desc"`    // 菜品介绍
+	Status        bool         `gorm:"column:status;type:tinyint(1);not null" json:"status"`  // 菜品状态：上下架
+	Amount        int          `gorm:"column:amount;type:int;not null" json:"amount"`         // 销量
+	Price         float64      `gorm:"column:price;type:decimal(10,2);not null" json:"price"` // 价格
+	Cover         string       `gorm:"column:cover;type:varchar(1200);not null" json:"cover"` // 封面
+	Sort          int          `gorm:"column:sort;type:int;not null" json:"sort"`             // 排序
+	Pics          string       `gorm:"column:pics;type:varchar(1200);not null" json:"pics"`   // 餐品图片
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+	ApplicationID int          `gorm:"column:application_id;type:int;not null" json:"application_id"`
+	MenuTypeID    int          `gorm:"index:menu_type_id;column:menu_type_id;type:int;not null" json:"menu_type_id"` // menu_type_id
 }
 
 // APIOOrderAddrs [...]

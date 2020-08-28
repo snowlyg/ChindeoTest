@@ -1,22 +1,20 @@
-package common
+package model
 
 import (
 	"database/sql"
 	"fmt"
-	"github.com/jinzhu/gorm"
-	"github.com/snowlyg/ChindeoTest/model"
 	"time"
 )
 
 var AddrCount int
 
-func CreateAddr(db *gorm.DB) *model.APIAddrs {
-	addr := model.APIAddrs{
+func CreateAddr(userId int) *APIAddrs {
+	addr := APIAddrs{
 		Name:         "name",
 		Phone:        "13412569874",
 		Addr:         "",
 		Sex:          1,
-		UserID:       User.ID,
+		UserID:       userId,
 		HospitalName: "HospitalName",
 		LocName:      "LocName",
 		BedNum:       "BedNum",
@@ -27,7 +25,7 @@ func CreateAddr(db *gorm.DB) *model.APIAddrs {
 		UpdateAt:     time.Now(),
 		IsDeleted:    sql.NullTime{},
 	}
-	if err := db.Create(&addr).Error; err != nil {
+	if err := DB.Create(&addr).Error; err != nil {
 		fmt.Println(fmt.Sprintf("menuType create error :%v", err))
 	}
 	AddrCount++

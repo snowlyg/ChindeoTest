@@ -1,13 +1,10 @@
 package main
 
 import (
-	"github.com/snowlyg/ChindeoTest/common"
-	"github.com/snowlyg/ChindeoTest/config"
+	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
 	"strconv"
 	"testing"
-
-	"github.com/gavv/httpexpect/v2"
 )
 
 func TestMiniWechatGetTokenSuccess(t *testing.T) {
@@ -18,15 +15,8 @@ func TestMiniWechatGetTokenSuccess(t *testing.T) {
 		"encrypted_data": "5205857593c2eacc6f6c1da376b32ca3",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+	obj := model.GetE(t).POST("/api/v1/get_access_token").
+		WithHeaders(map[string]string{"IsDev": "1", "AuthType": strconv.FormatInt(int64(model.AUTH_TYPE_MINIWECHAT), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -38,7 +28,7 @@ func TestMiniWechatGetTokenSuccess(t *testing.T) {
 	token := obj.Value("data").Object().Value("AccessToken").Raw()
 	data, ok := token.(string)
 	if ok {
-		MiniWechatToken = data
+		model.MiniWechatToken = data
 	}
 }
 
@@ -50,14 +40,7 @@ func TestMiniWechatGetTokenErrorAuthType(t *testing.T) {
 		"encrypted_data": "5205857593c2eacc6f6c1da376b32ca3",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/get_access_token").
+	obj := model.GetE(t).POST("/api/v1/get_access_token").
 		WithHeaders(map[string]string{"IsDev": "1", "AuthType": "10"}).
 		WithJSON(auth).
 		Expect().

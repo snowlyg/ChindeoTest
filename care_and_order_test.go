@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/snowlyg/ChindeoTest/common"
-	"github.com/snowlyg/ChindeoTest/config"
+
+	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
 	"strconv"
 	"testing"
 	"time"
 
-	"github.com/gavv/httpexpect/v2"
 	"github.com/shopspring/decimal"
 )
 
@@ -18,16 +17,10 @@ var carePrice decimal.Decimal
 var careTimeTypeText string
 
 func TestCareNoTagIdListSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/care/v1/inner/care").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+
+	obj := model.GetE(t).GET("/care/v1/inner/care").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -52,16 +45,10 @@ func TestCareNoTagIdListSuccess(t *testing.T) {
 }
 
 func TestCareListSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/care/v1/inner/care").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+
+	obj := model.GetE(t).GET("/care/v1/inner/care").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("care_type_id", CareType.ID).
 		WithQuery("care_tag_id", CareTag.ID).
 		Expect().
@@ -88,16 +75,10 @@ func TestCareListSuccess(t *testing.T) {
 }
 
 func TestCareListNoPageSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/care/v1/inner/care").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+
+	obj := model.GetE(t).GET("/care/v1/inner/care").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("care_type_id", CareType.ID).
 		WithQuery("care_tag_id", CareTag.ID).
 		WithQuery("page_size", "-1").
@@ -126,16 +107,9 @@ func TestCareListNoPageSuccess(t *testing.T) {
 
 func TestCareShowSuccess(t *testing.T) {
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/care/v1/inner/care/{id}", Care.ID).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).GET("/care/v1/inner/care/{id}", Care.ID).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -156,16 +130,10 @@ func TestCareShowSuccess(t *testing.T) {
 }
 
 func TestCareOrderListSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/care/v1/inner/order").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+
+	obj := model.GetE(t).GET("/care/v1/inner/order").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -196,17 +164,9 @@ func TestCareOrderAddCareSuccess(t *testing.T) {
 		"id_card_no":   "456952158962254456",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.POST("/care/v1/inner/order/add").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).POST("/care/v1/inner/order/add").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(careOrder).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -219,23 +179,16 @@ func TestCareOrderAddCareSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("start_at").Equal(careStartAt.Format("2006-01-02 15:04:05"))
 	obj.Value("data").Object().Value("end_at").Equal(careEndAt.Format("2006-01-02 15:04:05"))
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
-	obj.Value("data").Object().Value("app_type").Equal(common.ORDER_APP_TYPE_BED)
+	obj.Value("data").Object().Value("app_type").Equal(model.ORDER_APP_TYPE_BED)
 	obj.Value("data").Object().Value("application_id").Equal(13)
-	careOrderCareId, _ = strconv.ParseFloat(common.GetS(obj.Value("data").Object().Value("id").Raw()), 10)
+	careOrderCareId, _ = strconv.ParseFloat(model.GetS(obj.Value("data").Object().Value("id").Raw()), 10)
 }
 
 func TestCareShowAfterOrderAddSuccess(t *testing.T) {
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/care/v1/inner/care/{id}", Care.ID).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).GET("/care/v1/inner/care/{id}", Care.ID).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -255,9 +208,9 @@ func TestCareShowAfterOrderAddSuccess(t *testing.T) {
 	careType.Value("id").Equal(CareType.ID)
 	careType.Value("name").Equal(CareType.Name)
 
-	carePriceF, _ := strconv.ParseFloat(common.GetS(obj.Value("data").Object().Value("max_price").Raw()), 10)
+	carePriceF, _ := strconv.ParseFloat(model.GetS(obj.Value("data").Object().Value("max_price").Raw()), 10)
 	carePrice = decimal.NewFromFloat(carePriceF)
-	careTimeTypeText = common.GetS(obj.Value("data").Object().Value("time_type").Raw())
+	careTimeTypeText = model.GetS(obj.Value("data").Object().Value("time_type").Raw())
 
 }
 
@@ -277,17 +230,9 @@ func TestCareOrderAddCareError(t *testing.T) {
 		"id_card_no":   "456952158962254456",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.POST("/care/v1/inner/order/add").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).POST("/care/v1/inner/order/add").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(careOrder).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -302,21 +247,13 @@ func TestCareOrderCommentSuccess(t *testing.T) {
 		"star":       1,
 		"content":    "content",
 		"id_card_no": "456952158962254456",
-		"pics":       Pics,
+		"pics":       model.Pics,
 		"order_id":   careOrderCareId,
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.POST("/common/v1/inner/comment/care").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -331,21 +268,13 @@ func TestCareOrderCommentNoContentError(t *testing.T) {
 		"star":       1,
 		"content":    "",
 		"id_card_no": "456952158962254456",
-		"pics":       Pics,
+		"pics":       model.Pics,
 		"order_id":   careOrderCareId,
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.POST("/common/v1/inner/comment/care").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -360,21 +289,13 @@ func TestCareOrderCommentOrderExistsError(t *testing.T) {
 		"star":       1,
 		"content":    "sdfsdfs",
 		"id_card_no": "456952158962254456",
-		"pics":       Pics,
+		"pics":       model.Pics,
 		"order_id":   9999,
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.POST("/common/v1/inner/comment/care").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -389,21 +310,13 @@ func TestCareOrderCommentNoIdCardNoError(t *testing.T) {
 		"star":       1,
 		"content":    "456952158962254456",
 		"id_card_no": "",
-		"pics":       Pics,
+		"pics":       model.Pics,
 		"order_id":   careOrderCareId,
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.POST("/common/v1/inner/comment/care").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -418,20 +331,12 @@ func TestCareOrderCommentNoOrderIdError(t *testing.T) {
 		"star":       1,
 		"content":    "456952158962254456",
 		"id_card_no": "456952158962254456",
-		"pics":       Pics,
+		"pics":       model.Pics,
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.POST("/common/v1/inner/comment/care").
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -442,17 +347,10 @@ func TestCareOrderCommentNoOrderIdError(t *testing.T) {
 }
 
 func TestCareOrderShowCareSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
 
-	obj := e.GET("/care/v1/inner/order/{id}", careOrderCareId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).GET("/care/v1/inner/order/{id}", careOrderCareId).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -461,7 +359,7 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 	obj.Value("message").String().Contains("请求成功")
 	obj.Value("data").Object().Value("id").Equal(careOrderCareId)
 	obj.Value("data").Object().Value("order_no").String().Contains("C")
-	obj.Value("data").Object().Value("status").Object().Value("value").Equal(common.I_ORDER_STATUS_FOR_PAY)
+	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.I_ORDER_STATUS_FOR_PAY)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("待付款")
 	obj.Value("data").Object().Value("start_at").Equal(careStartAt.Format("2006-01-02 15:04:05"))
 	obj.Value("data").Object().Value("end_at").Equal(careEndAt.Format("2006-01-02 15:04:05"))
@@ -476,7 +374,7 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 
 	f, _ := total.Float64()
 
-	obj.Value("data").Object().Value("total").Equal(common.Ftos(f))
+	obj.Value("data").Object().Value("total").Equal(model.Ftos(f))
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
 	obj.Value("data").Object().Value("pay_type").Equal(1)
 	obj.Value("data").Object().Value("is_return").Equal(0)
@@ -492,8 +390,8 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 	orderInfo.Value("time_type").Equal(CareOrderInfo.TimeType)
 	orderInfo.Value("care_detail").Equal(CareOrderInfo.CareDetail)
 	orderInfo.Value("care_tags").Equal(CareOrderInfo.CareTags)
-	orderInfo.Value("min_price").Equal(common.Ftos(CareOrderInfo.MinPrice))
-	orderInfo.Value("max_price").Equal(common.Ftos(CareOrderInfo.MaxPrice))
+	orderInfo.Value("min_price").Equal(model.Ftos(CareOrderInfo.MinPrice))
+	orderInfo.Value("max_price").Equal(model.Ftos(CareOrderInfo.MaxPrice))
 	orderInfo.Value("cover").Equal(CareOrderInfo.Cover)
 	orderInfo.Value("care_type").Equal(CareOrderInfo.CareType)
 	orderInfo.Value("care_order_id").Equal(careOrderCareId)
@@ -513,17 +411,10 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 }
 
 func TestCareOrderPayCareSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
 
-	obj := e.GET("/care/v1/inner/order/pay/{id}", careOrderCareId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).GET("/care/v1/inner/order/pay/{id}", careOrderCareId).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -534,17 +425,10 @@ func TestCareOrderPayCareSuccess(t *testing.T) {
 }
 
 func TestCareOrderCancelNoPayCareSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
 
-	obj := e.GET("/care/v1/inner/order/cancel/{id}", careOrderCareId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).GET("/care/v1/inner/order/cancel/{id}", careOrderCareId).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -554,17 +438,10 @@ func TestCareOrderCancelNoPayCareSuccess(t *testing.T) {
 }
 
 func TestCareOrderCancelPayCareSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
 
-	obj := e.GET("/care/v1/inner/order/cancel/{id}", CareOrder.ID).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).GET("/care/v1/inner/order/cancel/{id}", CareOrder.ID).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -574,16 +451,10 @@ func TestCareOrderCancelPayCareSuccess(t *testing.T) {
 }
 
 func TestCareOrderShowReturnSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.GET("/care/v1/inner/order/{id}", CareOrder.ID).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+
+	obj := model.GetE(t).GET("/care/v1/inner/order/{id}", CareOrder.ID).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -592,9 +463,9 @@ func TestCareOrderShowReturnSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("id").Equal(CareOrder.ID)
 	obj.Value("data").Object().Value("order_no").String().Contains("C")
-	obj.Value("data").Object().Value("status").Object().Value("value").Equal(common.I_ORDER_STATUS_FOR_CANCEL)
+	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.I_ORDER_STATUS_FOR_CANCEL)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("已取消")
-	obj.Value("data").Object().Value("total").Equal(common.Ftos(CareOrder.Total))
+	obj.Value("data").Object().Value("total").Equal(model.Ftos(CareOrder.Total))
 	obj.Value("data").Object().Value("start_at").String().Contains(CareOrder.StartAt.Format("2006-01-02 15:04"))
 	obj.Value("data").Object().Value("end_at").String().Contains(CareOrder.EndAt.Format("2006-01-02 15:04"))
 
@@ -618,7 +489,7 @@ func TestCareOrderShowReturnSuccess(t *testing.T) {
 	comment := obj.Value("data").Object().Value("comments").Array().First().Object()
 	comment.Value("id").NotNull()
 	comment.Value("user_id").Equal(User.ID)
-	comment.Value("application_id").Equal(AppId)
+	comment.Value("application_id").Equal(model.AppId)
 	comment.Value("content").Equal(CareOrderComment.Content)
 	comment.Value("pics").Array().Length().Equal(2)
 	comment.Value("pics").Array().First().Equal("https")
@@ -632,8 +503,8 @@ func TestCareOrderShowReturnSuccess(t *testing.T) {
 	orderInfo.Value("time_type").Equal(CareOrderInfo.TimeType)
 	orderInfo.Value("care_detail").Equal(CareOrderInfo.CareDetail)
 	orderInfo.Value("care_tags").Equal(CareOrderInfo.CareTags)
-	orderInfo.Value("min_price").Equal(common.Ftos(CareOrderInfo.MinPrice))
-	orderInfo.Value("max_price").Equal(common.Ftos(CareOrderInfo.MaxPrice))
+	orderInfo.Value("min_price").Equal(model.Ftos(CareOrderInfo.MinPrice))
+	orderInfo.Value("max_price").Equal(model.Ftos(CareOrderInfo.MaxPrice))
 	orderInfo.Value("cover").Equal(CareOrderInfo.Cover)
 	orderInfo.Value("care_type").Equal(CareOrderInfo.CareType)
 	orderInfo.Value("care_order_id").Equal(CareOrder.ID)
@@ -655,9 +526,9 @@ func TestCareOrderShowReturnSuccess(t *testing.T) {
 	orderReturn := obj.Value("data").Object().Value("return_order").Object()
 	orderReturn.Value("id").NotNull()
 	orderReturn.Value("order_no").String().Contains("RC")
-	orderReturn.Value("status").Object().Value("value").Equal(common.I_RETURN_ORDER_STATUS_FOR_AUDIT)
+	orderReturn.Value("status").Object().Value("value").Equal(model.I_RETURN_ORDER_STATUS_FOR_AUDIT)
 	orderReturn.Value("status").Object().Value("text").Equal("待审核")
-	orderReturn.Value("total").Equal(common.Ftos(CareOrder.Total))
+	orderReturn.Value("total").Equal(model.Ftos(CareOrder.Total))
 	orderReturn.Value("open_id").Equal("")
 	orderReturn.Value("app_type").Equal(CareOrder.AppType)
 	orderReturn.Value("trade_type").Equal("")
@@ -688,8 +559,8 @@ func TestCareOrderShowReturnSuccess(t *testing.T) {
 	returnOrderInfo.Value("time_type").Equal(CareOrderInfo.TimeType)
 	returnOrderInfo.Value("care_detail").Equal(CareOrderInfo.CareDetail)
 	returnOrderInfo.Value("care_tags").Equal(CareOrderInfo.CareTags)
-	returnOrderInfo.Value("min_price").Equal(common.Ftos(CareOrderInfo.MinPrice))
-	returnOrderInfo.Value("max_price").Equal(common.Ftos(CareOrderInfo.MaxPrice))
+	returnOrderInfo.Value("min_price").Equal(model.Ftos(CareOrderInfo.MinPrice))
+	returnOrderInfo.Value("max_price").Equal(model.Ftos(CareOrderInfo.MaxPrice))
 	returnOrderInfo.Value("cover").Equal(CareOrderInfo.Cover)
 	returnOrderInfo.Value("care_type").Equal(CareOrderInfo.CareType)
 	returnOrderInfo.Value("care_return_order_id").NotNull()
@@ -697,17 +568,10 @@ func TestCareOrderShowReturnSuccess(t *testing.T) {
 }
 
 func TestCareOrderDeleteCareSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
 
-	obj := e.DELETE("/care/v1/inner/order/{id}", careOrderCareId).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).DELETE("/care/v1/inner/order/{id}", careOrderCareId).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -717,17 +581,10 @@ func TestCareOrderDeleteCareSuccess(t *testing.T) {
 }
 
 func TestCareOrderDeleteCareRetrunSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
 
-	obj := e.DELETE("/care/v1/inner/order/{id}", CareOrder.ID).
-		WithHeaders(map[string]string{"X-Token": Token, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
-		WithCookie("PHPSESSID", PHPSESSID).
+	obj := model.GetE(t).DELETE("/care/v1/inner/order/{id}", CareOrder.ID).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

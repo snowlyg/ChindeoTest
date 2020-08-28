@@ -1,27 +1,16 @@
 package main
 
 import (
-	"github.com/snowlyg/ChindeoTest/common"
-	"github.com/snowlyg/ChindeoTest/config"
+	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
-	"strconv"
 	"testing"
-
-	"github.com/gavv/httpexpect/v2"
 )
 
 func TestMiniWechatApplicationSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
 
-	obj := e.GET("/api/v1/outline/application/482024").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).GET("/api/v1/outline/application/482024").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -31,6 +20,6 @@ func TestMiniWechatApplicationSuccess(t *testing.T) {
 	obj.Value("data").Array().Length().Equal(2)
 
 	firstId := obj.Value("data").Array().First().Object().Value("id")
-	firstId.Equal(AppId)
+	firstId.Equal(model.AppId)
 
 }

@@ -1,13 +1,9 @@
 package main
 
 import (
-	"github.com/snowlyg/ChindeoTest/common"
-	"github.com/snowlyg/ChindeoTest/config"
+	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
-	"strconv"
 	"testing"
-
-	"github.com/gavv/httpexpect/v2"
 )
 
 func TestMiniWechatRefreshTokenSuccess(t *testing.T) {
@@ -15,16 +11,9 @@ func TestMiniWechatRefreshTokenSuccess(t *testing.T) {
 		"uuid": "5205857593c2eacc6f6c1da376b32ca3",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/refresh_access_token").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).POST("/api/v1/refresh_access_token").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -37,21 +26,15 @@ func TestMiniWechatRefreshTokenSuccess(t *testing.T) {
 	token := obj.Value("data").Object().Value("AccessToken").Raw()
 	data, ok := token.(string)
 	if ok {
-		MiniWechatToken = data
+		model.MiniWechatToken = data
 	}
 }
 
 func TestMiniWechatRefreshTokenError(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/refresh_access_token").
-		WithHeaders(map[string]string{"X-Token": "", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+
+	obj := model.GetE(t).POST("/api/v1/refresh_access_token").
+		WithHeaders(model.GetMiniHeaderNoToken()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

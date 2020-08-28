@@ -1,28 +1,16 @@
 package main
 
 import (
-	"github.com/snowlyg/ChindeoTest/common"
-	"github.com/snowlyg/ChindeoTest/config"
+	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
-	"strconv"
 	"testing"
-
-	"github.com/gavv/httpexpect/v2"
 )
 
 func TestMiniWechatMenuSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.GET("/api/v1/outline/menu").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
-		WithQuery("application_id", AppId).
+	obj := model.GetE(t).GET("/api/v1/outline/menu").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
 		WithQuery("menu_type_id", MenuType.ID).
 		WithQuery("time_type", Menu.TimeType).
 		WithQuery("menu_tag_id", MenuTag.ID).
@@ -38,18 +26,10 @@ func TestMiniWechatMenuSuccess(t *testing.T) {
 }
 
 func TestMiniWechatMenuNoPageSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.GET("/api/v1/outline/menu").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
-		WithQuery("application_id", AppId).
+	obj := model.GetE(t).GET("/api/v1/outline/menu").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
 		WithQuery("menu_type_id", MenuType.ID).
 		WithQuery("time_type", Menu.TimeType).
 		WithQuery("menu_tag_id", MenuTag.ID).
@@ -64,18 +44,10 @@ func TestMiniWechatMenuNoPageSuccess(t *testing.T) {
 }
 
 func TestMiniWechatMenuShowSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.GET("/api/v1/outline/menu/{id}", Menu.ID).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
-		WithQuery("application_id", AppId).
+	obj := model.GetE(t).GET("/api/v1/outline/menu/{id}", Menu.ID).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -105,18 +77,9 @@ func TestMiniWechatMenuShowSuccess(t *testing.T) {
 }
 
 func TestMiniWechatMenuCollectAddSuccess(t *testing.T) {
-
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.GET("/api/v1/outline/collect/add/{id}", Menu.ID).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).GET("/api/v1/outline/collect/add/{id}", Menu.ID).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -126,17 +89,9 @@ func TestMiniWechatMenuCollectAddSuccess(t *testing.T) {
 }
 
 func TestMiniWechatMenuCollectSuccess(t *testing.T) {
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.GET("/api/v1/outline/collect").
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).GET("/api/v1/outline/collect").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -147,18 +102,9 @@ func TestMiniWechatMenuCollectSuccess(t *testing.T) {
 }
 
 func TestMiniWechatMenuCollectCancelSuccess(t *testing.T) {
-
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-
-	obj := e.GET("/api/v1/outline/collect/cancel/{id}", Menu.ID).
-		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
-		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+	obj := model.GetE(t).GET("/api/v1/outline/collect/cancel/{id}", Menu.ID).
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

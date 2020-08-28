@@ -1,13 +1,10 @@
 package main
 
 import (
-	"github.com/snowlyg/ChindeoTest/common"
-	"github.com/snowlyg/ChindeoTest/config"
+	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
 	"strconv"
 	"testing"
-
-	"github.com/gavv/httpexpect/v2"
 )
 
 func TestGetTokenSuccess(t *testing.T) {
@@ -16,15 +13,8 @@ func TestGetTokenSuccess(t *testing.T) {
 		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+	obj := model.GetE(t).POST("/api/v1/get_access_token").
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AUTH_TYPE_SERVER), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -37,7 +27,7 @@ func TestGetTokenSuccess(t *testing.T) {
 	token := obj.Value("data").Object().Value("AccessToken").Raw()
 	data, ok := token.(string)
 	if ok {
-		Token = data
+		model.Token = data
 	}
 }
 
@@ -47,14 +37,7 @@ func TestGetTokenErrorAuthType(t *testing.T) {
 		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/get_access_token").
+	obj := model.GetE(t).POST("/api/v1/get_access_token").
 		WithHeaders(map[string]string{"AuthType": "10"}).
 		WithJSON(auth).
 		Expect().
@@ -72,15 +55,8 @@ func TestGetTokenEmptyAppId(t *testing.T) {
 		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+	obj := model.GetE(t).POST("/api/v1/get_access_token").
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AUTH_TYPE_SERVER), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -97,15 +73,8 @@ func TestGetTokenEmptyAppSecret(t *testing.T) {
 		"app_secret": "",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+	obj := model.GetE(t).POST("/api/v1/get_access_token").
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AUTH_TYPE_SERVER), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -122,15 +91,8 @@ func TestGetTokenErrorAppSecretOrAppId(t *testing.T) {
 		"app_secret": "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b",
 	}
 
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client: &http.Client{
-			Jar: httpexpect.NewJar(), // used by default if Client is nil
-		},
-		BaseURL: config.Config.Url,
-	})
-	obj := e.POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10)}).
+	obj := model.GetE(t).POST("/api/v1/get_access_token").
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AUTH_TYPE_SERVER), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
