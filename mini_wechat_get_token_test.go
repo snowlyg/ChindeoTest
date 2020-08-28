@@ -16,7 +16,7 @@ func TestMiniWechatGetTokenSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"IsDev": "1", "AuthType": strconv.FormatInt(int64(model.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithHeaders(map[string]string{"IsDev": "1", "AuthType": strconv.FormatInt(int64(model.AuthTypeMiniWechat), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

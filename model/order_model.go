@@ -82,7 +82,7 @@ func CreateOrderComment(userId, orderId int, commentableType string) *Comments {
 func CreateOrder(orderNo string, userId, appType, payType int) *APIOOrders {
 	order := APIOOrders{
 		OrderNo:       orderNo,
-		Status:        I_ORDER_STATUS_FOR_DELIVERY,
+		Status:        IOrderStatusForDelivery,
 		Amount:        0,
 		Total:         10.00,
 		ApplicationID: AppId,

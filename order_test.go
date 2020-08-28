@@ -32,7 +32,7 @@ func TestOrderListSuccess(t *testing.T) {
 
 	last := obj.Value("data").Object().Value("data").Array().Last().Object()
 	last.Value("status").Object().Value("text").Equal("已付款")
-	last.Value("status").Object().Value("value").Equal(model.I_ORDER_STATUS_FOR_DELIVERY)
+	last.Value("status").Object().Value("value").Equal(model.IOrderStatusForDelivery)
 	last.Value("is_return").Equal("未退款")
 
 }
@@ -79,7 +79,7 @@ func TestOrderAddSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("amount").Equal(12)
 	obj.Value("data").Object().Value("total").Equal(32)
 	obj.Value("data").Object().Value("rmk").String().Equal("455445455544")
-	obj.Value("data").Object().Value("app_type").Number().Equal(model.ORDER_APP_TYPE_BED)
+	obj.Value("data").Object().Value("app_type").Number().Equal(model.OrderAppTypeBed)
 	obj.Value("data").Object().Value("pay_type").Number().Equal(0)
 	obj.Value("data").Object().Value("application_id").Number().Equal(13)
 
@@ -290,7 +290,7 @@ func TestOrderShowSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("id").Equal(orderId)
 	obj.Value("data").Object().Value("order_no").String().Contains("I")
-	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.I_ORDER_STATUS_FOR_PAY)
+	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.IOrderStatusForPay)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("待付款")
 	obj.Value("data").Object().Value("amount").Number().Equal(12)
 	obj.Value("data").Object().Value("total").String().Equal("32.00")
@@ -366,7 +366,7 @@ func TestOrderShowReturnSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("id").Equal(Order.ID)
 	obj.Value("data").Object().Value("order_no").String().Contains("O")
-	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.I_ORDER_STATUS_FOR_CANCEL)
+	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.IOrderStatusForCancel)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("已取消")
 	obj.Value("data").Object().Value("amount").Number().Equal(Order.Amount)
 	obj.Value("data").Object().Value("total").Equal("10.00")
@@ -411,7 +411,7 @@ func TestOrderShowReturnSuccess(t *testing.T) {
 	orderReturn := obj.Value("data").Object().Value("return_order").Object()
 	orderReturn.Value("id").NotNull()
 	orderReturn.Value("order_no").String().Contains("RI")
-	orderReturn.Value("status").Object().Value("value").Equal(model.I_RETURN_ORDER_STATUS_FOR_AUDIT)
+	orderReturn.Value("status").Object().Value("value").Equal(model.IReturnOrderStatusForAudit)
 	orderReturn.Value("status").Object().Value("text").Equal("待审核")
 	orderReturn.Value("amount").Equal(Order.Amount)
 	orderReturn.Value("total").Equal("10")

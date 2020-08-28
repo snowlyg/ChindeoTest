@@ -14,7 +14,7 @@ func CreateMenu() *APIMenus {
 	menuTag := CreateMenuTag()
 	menu := APIMenus{
 		Name:          "菜单名称",
-		TimeType:      MENU_TIME_TYPE_B,
+		TimeType:      MenuTimeTypeB,
 		Desc:          "菜品介绍",
 		Status:        true,
 		Amount:        MenuAmount,

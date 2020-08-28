@@ -28,10 +28,10 @@ var MINIWECHATPHPSESSID string
 
 func GetAuthToken() {
 	data := fmt.Sprintf("app_id=%s&app_secret=%s", "b44fc017043763eb5ac15f0069d77c", "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b")
-	Token, PHPSESSID = getToken(strconv.FormatInt(int64(AUTH_TYPE_SERVER), 10), data, false)
+	Token, PHPSESSID = getToken(strconv.FormatInt(int64(AuthTypeServer), 10), data, false)
 
 	data = fmt.Sprintf("uuid=%s&code=%s&iv=%s&encrypted_data=%s", "5205857593c2eacc6f6c1da376b32ca3", "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b", "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b", "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b")
-	MiniWechatToken, MINIWECHATPHPSESSID = getToken(strconv.FormatInt(int64(AUTH_TYPE_MINIWECHAT), 10), data, true)
+	MiniWechatToken, MINIWECHATPHPSESSID = getToken(strconv.FormatInt(int64(AuthTypeMiniWechat), 10), data, true)
 }
 
 func ClearToken() {

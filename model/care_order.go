@@ -15,7 +15,7 @@ func CreateCareOrder(timeType, orderNo string, userId, carerId, payType, appType
 
 	order := &CareOrders{
 		OrderNo:       orderNo,
-		Status:        I_ORDER_STATUS_FOR_DELIVERY,
+		Status:        IOrderStatusForDelivery,
 		Total:         total,
 		ApplicationID: AppId,
 		PayType:       payType,

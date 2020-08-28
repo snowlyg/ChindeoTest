@@ -14,7 +14,7 @@ func TestGetTokenSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AUTH_TYPE_SERVER), 10)}).
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AuthTypeServer), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -56,7 +56,7 @@ func TestGetTokenEmptyAppId(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AUTH_TYPE_SERVER), 10)}).
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AuthTypeServer), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -74,7 +74,7 @@ func TestGetTokenEmptyAppSecret(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AUTH_TYPE_SERVER), 10)}).
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AuthTypeServer), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -92,7 +92,7 @@ func TestGetTokenErrorAppSecretOrAppId(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AUTH_TYPE_SERVER), 10)}).
+		WithHeaders(map[string]string{"AuthType": strconv.FormatInt(int64(model.AuthTypeServer), 10)}).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
