@@ -379,7 +379,7 @@ func TestMiniWechatOrderShowReturnSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("total").Equal("10.00")
 	obj.Value("data").Object().Value("is_return").String().Equal("有退款")
 
-	obj.Value("data").Object().Value("comments").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("comments").Array().Length().Equal(MiniOrderCommentCount)
 	comment := obj.Value("data").Object().Value("comments").Array().First().Object()
 	comment.Value("id").NotNull()
 	comment.Value("user_id").Equal(User.ID)

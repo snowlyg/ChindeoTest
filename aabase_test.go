@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"github.com/manveru/faker"
 	"github.com/shopspring/decimal"
 	"github.com/snowlyg/ChindeoTest/common"
 	"github.com/snowlyg/ChindeoTest/config"
@@ -22,28 +21,20 @@ import (
 	"time"
 )
 
-const AppId = 13
-const IdCardNo = "456952158962254456"
-const CareMiniPrice = 1.00
-const CareMaxPrice = 50.00
-const CarerPrice = 50.00
+var Db *gorm.DB
 
-var Pics string
-var Fake *faker.Faker
 var Token string
 var MiniWechatToken string
-
 var PHPSESSID string
 var MINIWECHATPHPSESSID string
 
-var MenuAmount int
 var Addr *model.APIAddrs
 var MenuType *model.APIMenuTypes
 var MenuTag *model.APIMenuTags
 var Menu *model.APIMenus
-var User *model.APIUsers
 
 var OrderCount int
+var MiniOrderCommentCount int
 var Order *model.APIOOrders
 var OrderAddr *model.APIOOrderAddrs
 var OrderMenus []*model.APIOOrderMenus
@@ -52,6 +43,7 @@ var MiniOrder *model.APIOOrders
 var MiniOrderAddr *model.APIOOrderAddrs
 var MiniOrderMenus []*model.APIOOrderMenus
 var MiniOrderComment *model.Comments
+var MiniOrderCommentForDel *model.Comments
 
 var CareAmount int
 var CareType *model.CareTypes
@@ -59,10 +51,12 @@ var CareTag *model.CareTags
 var Care *model.Cares
 
 var CareOrderCount int
+var CareOrderCommentCount int
 var CareOrder *model.CareOrders
 var CareOrderAddr *model.CareOrderAddrs
 var CareOrderInfo *model.CareOrderInfos
 var CareOrderComment *model.Comments
+var CareOrderCommentForDel *model.Comments
 
 var MiniCareOrder *model.CareOrders
 var MiniCareOrderAddr *model.CareOrderAddrs
@@ -103,33 +97,33 @@ func TestMain(m *testing.M) {
 
 	db := model.Init()
 
-	GetUserByIdCardNo(db)
-	GetFake()
-	getPics()
+	common.GetUserByIdCardNo(db)
+	common.GetFake()
+	common.GetPics()
 
-	CreateAddr(db)
-	CreateMenuType(db)
-	CreateMenuTag(db)
-	CreateMenu(db)
-	CreateOrder(db)
-	CreateMiniOrder(db)
+	Addr = common.CreateAddr(db)
+	MenuType = common.CreateMenuType(db)
+	MenuTag = common.CreateMenuTag(db)
+	common.CreateMenu(db)
+	common.CreateOrder(db)
+	common.CreateMiniOrder(db)
 
-	CreateCareTag(db)
-	CreateCareType(db)
-	CreateCare(db)
-	CreateMiniCareOrder(db)
-	CreateCareOrder(db)
+	common.CreateCareTag(db)
+	common.CreateCareType(db)
+	common.CreateCare(db)
+	common.CreateMiniCareOrder(db)
+	common.CreateCareOrder(db)
 
-	CreateCarerTag(db)
-	CreateCarer(db)
-	CreateMiniCarerOrder(db)
-	CreateCarerOrder(db)
+	common.CreateCarerTag(db)
+	common.CreateCarer(db)
+	common.CreateMiniCarerOrder(db)
+	common.CreateCarerOrder(db)
 
-	CreateArticle(db)
-	CreateLocType(db)
-	CreateLoc(db)
-	CreateUserType(db)
-	CreatePatient(db)
+	common.CreateArticle(db)
+	common.CreateLocType(db)
+	common.CreateLoc(db)
+	common.CreateUserType(db)
+	common.CreatePatient(db)
 
 	data := fmt.Sprintf("app_id=%s&app_secret=%s", "b44fc017043763eb5ac15f0069d77c", "106d1b47f6fa30c0ff6ae48da5f1c9e4b557a6363ed854e2e250de4e00127c2b")
 	Token, PHPSESSID = getAuthToken(strconv.FormatInt(int64(common.AUTH_TYPE_SERVER), 10), data, false)
@@ -142,18 +136,12 @@ func TestMain(m *testing.M) {
 
 	Token = ""
 
-	model.ClearTables(db)
-	model.Close(db)
+	model.ClearTables(Db)
+	model.Close(Db)
 
 	println(fmt.Sprintf("-------------------main end-------------------"))
 
 	os.Exit(exitCode)
-}
-
-func getPics() {
-	pics := []string{"https", "https"}
-	jpics, _ := json.Marshal(pics)
-	Pics = string(jpics)
 }
 
 func getAuthToken(authType, data string, isDev bool) (string, string) {
@@ -173,62 +161,23 @@ func getAuthToken(authType, data string, isDev bool) (string, string) {
 	return "", ""
 }
 
-func GetUserByIdCardNo(db *gorm.DB) {
-	user := model.APIUsers{}
-	if err := db.Where("id_card_no = ?", IdCardNo).First(&user).Error; err != nil {
-		fmt.Println(fmt.Sprintf("menuType create error :%v", err))
-	}
-	User = &user
-}
-
-func GetFake() {
-	var err error
-	Fake, err = faker.New("en")
-	if err != nil {
-		fmt.Println(fmt.Sprintf("faker create error :%v", err))
-	}
-}
-
-func CreateAddr(db *gorm.DB) {
-	addr := model.APIAddrs{
-		Name:         "name",
-		Phone:        "13412569874",
-		Addr:         "",
-		Sex:          1,
-		UserID:       User.ID,
-		HospitalName: "HospitalName",
-		LocName:      "LocName",
-		BedNum:       "BedNum",
-		HospitalNo:   "9556854545",
-		Disease:      "Disease",
-		Age:          10,
-		CreateAt:     time.Now(),
-		UpdateAt:     time.Now(),
-		IsDeleted:    sql.NullTime{},
-	}
-	if err := db.Create(&addr).Error; err != nil {
-		fmt.Println(fmt.Sprintf("menuType create error :%v", err))
-	}
-	Addr = &addr
-}
-
-func CreateCareType(db *gorm.DB) {
+func CreateCareType() {
 	careType := model.CareTypes{Name: "护理项目类型", EnName: "en_name", Status: true, CreateAt: time.Now(), UpdateAt: time.Now(), IsDeleted: sql.NullTime{}, Icon: "icon"}
-	if err := db.Create(&careType).Error; err != nil {
+	if err := Db.Create(&careType).Error; err != nil {
 		fmt.Println(fmt.Sprintf("careType create error :%v", err))
 	}
 	CareType = &careType
 }
 
-func CreateCareTag(db *gorm.DB) {
+func CreateCareTag() {
 	careTag := model.CareTags{Name: "护理项目标签", CreateAt: time.Now(), UpdateAt: time.Now(), IsDeleted: sql.NullTime{}, Icon: "icon"}
-	if err := db.Create(&careTag).Error; err != nil {
+	if err := Db.Create(&careTag).Error; err != nil {
 		fmt.Println(fmt.Sprintf("menuTag create error :%v", err))
 	}
 	CareTag = &careTag
 }
 
-func CreateCare(db *gorm.DB) {
+func CreateCare() {
 	care := model.Cares{
 		Name:          "护理项目名称",
 		Desc:          "护理项目名称",
@@ -246,7 +195,7 @@ func CreateCare(db *gorm.DB) {
 		IsDeleted:     sql.NullTime{},
 	}
 
-	if err := db.Create(&care).Error; err != nil {
+	if err := Db.Create(&care).Error; err != nil {
 		fmt.Println(fmt.Sprintf("care create error :%v", err))
 	}
 	Care = &care
@@ -268,18 +217,18 @@ func CreateCare(db *gorm.DB) {
 		IsDeleted:     sql.NullTime{},
 	}
 
-	if err := db.Create(&care_no_tag).Error; err != nil {
+	if err := Db.Create(&care_no_tag).Error; err != nil {
 		fmt.Println(fmt.Sprintf("care_no_tag create error :%v", err))
 	}
 
 	tagCare := model.CareCareTag{CareID: Care.ID, CareTagID: CareTag.ID, UpdateAt: time.Now(), CreateAt: time.Now()}
-	if err := db.Table("care_care_tag").Create(&tagCare).Error; err != nil {
+	if err := Db.Table("care_care_tag").Create(&tagCare).Error; err != nil {
 		fmt.Println(fmt.Sprintf("tagCare create error :%v", err))
 	}
 }
 
-func CreateCareOrder(db *gorm.DB) {
-	CareOrderCount++
+func CreateCareOrder() {
+	CareOrderCount = CareOrderCount + 2
 	tt := time.Now()
 	var dd decimal.Decimal
 	sub := int(tt.AddDate(0, 0, 1).Sub(tt).Hours())
@@ -310,7 +259,7 @@ func CreateCareOrder(db *gorm.DB) {
 		UserID:        User.ID,
 		CarerID:       0,
 	}
-	if err := db.Create(&order).Error; err != nil {
+	if err := Db.Create(&order).Error; err != nil {
 		fmt.Println(fmt.Sprintf("order create error :%v", err))
 	}
 
@@ -330,7 +279,7 @@ func CreateCareOrder(db *gorm.DB) {
 		UpdateAt:     time.Now(),
 		IsDeleted:    sql.NullTime{},
 	}
-	if err := db.Create(&orderAddr).Error; err != nil {
+	if err := Db.Create(&orderAddr).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderAddr create error :%v", err))
 	}
 
@@ -350,7 +299,7 @@ func CreateCareOrder(db *gorm.DB) {
 		UpdateAt:        time.Now(),
 		IsDeleted:       sql.NullTime{},
 	}
-	if err := db.Create(&orderInfo).Error; err != nil {
+	if err := Db.Create(&orderInfo).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderInfo create error :%v", err))
 	}
 	orderComment := model.Comments{
@@ -365,17 +314,57 @@ func CreateCareOrder(db *gorm.DB) {
 		UpdateAt:        time.Now(),
 		IsDeleted:       sql.NullTime{},
 	}
-	if err := db.Create(&orderComment).Error; err != nil {
+	if err := Db.Create(&orderComment).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderComment create error :%v", err))
+	}
+
+	orderForCommentDel := model.CareOrders{
+		OrderNo:       "C202008241612348468756914",
+		Status:        common.I_ORDER_STATUS_FOR_DELIVERY,
+		Total:         total,
+		ApplicationID: AppId,
+		PayType:       common.I_ORDER_PAY_TYPE_WECHAT,
+		Rmk:           "备注",
+		AppType:       common.ORDER_APP_TYPE_MINI,
+		StartAt:       tt,
+		EndAt:         tt.AddDate(0, 0, 1),
+		OpenID:        "",
+		TradeType:     "",
+		IsReturn:      false,
+		CreateAt:      tt,
+		UpdateAt:      tt,
+		IsDeleted:     sql.NullTime{},
+		UserID:        User.ID,
+		CarerID:       0,
+	}
+	if err := Db.Create(&orderForCommentDel).Error; err != nil {
+		fmt.Println(fmt.Sprintf("orderForCommentDel create error :%v", err))
+	}
+
+	CareOrderCommentForDel = &model.Comments{
+		Content:         Fake.Paragraph(1, true),
+		UserID:          User.ID,
+		CommentableID:   orderForCommentDel.ID,
+		CommentableType: "app\\care\\model\\CareOrder",
+		ApplicationID:   AppId,
+		Pics:            Pics,
+		Star:            5,
+		CreateAt:        time.Now(),
+		UpdateAt:        time.Now(),
+		IsDeleted:       sql.NullTime{},
+	}
+	if err := Db.Create(CareOrderCommentForDel).Error; err != nil {
+		fmt.Println(fmt.Sprintf("orderCommentForDel create error :%v", err))
 	}
 
 	CareOrderInfo = &orderInfo
 	CareOrderAddr = &orderAddr
 	CareOrder = &order
 	CareOrderComment = &orderComment
+	CareOrderCommentCount++
 }
 
-func CreateMiniCareOrder(db *gorm.DB) {
+func CreateMiniCareOrder() {
 	CareOrderCount++
 	tt := time.Now()
 	var dd decimal.Decimal
@@ -407,7 +396,7 @@ func CreateMiniCareOrder(db *gorm.DB) {
 		UserID:        User.ID,
 		CarerID:       0,
 	}
-	if err := db.Create(&order).Error; err != nil {
+	if err := Db.Create(&order).Error; err != nil {
 		fmt.Println(fmt.Sprintf("order create error :%v", err))
 	}
 
@@ -427,7 +416,7 @@ func CreateMiniCareOrder(db *gorm.DB) {
 		UpdateAt:     time.Now(),
 		IsDeleted:    sql.NullTime{},
 	}
-	if err := db.Create(&orderAddr).Error; err != nil {
+	if err := Db.Create(&orderAddr).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderAddr create error :%v", err))
 	}
 
@@ -447,7 +436,7 @@ func CreateMiniCareOrder(db *gorm.DB) {
 		UpdateAt:        time.Now(),
 		IsDeleted:       sql.NullTime{},
 	}
-	if err := db.Create(&orderInfo).Error; err != nil {
+	if err := Db.Create(&orderInfo).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderInfo create error :%v", err))
 	}
 	orderComment := model.Comments{
@@ -462,7 +451,7 @@ func CreateMiniCareOrder(db *gorm.DB) {
 		UpdateAt:        time.Now(),
 		IsDeleted:       sql.NullTime{},
 	}
-	if err := db.Create(&orderComment).Error; err != nil {
+	if err := Db.Create(&orderComment).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderComment create error :%v", err))
 	}
 
@@ -472,15 +461,15 @@ func CreateMiniCareOrder(db *gorm.DB) {
 	MiniCareOrderComment = &orderComment
 }
 
-func CreateCarerTag(db *gorm.DB) {
+func CreateCarerTag() {
 	carerTag := model.CarerTags{Name: "护工标签", CreateAt: time.Now(), UpdateAt: time.Now(), IsDeleted: sql.NullTime{}, Icon: "icon"}
-	if err := db.Create(&carerTag).Error; err != nil {
+	if err := Db.Create(&carerTag).Error; err != nil {
 		fmt.Println(fmt.Sprintf("carerTag create error :%v", err))
 	}
 	CarerTag = &carerTag
 }
 
-func CreateCarer(db *gorm.DB) {
+func CreateCarer() {
 	carer := model.Carers{
 		Name:          "护理项目名称",
 		Desc:          "护理项目名称",
@@ -495,7 +484,7 @@ func CreateCarer(db *gorm.DB) {
 		UpdateAt:      time.Now(),
 		IsDeleted:     sql.NullTime{},
 	}
-	if err := db.Create(&carer).Error; err != nil {
+	if err := Db.Create(&carer).Error; err != nil {
 		fmt.Println(fmt.Sprintf("carer create error :%v", err))
 	}
 	Carer = &carer
@@ -514,17 +503,17 @@ func CreateCarer(db *gorm.DB) {
 		UpdateAt:      time.Now(),
 		IsDeleted:     sql.NullTime{},
 	}
-	if err := db.Create(&carer_no_tag).Error; err != nil {
+	if err := Db.Create(&carer_no_tag).Error; err != nil {
 		fmt.Println(fmt.Sprintf("carer_no_tag create error :%v", err))
 	}
 
 	tagCarer := model.CarerCarerTag{CarerID: Carer.ID, CarerTagID: CarerTag.ID, UpdateAt: time.Now(), CreateAt: time.Now()}
-	if err := db.Table("carer_carer_tag").Create(&tagCarer).Error; err != nil {
+	if err := Db.Table("carer_carer_tag").Create(&tagCarer).Error; err != nil {
 		fmt.Println(fmt.Sprintf("tagCarer create error :%v", err))
 	}
 }
 
-func CreateCarerOrder(db *gorm.DB) {
+func CreateCarerOrder() {
 	CareOrderCount++
 	tt := time.Now()
 	var dd decimal.Decimal
@@ -556,7 +545,7 @@ func CreateCarerOrder(db *gorm.DB) {
 		UserID:        User.ID,
 		CarerID:       0,
 	}
-	if err := db.Create(&order).Error; err != nil {
+	if err := Db.Create(&order).Error; err != nil {
 		fmt.Println(fmt.Sprintf("order create error :%v", err))
 	}
 
@@ -576,7 +565,7 @@ func CreateCarerOrder(db *gorm.DB) {
 		UpdateAt:     time.Now(),
 		IsDeleted:    sql.NullTime{},
 	}
-	if err := db.Create(&orderAddr).Error; err != nil {
+	if err := Db.Create(&orderAddr).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderAddr create error :%v", err))
 	}
 
@@ -598,7 +587,7 @@ func CreateCarerOrder(db *gorm.DB) {
 		UpdateAt:        time.Now(),
 		IsDeleted:       sql.NullTime{},
 	}
-	if err := db.Create(&orderCarerInfo).Error; err != nil {
+	if err := Db.Create(&orderCarerInfo).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderInfo create error :%v", err))
 	}
 
@@ -614,7 +603,7 @@ func CreateCarerOrder(db *gorm.DB) {
 		UpdateAt:        time.Now(),
 		IsDeleted:       sql.NullTime{},
 	}
-	if err := db.Create(&orderComment).Error; err != nil {
+	if err := Db.Create(&orderComment).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderComment create error :%v", err))
 	}
 
@@ -624,7 +613,7 @@ func CreateCarerOrder(db *gorm.DB) {
 	CarerOrderComment = &orderComment
 }
 
-func CreateMiniCarerOrder(db *gorm.DB) {
+func CreateMiniCarerOrder() {
 	CareOrderCount++
 	tt := time.Now()
 	var dd decimal.Decimal
@@ -656,7 +645,7 @@ func CreateMiniCarerOrder(db *gorm.DB) {
 		UserID:        User.ID,
 		CarerID:       0,
 	}
-	if err := db.Create(&order).Error; err != nil {
+	if err := Db.Create(&order).Error; err != nil {
 		fmt.Println(fmt.Sprintf("order create error :%v", err))
 	}
 
@@ -676,7 +665,7 @@ func CreateMiniCarerOrder(db *gorm.DB) {
 		UpdateAt:     time.Now(),
 		IsDeleted:    sql.NullTime{},
 	}
-	if err := db.Create(&orderAddr).Error; err != nil {
+	if err := Db.Create(&orderAddr).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderAddr create error :%v", err))
 	}
 
@@ -698,7 +687,7 @@ func CreateMiniCarerOrder(db *gorm.DB) {
 		UpdateAt:        time.Now(),
 		IsDeleted:       sql.NullTime{},
 	}
-	if err := db.Create(&orderCarerInfo).Error; err != nil {
+	if err := Db.Create(&orderCarerInfo).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderInfo create error :%v", err))
 	}
 	orderComment := model.Comments{
@@ -713,7 +702,7 @@ func CreateMiniCarerOrder(db *gorm.DB) {
 		UpdateAt:        time.Now(),
 		IsDeleted:       sql.NullTime{},
 	}
-	if err := db.Create(&orderComment).Error; err != nil {
+	if err := Db.Create(&orderComment).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderComment create error :%v", err))
 	}
 
@@ -723,50 +712,7 @@ func CreateMiniCarerOrder(db *gorm.DB) {
 	MiniCarerOrderComment = &orderComment
 }
 
-func CreateMenuType(db *gorm.DB) {
-	menuType := model.APIMenuTypes{Name: "菜单类型", ApplicationID: AppId, CreateAt: time.Now(), UpdateAt: time.Now(), IsDeleted: sql.NullTime{}}
-	if err := db.Create(&menuType).Error; err != nil {
-		fmt.Println(fmt.Sprintf("menuType create error :%v", err))
-	}
-	MenuType = &menuType
-}
-
-func CreateMenuTag(db *gorm.DB) {
-	menuTag := model.APIMenuTags{Name: "菜单标签", CreateAt: time.Now(), UpdateAt: time.Now(), IsDeleted: sql.NullTime{}}
-	if err := db.Create(&menuTag).Error; err != nil {
-		fmt.Println(fmt.Sprintf("menuTag create error :%v", err))
-	}
-	MenuTag = &menuTag
-}
-
-func CreateMenu(db *gorm.DB) {
-	menu := model.APIMenus{
-		Name:          "菜单名称",
-		TimeType:      common.MENU_TIME_TYPE_B,
-		Desc:          "菜品介绍",
-		Status:        true,
-		Amount:        MenuAmount,
-		Price:         10.00,
-		ApplicationID: AppId,
-		MenuTypeID:    MenuType.ID,
-		CreateAt:      time.Now(),
-		UpdateAt:      time.Now(),
-		IsDeleted:     sql.NullTime{},
-	}
-
-	if err := db.Create(&menu).Error; err != nil {
-		fmt.Println(fmt.Sprintf("menu create error :%v", err))
-	}
-
-	Menu = &menu
-
-	tagMenu := model.MenuMenuTag{MenuID: menu.ID, MenuTagID: MenuTag.ID, UpdateAt: time.Now(), CreateAt: time.Now()}
-	if err := db.Table("menu_menu_tag").Create(&tagMenu).Error; err != nil {
-		fmt.Println(fmt.Sprintf("tagMenu create error :%v", err))
-	}
-}
-
-func CreateOrder(db *gorm.DB) {
+func CreateOrder() {
 	OrderCount++
 	order := model.APIOOrders{
 		OrderNo:       "O202008241612348468756914",
@@ -785,7 +731,7 @@ func CreateOrder(db *gorm.DB) {
 		IsDeleted:     sql.NullTime{},
 		UserID:        User.ID,
 	}
-	if err := db.Create(&order).Error; err != nil {
+	if err := Db.Create(&order).Error; err != nil {
 		fmt.Println(fmt.Sprintf("order create error :%v", err))
 	}
 
@@ -805,7 +751,7 @@ func CreateOrder(db *gorm.DB) {
 		UpdateAt:     time.Now(),
 		IsDeleted:    sql.NullTime{},
 	}
-	if err := db.Create(&orderAddr).Error; err != nil {
+	if err := Db.Create(&orderAddr).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderAddr create error :%v", err))
 	}
 
@@ -823,7 +769,7 @@ func CreateOrder(db *gorm.DB) {
 		UpdateAt:     time.Now(),
 		IsDeleted:    sql.NullTime{},
 	}
-	if err := db.Create(&orderMenu).Error; err != nil {
+	if err := Db.Create(&orderMenu).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderAddr create error :%v", err))
 	}
 	var orderMenus []*model.APIOOrderMenus
@@ -841,7 +787,7 @@ func CreateOrder(db *gorm.DB) {
 		UpdateAt:        time.Now(),
 		IsDeleted:       sql.NullTime{},
 	}
-	if err := db.Create(&orderComment).Error; err != nil {
+	if err := Db.Create(&orderComment).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderComment create error :%v", err))
 	}
 
@@ -851,8 +797,8 @@ func CreateOrder(db *gorm.DB) {
 	Order = &order
 }
 
-func CreateMiniOrder(db *gorm.DB) {
-	OrderCount++
+func CreateMiniOrder() {
+	OrderCount = OrderCount + 2
 	order := model.APIOOrders{
 		OrderNo:       "O202008241612348468756914",
 		Status:        common.I_ORDER_STATUS_FOR_DELIVERY,
@@ -870,7 +816,7 @@ func CreateMiniOrder(db *gorm.DB) {
 		IsDeleted:     sql.NullTime{},
 		UserID:        User.ID,
 	}
-	if err := db.Create(&order).Error; err != nil {
+	if err := Db.Create(&order).Error; err != nil {
 		fmt.Println(fmt.Sprintf("order create error :%v", err))
 	}
 
@@ -890,7 +836,7 @@ func CreateMiniOrder(db *gorm.DB) {
 		UpdateAt:     time.Now(),
 		IsDeleted:    sql.NullTime{},
 	}
-	if err := db.Create(&orderAddr).Error; err != nil {
+	if err := Db.Create(&orderAddr).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderAddr create error :%v", err))
 	}
 
@@ -908,7 +854,7 @@ func CreateMiniOrder(db *gorm.DB) {
 		UpdateAt:     time.Now(),
 		IsDeleted:    sql.NullTime{},
 	}
-	if err := db.Create(&orderMenu).Error; err != nil {
+	if err := Db.Create(&orderMenu).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderAddr create error :%v", err))
 	}
 	var orderMenus []*model.APIOOrderMenus
@@ -926,17 +872,55 @@ func CreateMiniOrder(db *gorm.DB) {
 		UpdateAt:        time.Now(),
 		IsDeleted:       sql.NullTime{},
 	}
-	if err := db.Create(&orderComment).Error; err != nil {
+	if err := Db.Create(&orderComment).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderComment create error :%v", err))
+	}
+
+	orderForCommentDel := model.APIOOrders{
+		OrderNo:       "O202008241612348468756914",
+		Status:        common.I_ORDER_STATUS_FOR_DELIVERY,
+		Amount:        0,
+		Total:         10.00,
+		ApplicationID: AppId,
+		PayType:       common.I_ORDER_PAY_TYPE_WECHAT,
+		Rmk:           "备注",
+		AppType:       common.ORDER_APP_TYPE_MINI,
+		OpenID:        "",
+		TradeType:     "",
+		IsReturn:      false,
+		CreateAt:      time.Now(),
+		UpdateAt:      time.Now(),
+		IsDeleted:     sql.NullTime{},
+		UserID:        User.ID,
+	}
+	if err := Db.Create(&orderForCommentDel).Error; err != nil {
+		fmt.Println(fmt.Sprintf("order create error :%v", err))
+	}
+
+	MiniOrderCommentForDel = &model.Comments{
+		Content:         Fake.Paragraph(1, true),
+		UserID:          User.ID,
+		CommentableID:   orderForCommentDel.ID,
+		CommentableType: "app\\api\\model\\Order",
+		ApplicationID:   AppId,
+		Pics:            Pics,
+		Star:            5,
+		CreateAt:        time.Now(),
+		UpdateAt:        time.Now(),
+		IsDeleted:       sql.NullTime{},
+	}
+	if err := Db.Create(MiniOrderCommentForDel).Error; err != nil {
+		fmt.Println(fmt.Sprintf("orderCommentFordel create error :%v", err))
 	}
 
 	MiniOrderMenus = orderMenus
 	MiniOrderAddr = &orderAddr
 	MiniOrder = &order
 	MiniOrderComment = &orderComment
+	MiniOrderCommentCount = 1
 }
 
-func CreateArticle(db *gorm.DB) {
+func CreateArticle() {
 
 	artice := model.Articles{
 		Title:            Fake.JobTitle(),
@@ -949,14 +933,14 @@ func CreateArticle(db *gorm.DB) {
 		UpdateAt:         time.Now(),
 		IsDeleted:        sql.NullTime{},
 	}
-	if err := db.Create(&artice).Error; err != nil {
+	if err := Db.Create(&artice).Error; err != nil {
 		fmt.Println(fmt.Sprintf("artice create error :%v", err))
 	}
 
 	Article = &artice
 }
 
-func CreateLocType(db *gorm.DB) {
+func CreateLocType() {
 	locType := model.LocTypes{
 		Name:          Fake.JobTitle(),
 		ApplicationID: AppId,
@@ -964,14 +948,14 @@ func CreateLocType(db *gorm.DB) {
 		UpdateAt:      time.Now(),
 		IsDeleted:     sql.NullTime{},
 	}
-	if err := db.Create(&locType).Error; err != nil {
+	if err := Db.Create(&locType).Error; err != nil {
 		fmt.Println(fmt.Sprintf("locType create error :%v", err))
 	}
 
 	LocType = &locType
 }
 
-func CreateLoc(db *gorm.DB) {
+func CreateLoc() {
 	loc := model.Locs{
 		LocID:         rand.Int(),
 		CtHospitalID:  rand.Int(),
@@ -983,14 +967,14 @@ func CreateLoc(db *gorm.DB) {
 		UpdateAt:      time.Now(),
 		IsDeleted:     sql.NullTime{},
 	}
-	if err := db.Create(&loc).Error; err != nil {
+	if err := Db.Create(&loc).Error; err != nil {
 		fmt.Println(fmt.Sprintf("loc create error :%v", err))
 	}
 
 	Loc = &loc
 }
 
-func CreateUserType(db *gorm.DB) {
+func CreateUserType() {
 	letters := []byte("NDO")
 	userType := model.UserTypes{
 		UtpID:       rand.Int(),
@@ -1003,14 +987,14 @@ func CreateUserType(db *gorm.DB) {
 		UpdateAt:    time.Now(),
 		IsDeleted:   sql.NullTime{},
 	}
-	if err := db.Create(&userType).Error; err != nil {
+	if err := Db.Create(&userType).Error; err != nil {
 		fmt.Println(fmt.Sprintf("userType create error :%v", err))
 	}
 
 	UserType = &userType
 }
 
-func CreatePatient(db *gorm.DB) {
+func CreatePatient() {
 	patient := model.Patients{
 		Username:  Fake.Name(),
 		Nickname:  Fake.Name(),
@@ -1030,14 +1014,14 @@ func CreatePatient(db *gorm.DB) {
 		UpdateAt:  time.Now(),
 		IsDeleted: sql.NullTime{},
 	}
-	if err := db.Create(&patient).Error; err != nil {
+	if err := Db.Create(&patient).Error; err != nil {
 		fmt.Println(fmt.Sprintf("patient create error :%v", err))
 	}
 
 	Patient = &patient
 
 	userPatient := model.UserPatient{PatientID: Patient.ID, UserID: User.ID, UpdateAt: time.Now(), CreateAt: time.Now()}
-	if err := db.Table("user_patient").Create(&userPatient).Error; err != nil {
+	if err := Db.Table("user_patient").Create(&userPatient).Error; err != nil {
 		fmt.Println(fmt.Sprintf("userPatient create error :%v", err))
 	}
 }

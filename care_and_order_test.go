@@ -614,7 +614,7 @@ func TestCareOrderShowReturnSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("is_return").Equal(1)
 
 	obj.Value("data").Object().Value("order_carer_info").Null()
-	obj.Value("data").Object().Value("comments").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("comments").Array().Length().Equal(CareOrderCommentCount)
 	comment := obj.Value("data").Object().Value("comments").Array().First().Object()
 	comment.Value("id").NotNull()
 	comment.Value("user_id").Equal(User.ID)

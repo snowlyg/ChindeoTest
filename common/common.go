@@ -1,9 +1,17 @@
 package common
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/manveru/faker"
 	"github.com/shopspring/decimal"
 )
+
+const AppId = 13
+const IdCardNo = "456952158962254456"
+const CareMiniPrice = 1.00
+const CareMaxPrice = 50.00
+const CarerPrice = 50.00
 
 const AUTH_TYPE_MINIWECHAT = 1 // 小程序
 const AUTH_TYPE_APP = 2        //APP
@@ -62,4 +70,21 @@ func GetS(i interface{}) string {
 func Ftos(f float64) string {
 	df, _ := decimal.NewFromFloat(f).Float64()
 	return fmt.Sprintf("%.2f", df)
+}
+
+var Pics string
+var Fake *faker.Faker
+
+func GetPics() {
+	pics := []string{"https", "https"}
+	jpics, _ := json.Marshal(pics)
+	Pics = string(jpics)
+}
+
+func GetFake() {
+	var err error
+	Fake, err = faker.New("en")
+	if err != nil {
+		fmt.Println(fmt.Sprintf("faker create error :%v", err))
+	}
 }
