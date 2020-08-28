@@ -68,4 +68,14 @@ func ClearTables(db *gorm.DB) {
 	db.Unscoped().Delete(CareReturnOrderInfos{}, "id > ?", 0)
 	db.Unscoped().Delete(CareReturnOrderCarerInfos{}, "id > ?", 0)
 
+	db.Unscoped().Delete(Articles{}, "id > ?", 0)
+	db.Unscoped().Delete(Quals{}, "id > ?", 0)
+	db.Unscoped().Delete(LocTypes{}, "id > ?", 0)
+	db.Unscoped().Delete(Locs{}, "id > ?", 0)
+	db.Unscoped().Delete(UserTypes{}, "id > ?", 0)
+	db.Unscoped().Delete(Patients{}, "id > ?", 0)
+	db.Unscoped().Delete(PatientProfiles{}, "id > ?", 0)
+	db.Unscoped().Table("user_patient").Delete(UserPatient{}, "id > ?", 0)
+	db.Unscoped().Delete(Comments{}, "id > ?", 0)
+
 }

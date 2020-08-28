@@ -33,5 +33,5 @@ func TestApplicationSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("tel").Equal("0755-65236253")
 	obj.Value("data").Object().Value("addr").Equal("我的医院")
 	obj.Value("data").Object().Value("describle").Equal("我的医院")
-	obj.Value("data").Object().Value("business_hours").Equal("")
+	obj.Value("data").Object().Value("business_hours").Equal("09:00-10:00")
 }

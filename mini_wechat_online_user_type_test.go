@@ -10,7 +10,7 @@ import (
 	"github.com/gavv/httpexpect/v2"
 )
 
-func TestMiniWechatMenuTypeSuccess(t *testing.T) {
+func TestMiniWechatOnlineUserTypeListSuccess(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
 		Client: &http.Client{
@@ -19,7 +19,7 @@ func TestMiniWechatMenuTypeSuccess(t *testing.T) {
 		BaseURL: config.Config.Url,
 	})
 
-	obj := e.GET("/api/v1/outline/menu_type").
+	obj := e.GET("/online/v1/user_type").
 		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
 		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
 		WithQuery("application_id", AppId).
@@ -30,6 +30,6 @@ func TestMiniWechatMenuTypeSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Array().Length().Equal(1)
-	obj.Value("data").Array().First().Object().Value("id").Equal(MenuType.ID)
-	obj.Value("data").Array().First().Object().Value("name").Equal(MenuType.Name)
+	obj.Value("data").Array().First().Object().Value("id").Equal(UserType.ID)
+	obj.Value("data").Array().First().Object().Value("utp_desc").Equal(UserType.UtpDesc)
 }

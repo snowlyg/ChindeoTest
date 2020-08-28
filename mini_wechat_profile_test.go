@@ -58,6 +58,32 @@ func TestMiniWechatProfileUpdateSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("realname").Equal("小样")
 }
 
+func TestMiniWechatProfileSetServerSuccess(t *testing.T) {
+	info := map[string]interface{}{
+		"server_date":     "1,2,3,4,5,6,7",
+		"server_start_at": "9:00",
+		"server_end_at":   "17:00",
+	}
+
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+	obj := e.POST("/api/v1/profile/set_server").
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+		WithJSON(info).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("新增成功")
+}
+
 func TestMiniWechatProfileNoDevHeader(t *testing.T) {
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
@@ -75,4 +101,44 @@ func TestMiniWechatProfileNoDevHeader(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "message")
 	obj.Value("code").Equal(400)
 	obj.Value("message").String().Equal("内部服务类型,无法访问外部接口类型")
+}
+
+func TestMiniWechatProfileSetServerOpenSuccess(t *testing.T) {
+
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+	obj := e.GET("/api/v1/profile/set_server_open").
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("设置成功")
+}
+
+func TestMiniWechatProfileAuthSuccess(t *testing.T) {
+
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client: &http.Client{
+			Jar: httpexpect.NewJar(), // used by default if Client is nil
+		},
+		BaseURL: config.Config.Url,
+	})
+	obj := e.GET("/api/v1/profile/auth").
+		WithHeaders(map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(common.AUTH_TYPE_MINIWECHAT), 10)}).
+		WithCookie("PHPSESSID", MINIWECHATPHPSESSID).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("设置成功")
 }

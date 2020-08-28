@@ -38,11 +38,11 @@ func TestOrderListSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(OrderCount)
 
 	last := obj.Value("data").Object().Value("data").Array().Last().Object()
 	last.Value("status").Object().Value("text").Equal("已付款")
-	last.Value("status").Object().Value("value").Equal(2)
+	last.Value("status").Object().Value("value").Equal(common.I_ORDER_STATUS_FOR_DELIVERY)
 	last.Value("is_return").Equal("未退款")
 
 }
@@ -104,6 +104,7 @@ func TestOrderAddSuccess(t *testing.T) {
 	if ok {
 		orderId, _ = strconv.Atoi(data)
 	}
+	OrderCount++
 }
 
 func TestOrderAddErrorIdCardNo(t *testing.T) {
@@ -222,13 +223,16 @@ func TestOrderShowSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("id").Equal(orderId)
 	obj.Value("data").Object().Value("order_no").String().Contains("I")
-	obj.Value("data").Object().Value("status").Object().Value("value").Equal(1)
+	obj.Value("data").Object().Value("status").Object().Value("value").Equal(common.I_ORDER_STATUS_FOR_PAY)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("待付款")
 	obj.Value("data").Object().Value("amount").Number().Equal(12)
 	obj.Value("data").Object().Value("total").String().Equal("32.00")
 	obj.Value("data").Object().Value("is_return").String().Equal("未退款")
 	obj.Value("data").Object().Value("menus").Array().Length().Equal(1)
+
 	obj.Value("data").Object().Value("return_order").Null()
+	obj.Value("data").Object().Value("comments").Array().Length().Equal(0)
+
 	obj.Value("data").Object().Value("addr").Object().Value("id").NotNull()
 	obj.Value("data").Object().Value("addr").Object().Value("name").Equal("操蛋")
 	obj.Value("data").Object().Value("addr").Object().Value("sex").Equal(1)
@@ -321,12 +325,24 @@ func TestOrderShowReturnSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("id").Equal(Order.ID)
 	obj.Value("data").Object().Value("order_no").String().Contains("O")
-	obj.Value("data").Object().Value("status").Object().Value("value").Equal(4)
+	obj.Value("data").Object().Value("status").Object().Value("value").Equal(common.I_ORDER_STATUS_FOR_CANCEL)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("已取消")
 	obj.Value("data").Object().Value("amount").Number().Equal(Order.Amount)
 	obj.Value("data").Object().Value("total").Equal("10.00")
 	obj.Value("data").Object().Value("is_return").String().Equal("有退款")
+
+	obj.Value("data").Object().Value("comments").Array().Length().Equal(1)
+	comment := obj.Value("data").Object().Value("comments").Array().First().Object()
+	comment.Value("id").NotNull()
+	comment.Value("user_id").Equal(User.ID)
+	comment.Value("application_id").Equal(AppId)
+	comment.Value("content").Equal(OrderComment.Content)
+	comment.Value("star").Equal(5)
+	comment.Value("pics").Array().Length().Equal(2)
+	comment.Value("pics").Array().First().Equal("https")
+	comment.Value("pics").Array().Last().Equal("https")
 	obj.Value("data").Object().Value("menus").Array().Length().Equal(len(OrderMenus))
+
 	orderMenu := obj.Value("data").Object().Value("menus").Array().First().Object()
 	orderMenu.Value("id").NotNull()
 	orderMenu.Value("menu_name").Equal(OrderMenus[0].MenuName)
@@ -409,6 +425,7 @@ func TestOrderDeleteSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
+	OrderCount--
 }
 
 func TestOrderDeleteReturnSuccess(t *testing.T) {
@@ -428,6 +445,7 @@ func TestOrderDeleteReturnSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
+	OrderCount--
 }
 
 func TestOrderDeleteError(t *testing.T) {
