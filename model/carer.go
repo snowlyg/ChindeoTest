@@ -7,6 +7,7 @@ import (
 )
 
 var CarerCount int
+var CarerNoTagCount int
 var CarerAmount int
 
 func CreateCarer(carerTagId int, isTag bool) *Carers {
@@ -32,7 +33,8 @@ func CreateCarer(carerTagId int, isTag bool) *Carers {
 		if err := DB.Table("carer_carer_tag").Create(&tagCarer).Error; err != nil {
 			fmt.Println(fmt.Sprintf("tagCarer create error :%v", err))
 		}
+		CarerCount++
 	}
-	CarerCount++
+	CarerNoTagCount++
 	return carer
 }

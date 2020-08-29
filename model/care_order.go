@@ -76,6 +76,16 @@ func CreateCareOrderComment(userId, orderId, star int, commentableType string) *
 	return orderComment
 }
 
+func CreateCareOrderComments(num, userId, orderId, star int, commentableType string) []*Comments {
+	var comments []*Comments
+	for num > 0 {
+		comment := CreateCareOrderComment(userId, orderId, star, commentableType)
+		comments = append(comments, comment)
+		num--
+	}
+	return comments
+}
+
 func CreateCareOrderInfo(orderId int, care *Cares, appName, careTypeName, careTagName string) *CareOrderInfos {
 	orderInfo := &CareOrderInfos{
 		Name:            care.Name,

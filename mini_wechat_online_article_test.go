@@ -18,7 +18,7 @@ func TestMiniWechatOnlineArticleListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.ArticleCount)
 	obj.Value("data").Object().Value("data").Array().First().Object().Value("id").Equal(Article.ID)
 	obj.Value("data").Object().Value("data").Array().First().Object().Value("title").Equal(Article.Title)
 	obj.Value("data").Object().Value("data").Array().First().Object().Value("digest").Equal(Article.Digest)

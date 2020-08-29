@@ -52,10 +52,10 @@ func TestMiniWechatAddrAddSuccess(t *testing.T) {
 	if ok {
 		delAddrId = data
 	}
+	model.AddrCount++
 }
 
 func TestMiniWechatAddrListSuccess(t *testing.T) {
-
 	obj := model.GetE(t).GET("/api/v1/outline/addr").
 		WithHeaders(model.GetMiniHeader()).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
@@ -65,7 +65,7 @@ func TestMiniWechatAddrListSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	obj.Value("data").Array().Length().Equal(2)
+	obj.Value("data").Array().Length().Equal(model.AddrCount)
 }
 
 func TestMiniWechatAddrAddError(t *testing.T) {
@@ -193,7 +193,6 @@ func TestMiniWechatAddrUpdateErrorSex(t *testing.T) {
 }
 
 func TestMiniWechatAddrDeleteSuccess(t *testing.T) {
-
 	obj := model.GetE(t).DELETE("/api/v1/outline/addr/{id}", delAddrId).
 		WithHeaders(model.GetMiniHeader()).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
@@ -203,6 +202,7 @@ func TestMiniWechatAddrDeleteSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("操作成功")
+	model.AddrCount--
 }
 
 func TestMiniWechatAddrDeleteError(t *testing.T) {
@@ -219,7 +219,6 @@ func TestMiniWechatAddrDeleteError(t *testing.T) {
 }
 
 func TestMiniWechatAddrDeleteNoExistError(t *testing.T) {
-
 	obj := model.GetE(t).DELETE("/api/v1/outline/addr/{id}", 999999).
 		WithHeaders(model.GetMiniHeader()).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).

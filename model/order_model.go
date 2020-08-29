@@ -32,8 +32,6 @@ func CreateOrderAddr(orderId int) *APIOOrderAddrs {
 	return &orderAddr
 }
 
-var OrderMenuCount int
-
 func CreateOrderMenu(menu *APIMenus, menuType string, orderId int) *APIOOrderMenus {
 	orderMenu := APIOOrderMenus{
 		MenuName:     menu.Name,
@@ -52,12 +50,17 @@ func CreateOrderMenu(menu *APIMenus, menuType string, orderId int) *APIOOrderMen
 	if err := DB.Create(&orderMenu).Error; err != nil {
 		fmt.Println(fmt.Sprintf("orderAddr create error :%v", err))
 	}
-	OrderMenuCount++
 	return &orderMenu
 }
 
-func CreateOrderMenus(orderMenu *APIOOrderMenus) []*APIOOrderMenus {
-	return []*APIOOrderMenus{orderMenu}
+func CreateOrderMenus(menu *APIMenus, menuType string, orderId, num int) []*APIOOrderMenus {
+	var menus []*APIOOrderMenus
+	for num > 0 {
+		menu := CreateOrderMenu(menu, menuType, orderId)
+		menus = append(menus, menu)
+		num--
+	}
+	return menus
 }
 
 func CreateOrderComment(userId, orderId int, commentableType string) *Comments {
@@ -77,6 +80,16 @@ func CreateOrderComment(userId, orderId int, commentableType string) *Comments {
 		fmt.Println(fmt.Sprintf("orderComment create error :%v", err))
 	}
 	return orderComment
+}
+
+func CreateOrderComments(num, userId, orderId int, commentableType string) []*Comments {
+	var comments []*Comments
+	for num > 0 {
+		comment := CreateOrderComment(userId, orderId, commentableType)
+		comments = append(comments, comment)
+		num--
+	}
+	return comments
 }
 
 func CreateOrder(orderNo string, userId, appType, payType int) *APIOOrders {

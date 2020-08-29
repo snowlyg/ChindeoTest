@@ -21,7 +21,7 @@ func TestMiniWechatMenuSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.MenuCount)
 	obj.Value("data").Object().Value("data").Array().First().Object().Value("id").Equal(Menu.ID)
 }
 
@@ -40,6 +40,25 @@ func TestMiniWechatMenuNoPageSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Array().Length().Equal(model.MenuCount)
+	obj.Value("data").Array().First().Object().Value("id").Equal(Menu.ID)
+}
+
+func TestMiniWechatMenuNoPageNoTagSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/api/v1/outline/menu").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
+		WithQuery("menu_type_id", MenuType.ID).
+		WithQuery("time_type", Menu.TimeType).
+		WithQuery("page_size", "-1").
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Array().Length().Equal(model.MenuNoTagCount)
 	obj.Value("data").Array().First().Object().Value("id").Equal(Menu.ID)
 }
 

@@ -95,6 +95,8 @@ type APIMenus struct {
 	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
 	ApplicationID int          `gorm:"column:application_id;type:int;not null" json:"application_id"`
 	MenuTypeID    int          `gorm:"index:menu_type_id;column:menu_type_id;type:int;not null" json:"menu_type_id"` // menu_type_id
+	MenuTags      []*APIMenuTags
+	MenuType      *APIMenuTypes
 }
 
 // APIOOrderAddrs [...]
@@ -151,6 +153,9 @@ type APIOOrders struct {
 	IsReturn      bool         `gorm:"column:is_return;type:tinyint(1);not null" json:"is_return"`                  // 是否退款
 	ApplicationID int          `gorm:"index:user_id;column:application_id;type:int;not null" json:"application_id"` // application_id
 	UserID        int          `gorm:"index:user_id;column:user_id;type:int;not null" json:"user_id"`               // user_id
+	OrderAddr     *APIOOrderAddrs
+	OrderMenus    []*APIOOrderMenus
+	OrderComments []*Comments
 }
 
 // APIOReturnOrderAddrs [...]
@@ -342,24 +347,28 @@ type CareOrderInfos struct {
 
 // CareOrders 护理订单表
 type CareOrders struct {
-	ID            int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
-	OrderNo       string       `gorm:"column:order_no;type:varchar(50);not null" json:"order_no"`                   // 订单号
-	Status        int          `gorm:"column:status;type:int;not null" json:"status"`                               // 订单状态：1：待付款，2：已付款，3，进行中，4：已取消，5：已完成
-	PayType       int          `gorm:"column:pay_type;type:int;not null" json:"pay_type"`                           // 订单支付类型：1：微信，2：支付宝
-	Total         float64      `gorm:"column:total;type:decimal(10,2);not null" json:"total"`                       // 总金额
-	Rmk           string       `gorm:"column:rmk;type:varchar(500);not null" json:"rmk"`                            // 备注
-	StartAt       time.Time    `gorm:"column:start_at;type:datetime;not null" json:"start_at"`                      // 服务开始时间
-	EndAt         time.Time    `gorm:"column:end_at;type:datetime;not null" json:"end_at"`                          // 服务结束时间
-	OpenID        string       `gorm:"column:open_id;type:varchar(100);not null" json:"open_id"`                    // open_id
-	TradeType     string       `gorm:"column:trade_type;type:varchar(10);not null" json:"trade_type"`               // JSAPI、NATIVE、APP
-	IsReturn      bool         `gorm:"column:is_return;type:tinyint(1);not null" json:"is_return"`                  // 是否退款
-	ApplicationID int          `gorm:"index:user_id;column:application_id;type:int;not null" json:"application_id"` // application_id
-	UserID        int          `gorm:"index:user_id;column:user_id;type:int;not null" json:"user_id"`               // user_id
-	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
-	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
-	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
-	AppType       int          `gorm:"column:app_type;type:int;not null" json:"app_type"`                // 订单应用类型，1：小程序，2：床旁
-	CarerID       int          `gorm:"index:carer_id;column:carer_id;type:int;not null" json:"carer_id"` // 护工id
+	ID                 int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	OrderNo            string       `gorm:"column:order_no;type:varchar(50);not null" json:"order_no"`                   // 订单号
+	Status             int          `gorm:"column:status;type:int;not null" json:"status"`                               // 订单状态：1：待付款，2：已付款，3，进行中，4：已取消，5：已完成
+	PayType            int          `gorm:"column:pay_type;type:int;not null" json:"pay_type"`                           // 订单支付类型：1：微信，2：支付宝
+	Total              float64      `gorm:"column:total;type:decimal(10,2);not null" json:"total"`                       // 总金额
+	Rmk                string       `gorm:"column:rmk;type:varchar(500);not null" json:"rmk"`                            // 备注
+	StartAt            time.Time    `gorm:"column:start_at;type:datetime;not null" json:"start_at"`                      // 服务开始时间
+	EndAt              time.Time    `gorm:"column:end_at;type:datetime;not null" json:"end_at"`                          // 服务结束时间
+	OpenID             string       `gorm:"column:open_id;type:varchar(100);not null" json:"open_id"`                    // open_id
+	TradeType          string       `gorm:"column:trade_type;type:varchar(10);not null" json:"trade_type"`               // JSAPI、NATIVE、APP
+	IsReturn           bool         `gorm:"column:is_return;type:tinyint(1);not null" json:"is_return"`                  // 是否退款
+	ApplicationID      int          `gorm:"index:user_id;column:application_id;type:int;not null" json:"application_id"` // application_id
+	UserID             int          `gorm:"index:user_id;column:user_id;type:int;not null" json:"user_id"`               // user_id
+	IsDeleted          sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+	CreateAt           time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt           time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	AppType            int          `gorm:"column:app_type;type:int;not null" json:"app_type"`                // 订单应用类型，1：小程序，2：床旁
+	CarerID            int          `gorm:"index:carer_id;column:carer_id;type:int;not null" json:"carer_id"` // 护工id
+	CareOrderAddr      *CareOrderAddrs
+	CareOrderInfo      *CareOrderInfos
+	CareOrderCarerInfo *CareOrderCarerInfos
+	CareOrderComments  []*Comments
 }
 
 // CareReturnOrderAddrs 退款订单地址表

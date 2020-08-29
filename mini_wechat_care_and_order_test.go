@@ -15,7 +15,6 @@ var miniCarePrice decimal.Decimal
 var miniCareTimeTypeText string
 
 func TestMiniWechatCareListSuccess(t *testing.T) {
-
 	obj := model.GetE(t).GET("/care/v1/care").
 		WithHeaders(model.GetMiniHeader()).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
@@ -29,14 +28,14 @@ func TestMiniWechatCareListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.CareCount)
 
 	fitst := obj.Value("data").Object().Value("data").Array().Last().Object()
 	fitst.Value("id").Equal(Care.ID)
 	fitst.Value("name").Equal(Care.Name)
 	fitst.Value("desc").Equal(Care.Desc)
 	fitst.Value("time_type").Equal(Care.TimeType)
-	fitst.Value("amount").Equal(CareAmount)
+	fitst.Value("amount").Equal(model.CareAmount)
 	fitst.Value("cover").Equal(Care.Cover)
 	fitst.Value("care_type_id").Equal(Care.CareTypeID)
 
@@ -58,14 +57,14 @@ func TestMiniWechatCareNoTagIdListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(2)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.CareNoTagCount)
 
 	fitst := obj.Value("data").Object().Value("data").Array().Last().Object()
 	fitst.Value("id").Equal(Care.ID)
 	fitst.Value("name").Equal(Care.Name)
 	fitst.Value("desc").Equal(Care.Desc)
 	fitst.Value("time_type").Equal(Care.TimeType)
-	fitst.Value("amount").Equal(CareAmount)
+	fitst.Value("amount").Equal(model.CareAmount)
 	fitst.Value("cover").Equal(Care.Cover)
 	fitst.Value("care_type_id").Equal(Care.CareTypeID)
 
@@ -105,14 +104,14 @@ func TestMiniWechatCareListNoPageSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	obj.Value("data").Array().Length().Equal(1)
+	obj.Value("data").Array().Length().Equal(model.CareCount)
 
 	fitst := obj.Value("data").Array().First().Object()
 	fitst.Value("id").Equal(Care.ID)
 	fitst.Value("name").Equal(Care.Name)
 	fitst.Value("desc").Equal(Care.Desc)
 	fitst.Value("time_type").Equal(Care.TimeType)
-	fitst.Value("amount").Equal(CareAmount)
+	fitst.Value("amount").Equal(model.CareAmount)
 	fitst.Value("cover").Equal(Care.Cover)
 	fitst.Value("care_type_id").Equal(Care.CareTypeID)
 
@@ -137,7 +136,7 @@ func TestMiniWechatCareShowSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("name").Equal(Care.Name)
 	obj.Value("data").Object().Value("desc").Equal(Care.Desc)
 	obj.Value("data").Object().Value("time_type").Equal(Care.TimeType)
-	obj.Value("data").Object().Value("amount").Equal(CareAmount)
+	obj.Value("data").Object().Value("amount").Equal(model.CareAmount)
 	obj.Value("data").Object().Value("cover").Equal(Care.Cover)
 	obj.Value("data").Object().Value("care_type_id").Equal(Care.CareTypeID)
 
@@ -159,7 +158,7 @@ func TestMiniWechatCareOrderListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(CareOrderCount)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.CareOrderCount)
 }
 
 var miniCareStartAt time.Time
@@ -317,8 +316,8 @@ func TestMiniWechatCareShowAfterOrderAddSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("name").Equal(Care.Name)
 	obj.Value("data").Object().Value("desc").Equal(Care.Desc)
 	obj.Value("data").Object().Value("time_type").Equal(Care.TimeType)
-	obj.Value("data").Object().Value("amount").Equal(CareAmount + 1)
-	CareAmount++
+	obj.Value("data").Object().Value("amount").Equal(model.CareAmount + 1)
+	model.CareAmount++
 	obj.Value("data").Object().Value("cover").Equal(Care.Cover)
 	obj.Value("data").Object().Value("care_type_id").Equal(Care.CareTypeID)
 
@@ -412,16 +411,16 @@ func TestMiniWechatCareOrderShowCareSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("comments").Array().Length().Equal(2)
 	orderInfo := obj.Value("data").Object().Value("order_info").Object()
 	orderInfo.Value("id").NotNull()
-	orderInfo.Value("name").Equal(MiniCareOrderInfo.Name)
-	orderInfo.Value("desc").Equal(MiniCareOrderInfo.Desc)
+	orderInfo.Value("name").Equal(MiniCareOrder.CareOrderInfo.Name)
+	orderInfo.Value("desc").Equal(MiniCareOrder.CareOrderInfo.Desc)
 	orderInfo.Value("application_name").Equal("我的医院")
-	orderInfo.Value("time_type").Equal(MiniCareOrderInfo.TimeType)
-	orderInfo.Value("care_detail").Equal(MiniCareOrderInfo.CareDetail)
-	orderInfo.Value("care_tags").Equal(MiniCareOrderInfo.CareTags)
-	orderInfo.Value("min_price").Equal(model.Ftos(MiniCareOrderInfo.MinPrice))
-	orderInfo.Value("max_price").Equal(model.Ftos(MiniCareOrderInfo.MaxPrice))
-	orderInfo.Value("cover").Equal(MiniCareOrderInfo.Cover)
-	orderInfo.Value("care_type").Equal(MiniCareOrderInfo.CareType)
+	orderInfo.Value("time_type").Equal(MiniCareOrder.CareOrderInfo.TimeType)
+	orderInfo.Value("care_detail").Equal(MiniCareOrder.CareOrderInfo.CareDetail)
+	orderInfo.Value("care_tags").Equal(MiniCareOrder.CareOrderInfo.CareTags)
+	orderInfo.Value("min_price").Equal(model.Ftos(MiniCareOrder.CareOrderInfo.MinPrice))
+	orderInfo.Value("max_price").Equal(model.Ftos(MiniCareOrder.CareOrderInfo.MaxPrice))
+	orderInfo.Value("cover").Equal(MiniCareOrder.CareOrderInfo.Cover)
+	orderInfo.Value("care_type").Equal(MiniCareOrder.CareOrderInfo.CareType)
 	orderInfo.Value("care_order_id").Equal(miniCareOrderCareId)
 
 	addr := obj.Value("data").Object().Value("addr").Object()
@@ -511,12 +510,12 @@ func TestMiniWechatCareOrderShowReturnSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("pay_type").Equal(MiniCareOrder.PayType)
 	obj.Value("data").Object().Value("is_return").Equal(1)
 	obj.Value("data").Object().Value("order_carer_info").Null()
-	obj.Value("data").Object().Value("comments").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("comments").Array().Length().Equal(len(MiniCareOrder.CareOrderComments))
 	comment := obj.Value("data").Object().Value("comments").Array().First().Object()
 	comment.Value("id").NotNull()
 	comment.Value("user_id").Equal(User.ID)
 	comment.Value("application_id").Equal(model.AppId)
-	comment.Value("content").Equal(MiniCareOrderComment.Content)
+	comment.Value("content").Equal(MiniCareOrder.CareOrderComments[0].Content)
 	comment.Value("star").Equal(5)
 	comment.Value("pics").Array().Length().Equal(2)
 	comment.Value("pics").Array().First().Equal("https")
@@ -524,31 +523,31 @@ func TestMiniWechatCareOrderShowReturnSuccess(t *testing.T) {
 
 	orderInfo := obj.Value("data").Object().Value("order_info").Object()
 	orderInfo.Value("id").NotNull()
-	orderInfo.Value("name").Equal(MiniCareOrderInfo.Name)
-	orderInfo.Value("desc").Equal(MiniCareOrderInfo.Desc)
-	orderInfo.Value("application_name").Equal(MiniCareOrderInfo.ApplicationName)
-	orderInfo.Value("time_type").Equal(MiniCareOrderInfo.TimeType)
-	orderInfo.Value("care_detail").Equal(MiniCareOrderInfo.CareDetail)
-	orderInfo.Value("care_tags").Equal(MiniCareOrderInfo.CareTags)
-	orderInfo.Value("min_price").Equal(model.Ftos(MiniCareOrderInfo.MinPrice))
-	orderInfo.Value("max_price").Equal(model.Ftos(MiniCareOrderInfo.MaxPrice))
-	orderInfo.Value("cover").Equal(MiniCareOrderInfo.Cover)
-	orderInfo.Value("care_type").Equal(MiniCareOrderInfo.CareType)
+	orderInfo.Value("name").Equal(MiniCareOrder.CareOrderInfo.Name)
+	orderInfo.Value("desc").Equal(MiniCareOrder.CareOrderInfo.Desc)
+	orderInfo.Value("application_name").Equal(MiniCareOrder.CareOrderInfo.ApplicationName)
+	orderInfo.Value("time_type").Equal(MiniCareOrder.CareOrderInfo.TimeType)
+	orderInfo.Value("care_detail").Equal(MiniCareOrder.CareOrderInfo.CareDetail)
+	orderInfo.Value("care_tags").Equal(MiniCareOrder.CareOrderInfo.CareTags)
+	orderInfo.Value("min_price").Equal(model.Ftos(MiniCareOrder.CareOrderInfo.MinPrice))
+	orderInfo.Value("max_price").Equal(model.Ftos(MiniCareOrder.CareOrderInfo.MaxPrice))
+	orderInfo.Value("cover").Equal(MiniCareOrder.CareOrderInfo.Cover)
+	orderInfo.Value("care_type").Equal(MiniCareOrder.CareOrderInfo.CareType)
 	orderInfo.Value("care_order_id").Equal(MiniCareOrder.ID)
 
 	addr := obj.Value("data").Object().Value("addr").Object()
 	addr.Value("id").NotNull()
-	addr.Value("name").Equal(MiniCareOrderAddr.Name)
-	addr.Value("loc_name").Equal(MiniCareOrderAddr.LocName)
-	addr.Value("bed_num").Equal(MiniCareOrderAddr.BedNum)
-	addr.Value("hospital_no").Equal(MiniCareOrderAddr.HospitalNo)
-	addr.Value("disease").Equal(MiniCareOrderAddr.Disease)
-	addr.Value("care_order_id").Equal(MiniCareOrderAddr.CareOrderID)
-	addr.Value("sex").Equal(MiniCareOrderAddr.Sex)
-	addr.Value("hospital_name").Equal(MiniCareOrderAddr.HospitalName)
-	addr.Value("phone").Equal(MiniCareOrderAddr.Phone)
-	addr.Value("age").Equal(MiniCareOrderAddr.Age)
-	addr.Value("addr").Equal(MiniCareOrderAddr.Addr)
+	addr.Value("name").Equal(MiniCareOrder.CareOrderAddr.Name)
+	addr.Value("loc_name").Equal(MiniCareOrder.CareOrderAddr.LocName)
+	addr.Value("bed_num").Equal(MiniCareOrder.CareOrderAddr.BedNum)
+	addr.Value("hospital_no").Equal(MiniCareOrder.CareOrderAddr.HospitalNo)
+	addr.Value("disease").Equal(MiniCareOrder.CareOrderAddr.Disease)
+	addr.Value("care_order_id").Equal(MiniCareOrder.CareOrderAddr.CareOrderID)
+	addr.Value("sex").Equal(MiniCareOrder.CareOrderAddr.Sex)
+	addr.Value("hospital_name").Equal(MiniCareOrder.CareOrderAddr.HospitalName)
+	addr.Value("phone").Equal(MiniCareOrder.CareOrderAddr.Phone)
+	addr.Value("age").Equal(MiniCareOrder.CareOrderAddr.Age)
+	addr.Value("addr").Equal(MiniCareOrder.CareOrderAddr.Addr)
 
 	orderReturn := obj.Value("data").Object().Value("return_order").Object()
 	orderReturn.Value("id").NotNull()
@@ -567,29 +566,29 @@ func TestMiniWechatCareOrderShowReturnSuccess(t *testing.T) {
 
 	returnAddr := orderReturn.Value("addr").Object()
 	returnAddr.Value("id").NotNull()
-	returnAddr.Value("name").Equal(MiniCareOrderAddr.Name)
-	returnAddr.Value("sex").Equal(MiniCareOrderAddr.Sex)
+	returnAddr.Value("name").Equal(MiniCareOrder.CareOrderAddr.Name)
+	returnAddr.Value("sex").Equal(MiniCareOrder.CareOrderAddr.Sex)
 	returnAddr.Value("care_return_order_id").NotNull()
-	returnAddr.Value("loc_name").Equal(MiniCareOrderAddr.LocName)
-	returnAddr.Value("hospital_no").Equal(MiniCareOrderAddr.HospitalNo)
-	returnAddr.Value("hospital_name").Equal(MiniCareOrderAddr.HospitalName)
-	returnAddr.Value("age").Equal(MiniCareOrderAddr.Age)
-	returnAddr.Value("disease").Equal(MiniCareOrderAddr.Disease)
-	returnAddr.Value("phone").Equal(MiniCareOrderAddr.Phone)
-	returnAddr.Value("addr").Equal(MiniCareOrderAddr.Addr)
+	returnAddr.Value("loc_name").Equal(MiniCareOrder.CareOrderAddr.LocName)
+	returnAddr.Value("hospital_no").Equal(MiniCareOrder.CareOrderAddr.HospitalNo)
+	returnAddr.Value("hospital_name").Equal(MiniCareOrder.CareOrderAddr.HospitalName)
+	returnAddr.Value("age").Equal(MiniCareOrder.CareOrderAddr.Age)
+	returnAddr.Value("disease").Equal(MiniCareOrder.CareOrderAddr.Disease)
+	returnAddr.Value("phone").Equal(MiniCareOrder.CareOrderAddr.Phone)
+	returnAddr.Value("addr").Equal(MiniCareOrder.CareOrderAddr.Addr)
 
 	returnOrderInfo := orderReturn.Value("order_info").Object()
 	returnOrderInfo.Value("id").NotNull()
-	returnOrderInfo.Value("name").Equal(MiniCareOrderInfo.Name)
-	returnOrderInfo.Value("desc").Equal(MiniCareOrderInfo.Desc)
-	returnOrderInfo.Value("application_name").Equal(MiniCareOrderInfo.ApplicationName)
-	returnOrderInfo.Value("time_type").Equal(MiniCareOrderInfo.TimeType)
-	returnOrderInfo.Value("care_detail").Equal(MiniCareOrderInfo.CareDetail)
-	returnOrderInfo.Value("care_tags").Equal(MiniCareOrderInfo.CareTags)
-	returnOrderInfo.Value("min_price").Equal(model.Ftos(MiniCareOrderInfo.MinPrice))
-	returnOrderInfo.Value("max_price").Equal(model.Ftos(MiniCareOrderInfo.MaxPrice))
-	returnOrderInfo.Value("cover").Equal(MiniCareOrderInfo.Cover)
-	returnOrderInfo.Value("care_type").Equal(MiniCareOrderInfo.CareType)
+	returnOrderInfo.Value("name").Equal(MiniCareOrder.CareOrderInfo.Name)
+	returnOrderInfo.Value("desc").Equal(MiniCareOrder.CareOrderInfo.Desc)
+	returnOrderInfo.Value("application_name").Equal(MiniCareOrder.CareOrderInfo.ApplicationName)
+	returnOrderInfo.Value("time_type").Equal(MiniCareOrder.CareOrderInfo.TimeType)
+	returnOrderInfo.Value("care_detail").Equal(MiniCareOrder.CareOrderInfo.CareDetail)
+	returnOrderInfo.Value("care_tags").Equal(MiniCareOrder.CareOrderInfo.CareTags)
+	returnOrderInfo.Value("min_price").Equal(model.Ftos(MiniCareOrder.CareOrderInfo.MinPrice))
+	returnOrderInfo.Value("max_price").Equal(model.Ftos(MiniCareOrder.CareOrderInfo.MaxPrice))
+	returnOrderInfo.Value("cover").Equal(MiniCareOrder.CareOrderInfo.Cover)
+	returnOrderInfo.Value("care_type").Equal(MiniCareOrder.CareOrderInfo.CareType)
 	returnOrderInfo.Value("care_return_order_id").NotNull()
 
 }
@@ -608,7 +607,6 @@ func TestMiniWechatCareOrderDeleteCareSuccess(t *testing.T) {
 }
 
 func TestMiniWechatCareOrderDeleteCareRetrunSuccess(t *testing.T) {
-
 	obj := model.GetE(t).DELETE("/care/v1/order/{id}", MiniCareOrder.ID).
 		WithHeaders(model.GetMiniHeader()).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
@@ -618,5 +616,5 @@ func TestMiniWechatCareOrderDeleteCareRetrunSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Contains("请求成功")
-	CareOrderCount--
+	model.CareOrderCount--
 }

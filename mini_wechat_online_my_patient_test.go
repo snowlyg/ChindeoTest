@@ -17,7 +17,7 @@ func TestMiniWechatOnlineMyPatientListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.PatientCount)
 	object := obj.Value("data").Object().Value("data").Array().First().Object()
 	object.Value("id").Equal(Patient.ID)
 	object.Value("username").Equal(Patient.Username)

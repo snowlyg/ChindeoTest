@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
-	"strconv"
 	"testing"
 )
 
@@ -16,7 +15,7 @@ func TestMiniWechatGetTokenSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"IsDev": "1", "AuthType": strconv.FormatInt(int64(model.AuthTypeMiniWechat), 10)}).
+		WithHeaders(model.GetMiniHeader()).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -41,7 +40,7 @@ func TestMiniWechatGetTokenErrorAuthType(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/get_access_token").
-		WithHeaders(map[string]string{"IsDev": "1", "AuthType": "10"}).
+		WithHeaders(model.GetMiniHeaderNoToken()).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

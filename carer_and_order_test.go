@@ -27,7 +27,7 @@ func TestCarrListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.CarerCount)
 
 	fitst := obj.Value("data").Object().Value("data").Array().First().Object()
 	fitst.Value("id").Equal(Carer.ID)
@@ -54,7 +54,7 @@ func TestCarrListNoTagIdSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(2)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.CarerNoTagCount)
 
 	fitst := obj.Value("data").Object().Value("data").Array().Last().Object()
 	fitst.Value("id").Equal(Carer.ID)
@@ -81,6 +81,7 @@ func TestCarrListNoPageSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Array().Length().Equal(model.CarerCount)
 	obj.Value("data").Array().Last().Object().Value("id").Equal(Carer.ID)
 }
 
@@ -468,12 +469,12 @@ func TestCarrOrderShowReturnCarerSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("is_return").Equal(1)
 
 	obj.Value("data").Object().Value("order_info").Null()
-	obj.Value("data").Object().Value("comments").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("comments").Array().Length().Equal(len(CarerOrder.CareOrderComments))
 	comment := obj.Value("data").Object().Value("comments").Array().First().Object()
 	comment.Value("id").NotNull()
 	comment.Value("user_id").Equal(User.ID)
 	comment.Value("application_id").Equal(model.AppId)
-	comment.Value("content").Equal(CarerOrderComment.Content)
+	comment.Value("content").Equal(CarerOrder.CareOrderComments[0].Content)
 	comment.Value("pics").Array().Length().Equal(2)
 	comment.Value("pics").Array().First().Equal("https")
 	comment.Value("pics").Array().Last().Equal("https")
@@ -492,17 +493,17 @@ func TestCarrOrderShowReturnCarerSuccess(t *testing.T) {
 
 	addr := obj.Value("data").Object().Value("addr").Object()
 	addr.Value("id").NotNull()
-	addr.Value("name").Equal(CarerOrderAddr.Name)
-	addr.Value("loc_name").Equal(CarerOrderAddr.LocName)
-	addr.Value("bed_num").Equal(CarerOrderAddr.BedNum)
-	addr.Value("hospital_no").Equal(CarerOrderAddr.HospitalNo)
-	addr.Value("disease").Equal(CarerOrderAddr.Disease)
-	addr.Value("care_order_id").Equal(CarerOrderAddr.CareOrderID)
-	addr.Value("sex").Equal(CarerOrderAddr.Sex)
-	addr.Value("hospital_name").Equal(CarerOrderAddr.HospitalName)
-	addr.Value("phone").Equal(CarerOrderAddr.Phone)
-	addr.Value("age").Equal(CarerOrderAddr.Age)
-	addr.Value("addr").Equal(CarerOrderAddr.Addr)
+	addr.Value("name").Equal(CarerOrder.CareOrderAddr.Name)
+	addr.Value("loc_name").Equal(CarerOrder.CareOrderAddr.LocName)
+	addr.Value("bed_num").Equal(CarerOrder.CareOrderAddr.BedNum)
+	addr.Value("hospital_no").Equal(CarerOrder.CareOrderAddr.HospitalNo)
+	addr.Value("disease").Equal(CarerOrder.CareOrderAddr.Disease)
+	addr.Value("care_order_id").Equal(CarerOrder.CareOrderAddr.CareOrderID)
+	addr.Value("sex").Equal(CarerOrder.CareOrderAddr.Sex)
+	addr.Value("hospital_name").Equal(CarerOrder.CareOrderAddr.HospitalName)
+	addr.Value("phone").Equal(CarerOrder.CareOrderAddr.Phone)
+	addr.Value("age").Equal(CarerOrder.CareOrderAddr.Age)
+	addr.Value("addr").Equal(CarerOrder.CareOrderAddr.Addr)
 
 	orderReturn := obj.Value("data").Object().Value("return_order").Object()
 	orderReturn.Value("id").NotNull()
@@ -521,28 +522,28 @@ func TestCarrOrderShowReturnCarerSuccess(t *testing.T) {
 
 	returnAddr := orderReturn.Value("addr").Object()
 	returnAddr.Value("id").NotNull()
-	returnAddr.Value("name").Equal(CarerOrderAddr.Name)
-	returnAddr.Value("sex").Equal(CarerOrderAddr.Sex)
+	returnAddr.Value("name").Equal(CarerOrder.CareOrderAddr.Name)
+	returnAddr.Value("sex").Equal(CarerOrder.CareOrderAddr.Sex)
 	returnAddr.Value("care_return_order_id").NotNull()
-	returnAddr.Value("loc_name").Equal(CarerOrderAddr.LocName)
-	returnAddr.Value("hospital_no").Equal(CarerOrderAddr.HospitalNo)
-	returnAddr.Value("hospital_name").Equal(CarerOrderAddr.HospitalName)
-	returnAddr.Value("age").Equal(CarerOrderAddr.Age)
-	returnAddr.Value("disease").Equal(CarerOrderAddr.Disease)
-	returnAddr.Value("phone").Equal(CarerOrderAddr.Phone)
-	returnAddr.Value("addr").Equal(CarerOrderAddr.Addr)
+	returnAddr.Value("loc_name").Equal(CarerOrder.CareOrderAddr.LocName)
+	returnAddr.Value("hospital_no").Equal(CarerOrder.CareOrderAddr.HospitalNo)
+	returnAddr.Value("hospital_name").Equal(CarerOrder.CareOrderAddr.HospitalName)
+	returnAddr.Value("age").Equal(CarerOrder.CareOrderAddr.Age)
+	returnAddr.Value("disease").Equal(CarerOrder.CareOrderAddr.Disease)
+	returnAddr.Value("phone").Equal(CarerOrder.CareOrderAddr.Phone)
+	returnAddr.Value("addr").Equal(CarerOrder.CareOrderAddr.Addr)
 
 	returnOrderInfo := orderReturn.Value("order_carer_info").Object()
 	returnOrderInfo.Value("id").NotNull()
-	returnOrderInfo.Value("name").Equal(CarerOrderCarerInfo.Name)
-	returnOrderInfo.Value("desc").Equal(CarerOrderCarerInfo.Desc)
-	returnOrderInfo.Value("age").Equal(CarerOrderCarerInfo.Age)
-	returnOrderInfo.Value("work_exp").Equal(CarerOrderCarerInfo.WorkExp)
-	returnOrderInfo.Value("phone").Equal(CarerOrderCarerInfo.Phone)
-	returnOrderInfo.Value("sex").Equal(CarerOrderCarerInfo.Sex)
-	returnOrderInfo.Value("time_type").Equal(CarerOrderCarerInfo.TimeType)
-	returnOrderInfo.Value("avatar").Equal(CarerOrderCarerInfo.Avatar)
-	returnOrderInfo.Value("carer_detail").Equal(CarerOrderCarerInfo.CarerDetail)
+	returnOrderInfo.Value("name").Equal(CarerOrder.CareOrderCarerInfo.Name)
+	returnOrderInfo.Value("desc").Equal(CarerOrder.CareOrderCarerInfo.Desc)
+	returnOrderInfo.Value("age").Equal(CarerOrder.CareOrderCarerInfo.Age)
+	returnOrderInfo.Value("work_exp").Equal(CarerOrder.CareOrderCarerInfo.WorkExp)
+	returnOrderInfo.Value("phone").Equal(CarerOrder.CareOrderCarerInfo.Phone)
+	returnOrderInfo.Value("sex").Equal(CarerOrder.CareOrderCarerInfo.Sex)
+	returnOrderInfo.Value("time_type").Equal(CarerOrder.CareOrderCarerInfo.TimeType)
+	returnOrderInfo.Value("avatar").Equal(CarerOrder.CareOrderCarerInfo.Avatar)
+	returnOrderInfo.Value("carer_detail").Equal(CarerOrder.CareOrderCarerInfo.CarerDetail)
 	returnOrderInfo.Value("care_return_order_id").NotNull()
 }
 
@@ -560,7 +561,6 @@ func TestCarrOrderDeleteCareSuccess(t *testing.T) {
 }
 
 func TestCarrOrderDeleteCareRetrunSuccess(t *testing.T) {
-
 	obj := model.GetE(t).DELETE("/care/v1/inner/order/{id}", CarerOrder.ID).
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
@@ -570,5 +570,5 @@ func TestCarrOrderDeleteCareRetrunSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Contains("请求成功")
-	CareOrderCount--
+	model.CareOrderCount--
 }

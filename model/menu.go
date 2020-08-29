@@ -6,12 +6,12 @@ import (
 	"time"
 )
 
+var MenuNoTagCount int
 var MenuCount int
 var MenuAmount int
 
-func CreateMenu() *APIMenus {
+func CreateMenu(isTag bool) *APIMenus {
 	menuType := CreateMenuType()
-	menuTag := CreateMenuTag()
 	menu := APIMenus{
 		Name:          "菜单名称",
 		TimeType:      MenuTimeTypeB,
@@ -30,10 +30,19 @@ func CreateMenu() *APIMenus {
 		fmt.Println(fmt.Sprintf("menu create error :%v", err))
 	}
 
-	tagMenu := MenuMenuTag{MenuID: menu.ID, MenuTagID: menuTag.ID, UpdateAt: time.Now(), CreateAt: time.Now()}
-	if err := DB.Table("menu_menu_tag").Create(&tagMenu).Error; err != nil {
-		fmt.Println(fmt.Sprintf("tagMenu create error :%v", err))
+	var menuTags []*APIMenuTags
+	if isTag {
+		menuTag := CreateMenuTag()
+		menuTags = append(menuTags, menuTag)
+		tagMenu := MenuMenuTag{MenuID: menu.ID, MenuTagID: menuTag.ID, UpdateAt: time.Now(), CreateAt: time.Now()}
+		if err := DB.Table("menu_menu_tag").Create(&tagMenu).Error; err != nil {
+			fmt.Println(fmt.Sprintf("tagMenu create error :%v", err))
+		}
+		MenuCount++
 	}
-	MenuCount++
+
+	menu.MenuTags = menuTags
+	menu.MenuType = menuType
+	MenuNoTagCount++
 	return &menu
 }
