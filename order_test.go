@@ -145,7 +145,7 @@ func TestOrderCommentSuccess(t *testing.T) {
 		"star":       1,
 		"content":    "content",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   orderId,
 	}
 
@@ -166,7 +166,7 @@ func TestOrderCommentNoContentError(t *testing.T) {
 		"star":       1,
 		"content":    "",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   orderId,
 	}
 
@@ -187,7 +187,7 @@ func TestOrderCommentOrderNotExistsError(t *testing.T) {
 		"star":       1,
 		"content":    "dsfsdfsd",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   9999,
 	}
 
@@ -208,7 +208,7 @@ func TestOrderCommentNoIdCardNoError(t *testing.T) {
 		"star":       1,
 		"content":    "456952158962254456",
 		"id_card_no": "",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   orderId,
 	}
 
@@ -229,7 +229,7 @@ func TestOrderCommentNoOrderIdError(t *testing.T) {
 		"star":       1,
 		"content":    "456952158962254456",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 	}
 
 	obj := model.GetE(t).POST("/common/v1/inner/comment/order").
@@ -264,18 +264,21 @@ func TestOrderAfterOrderAddMenuShowSuccess(t *testing.T) {
 	model.MenuAmount++
 	obj.Value("data").Object().Value("price").Equal("10.00")
 	obj.Value("data").Object().Value("cover").Equal(Menu.Cover)
-	obj.Value("data").Object().Value("pics").Array().Length().Equal(0)
+	obj.Value("data").Object().Value("pics").Array().Length().Equal(len(Menu.Pics))
 	obj.Value("data").Object().Value("create_at").String().Contains(Menu.CreateAt.Format("2006-01-02 15:04"))
 	obj.Value("data").Object().Value("create_at").String().Contains(Menu.UpdateAt.Format("2006-01-02 15:04"))
 
 	menuType := obj.Value("data").Object().Value("type").Object()
-	menuType.Value("id").Equal(MenuType.ID)
-	menuType.Value("name").Equal(MenuType.Name)
+	menuType.Value("id").Equal(Menu.MenuTypeID)
+	menuType.Value("name").Equal(Menu.MenuType.Name)
 
-	obj.Value("data").Object().Value("tags").Array().Length().Equal(1)
-	menuTag := obj.Value("data").Object().Value("tags").Array().First().Object()
-	menuTag.Value("id").Equal(MenuTag.ID)
-	menuTag.Value("name").Equal(MenuTag.Name)
+	obj.Value("data").Object().Value("tags").Array().Length().Equal(len(Menu.MenuTags))
+	if len(Menu.MenuTags) > 0 {
+		menuTag := obj.Value("data").Object().Value("tags").Array().First().Object()
+		menuTag.Value("id").Equal(Menu.MenuTags[0].ID)
+		menuTag.Value("name").Equal(Menu.MenuTags[0].Name)
+	}
+
 }
 
 func TestOrderShowSuccess(t *testing.T) {
@@ -365,7 +368,7 @@ func TestOrderShowReturnSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("id").Equal(Order.ID)
-	obj.Value("data").Object().Value("order_no").String().Contains("O")
+	obj.Value("data").Object().Value("order_no").String().Equal("I202008241612348468756914")
 	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.IOrderStatusForCancel)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("已取消")
 	obj.Value("data").Object().Value("amount").Number().Equal(Order.Amount)

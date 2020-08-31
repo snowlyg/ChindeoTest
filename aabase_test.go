@@ -45,13 +45,12 @@ func TestMain(m *testing.M) {
 	App = model.GetApp()
 	User = model.GetUserByIdCardNo()
 	model.GetFake()
-	model.GetPics()
 
 	Addr = model.CreateAddr(User.ID)
 	MenuType = model.CreateMenuType()
 	MenuTag = model.CreateMenuTag()
 	Menu = model.CreateMenu(true)
-	Menu = model.CreateMenu(false)
+	model.CreateMenu(false)
 
 	Order = model.CreateOrder("I202008241612348468756914", User.ID, model.OrderAppTypeBed, model.IOrderPayTypeWechat)
 	Order.OrderAddr = model.CreateOrderAddr(Order.ID)
@@ -59,9 +58,9 @@ func TestMain(m *testing.M) {
 	Order.OrderComments = model.CreateOrderComments(5, User.ID, Order.ID, COMMENTABLETYPE)
 
 	MiniOrder = model.CreateOrder("O202008241612348468756914", User.ID, model.OrderAppTypeMini, model.IOrderPayTypeAli)
-	MiniOrder.OrderAddr = model.CreateOrderAddr(Order.ID)
-	MiniOrder.OrderMenus = model.CreateOrderMenus(Menu, MenuType.Name, Order.ID, 3)
-	MiniOrder.OrderComments = model.CreateOrderComments(4, User.ID, Order.ID, COMMENTABLETYPE)
+	MiniOrder.OrderAddr = model.CreateOrderAddr(MiniOrder.ID)
+	MiniOrder.OrderMenus = model.CreateOrderMenus(Menu, MenuType.Name, MiniOrder.ID, 3)
+	MiniOrder.OrderComments = model.CreateOrderComments(4, User.ID, MiniOrder.ID, COMMENTABLETYPE)
 
 	CareTag = model.CreateCareTag()
 	CareType = model.CreateCareType()
@@ -69,9 +68,9 @@ func TestMain(m *testing.M) {
 	model.CreateCare(CareTag.ID, CareType.ID, false)
 
 	MiniCareOrder = model.CreateCareOrder(Care.TimeType, "OC202008241612348468756914", User.ID, 0, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.CareMaxPrice)
-	MiniCareOrder.CareOrderComments = model.CreateCareOrderComments(4, User.ID, CareOrder.ID, 1, CARECOMMENTABLETYPE)
-	MiniCareOrder.CareOrderInfo = model.CreateCareOrderInfo(CareOrder.ID, Care, App.Name, CareType.Name, CareTag.Name)
-	MiniCareOrder.CareOrderAddr = model.CreateCareOrderAddr(CareOrder.ID, Addr)
+	MiniCareOrder.CareOrderComments = model.CreateCareOrderComments(4, User.ID, MiniCareOrder.ID, 1, CARECOMMENTABLETYPE)
+	MiniCareOrder.CareOrderInfo = model.CreateCareOrderInfo(MiniCareOrder.ID, Care, App.Name, CareType.Name, CareTag.Name)
+	MiniCareOrder.CareOrderAddr = model.CreateCareOrderAddr(MiniCareOrder.ID, Addr)
 
 	CareOrder = model.CreateCareOrder(Care.TimeType, "IC202008241612348468756914", User.ID, 0, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.CareMaxPrice)
 	CareOrder.CareOrderComments = model.CreateCareOrderComments(3, User.ID, CareOrder.ID, 1, CARECOMMENTABLETYPE)
@@ -83,9 +82,9 @@ func TestMain(m *testing.M) {
 	model.CreateCarer(CarerTag.ID, false)
 
 	MiniCarerOrder = model.CreateCareOrder(Carer.TimeType, "OC202008241612348468756914", User.ID, Carer.ID, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.CarerPrice)
-	MiniCarerOrder.CareOrderComments = model.CreateCareOrderComments(4, User.ID, CarerOrder.ID, 1, CARECOMMENTABLETYPE)
-	MiniCarerOrder.CareOrderCarerInfo = model.CreateCareOrderCarerInfo(CarerOrder.ID, Carer, App.Name, CarerTag.Name)
-	MiniCarerOrder.CareOrderAddr = model.CreateCareOrderAddr(CarerOrder.ID, Addr)
+	MiniCarerOrder.CareOrderComments = model.CreateCareOrderComments(4, User.ID, MiniCarerOrder.ID, 1, CARECOMMENTABLETYPE)
+	MiniCarerOrder.CareOrderCarerInfo = model.CreateCareOrderCarerInfo(MiniCarerOrder.ID, Carer, App.Name, CarerTag.Name)
+	MiniCarerOrder.CareOrderAddr = model.CreateCareOrderAddr(MiniCarerOrder.ID, Addr)
 
 	CarerOrder = model.CreateCareOrder(Carer.TimeType, "IC202008241612348468756914", User.ID, Carer.ID, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.CarerPrice)
 	CarerOrder.CareOrderComments = model.CreateCareOrderComments(7, User.ID, CarerOrder.ID, 1, CARECOMMENTABLETYPE)

@@ -8,16 +8,23 @@ import (
 )
 
 var DB *gorm.DB
+var err error
 
 func init() {
+
 	conn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=%s", config.Config.User, config.Config.Password, config.Config.Host, config.Config.Port, config.Config.Name, "Asia%2FShanghai")
-	DB, err := gorm.Open("mysql", conn)
+	DB, err = gorm.Open("mysql", conn)
 	if err != nil {
 		panic(fmt.Sprintf("conn %s Error:%s", conn, err))
 	}
 
+	if DB == nil {
+		panic(fmt.Sprintf("conn %s db is nil", conn))
+	}
+
 	DB.DB().SetMaxOpenConns(1)
 	DB.LogMode(false)
+
 }
 
 // 关闭连接

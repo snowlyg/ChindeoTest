@@ -72,13 +72,12 @@ func Ftos(f float64) string {
 	return fmt.Sprintf("%.2f", df)
 }
 
-var Pics string
 var Fake *faker.Faker
 
-func GetPics() {
+func GetPics() string {
 	pics := []string{"https", "https"}
 	jpics, _ := json.Marshal(pics)
-	Pics = string(jpics)
+	return string(jpics)
 }
 
 func GetFake() {

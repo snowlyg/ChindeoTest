@@ -28,30 +28,6 @@ func TestMiniWechatOrderListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("data").Array().Length().Equal(model.OrderCount)
-
-	order := obj.Value("data").Object().Value("data").Array().First().Object()
-	order.Value("id").Equal(MiniOrder.ID)
-	order.Value("order_no").String().Contains("O")
-	order.Value("status").Object().Value("value").Equal(model.IOrderStatusForDelivery)
-	order.Value("status").Object().Value("text").Equal("已付款")
-	order.Value("amount").Number().Equal(MiniOrder.Amount)
-	order.Value("total").String().Equal("10.00")
-	order.Value("is_return").String().Equal("未退款")
-	order.Value("menus").Array().Length().Equal(1)
-	order.Value("return_order").Null()
-
-	addr := order.Value("addr").Object()
-	addr.Value("id").Equal(MiniOrder.OrderAddr.ID)
-	addr.Value("name").Equal(MiniOrder.OrderAddr.Name)
-	addr.Value("sex").Equal(MiniOrder.OrderAddr.Sex)
-	addr.Value("o_order_id").Equal(MiniOrder.OrderAddr.OOrderID)
-	addr.Value("loc_name").Equal(MiniOrder.OrderAddr.LocName)
-	addr.Value("hospital_no").Equal(MiniOrder.OrderAddr.HospitalNo)
-	addr.Value("hospital_name").Equal(MiniOrder.OrderAddr.HospitalName)
-	addr.Value("age").Equal(MiniOrder.OrderAddr.Age)
-	addr.Value("disease").Equal(MiniOrder.OrderAddr.Disease)
-	addr.Value("phone").Equal(MiniOrder.OrderAddr.Phone)
-	addr.Value("addr").Equal(MiniOrder.OrderAddr.Addr)
 }
 
 func TestMiniWechatOrderAddSuccess(t *testing.T) {
@@ -213,13 +189,13 @@ func TestMiniWechatOrderAfterOrderAddMenuShowSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("create_at").String().Contains(Menu.UpdateAt.Format("2006-01-02 15:04"))
 
 	menuType := obj.Value("data").Object().Value("type").Object()
-	menuType.Value("id").Equal(MenuType.ID)
-	menuType.Value("name").Equal(MenuType.Name)
+	menuType.Value("id").Equal(Menu.MenuType.ID)
+	menuType.Value("name").Equal(Menu.MenuType.Name)
 
-	obj.Value("data").Object().Value("tags").Array().Length().Equal(1)
+	obj.Value("data").Object().Value("tags").Array().Length().Equal(len(Menu.MenuTags))
 	menuTag := obj.Value("data").Object().Value("tags").Array().First().Object()
-	menuTag.Value("id").Equal(MenuTag.ID)
-	menuTag.Value("name").Equal(MenuTag.Name)
+	menuTag.Value("id").Equal(Menu.MenuTags[0].ID)
+	menuTag.Value("name").Equal(Menu.MenuTags[0].Name)
 }
 
 func TestMiniWechatOrderShowSuccess(t *testing.T) {

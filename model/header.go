@@ -27,7 +27,7 @@ func GetMiniHeaderNoIsDev() map[string]string {
 }
 
 func GetMiniHeaderAuthServer() map[string]string {
-	return map[string]string{"X-Token": "", "IsDev": "", "AuthType": strconv.FormatInt(int64(AuthTypeServer), 10)}
+	return map[string]string{"X-Token": MiniWechatToken, "IsDev": "1", "AuthType": strconv.FormatInt(int64(AuthTypeServer), 10)}
 }
 
 func GetSessionId() string {

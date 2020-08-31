@@ -40,13 +40,13 @@ func TestMiniWechatGetTokenErrorAuthType(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/get_access_token").
-		WithHeaders(model.GetMiniHeaderNoToken()).
+		WithHeaders(model.GetMiniHeaderAuthServer()).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(400)
-	obj.Value("message").String().Equal("auth_type 错误!")
+	obj.Value("message").String().Equal("app_id 不能为空！")
 	obj.Value("data").Null()
 }

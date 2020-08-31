@@ -28,7 +28,7 @@ func TestCareNoTagIdListSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
-	obj.Value("data").Object().Value("data").Array().Length().Equal(model.CarerCount)
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.CareNoTagCount)
 
 	fitst := obj.Value("data").Object().Value("data").Array().Last().Object()
 	fitst.Value("id").Equal(Care.ID)
@@ -246,7 +246,7 @@ func TestCareOrderCommentSuccess(t *testing.T) {
 		"star":       1,
 		"content":    "content",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   careOrderCareId,
 	}
 
@@ -267,7 +267,7 @@ func TestCareOrderCommentNoContentError(t *testing.T) {
 		"star":       1,
 		"content":    "",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   careOrderCareId,
 	}
 
@@ -288,7 +288,7 @@ func TestCareOrderCommentOrderExistsError(t *testing.T) {
 		"star":       1,
 		"content":    "sdfsdfs",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   9999,
 	}
 
@@ -309,7 +309,7 @@ func TestCareOrderCommentNoIdCardNoError(t *testing.T) {
 		"star":       1,
 		"content":    "456952158962254456",
 		"id_card_no": "",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   careOrderCareId,
 	}
 
@@ -330,7 +330,7 @@ func TestCareOrderCommentNoOrderIdError(t *testing.T) {
 		"star":       1,
 		"content":    "456952158962254456",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 	}
 
 	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
@@ -380,7 +380,7 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 
 	obj.Value("data").Object().Value("order_carer_info").Null()
 	obj.Value("data").Object().Value("return_order").Null()
-	obj.Value("data").Object().Value("comments").Array().Length().Equal(len(CareOrder.CareOrderComments))
+	obj.Value("data").Object().Value("comments").Array().Length().Equal(2)
 	orderInfo := obj.Value("data").Object().Value("order_info").Object()
 	orderInfo.Value("id").NotNull()
 	orderInfo.Value("name").Equal(CareOrder.CareOrderInfo.Name)

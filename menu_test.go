@@ -11,9 +11,9 @@ func TestMenuSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/menu").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
-		WithQuery("menu_type_id", MenuType.ID).
+		WithQuery("menu_type_id", Menu.MenuType.ID).
 		WithQuery("time_type", Menu.TimeType).
-		WithQuery("menu_tag_id", MenuTag.ID).
+		WithQuery("menu_tag_id", Menu.MenuTags[0].ID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -29,9 +29,9 @@ func TestMenuNoPageSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/menu?page_size=-1").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
-		WithQuery("menu_type_id", MenuType.ID).
+		WithQuery("menu_type_id", Menu.MenuType.ID).
 		WithQuery("time_type", Menu.TimeType).
-		WithQuery("menu_tag_id", MenuTag.ID).
+		WithQuery("menu_tag_id", Menu.MenuTags[0].ID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -46,7 +46,6 @@ func TestMenuNoPageNoTagSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/menu?page_size=-1").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
-		WithQuery("menu_type_id", MenuType.ID).
 		WithQuery("time_type", Menu.TimeType).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -55,7 +54,7 @@ func TestMenuNoPageNoTagSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Array().Length().Equal(model.MenuNoTagCount)
-	obj.Value("data").Array().First().Object().Value("id").Equal(Menu.ID)
+	obj.Value("data").Array().Last().Object().Value("id").Equal(Menu.ID)
 }
 
 func TestMenuShowSuccess(t *testing.T) {
@@ -86,7 +85,10 @@ func TestMenuShowSuccess(t *testing.T) {
 	menuType.Value("name").Equal(Menu.MenuType.Name)
 
 	obj.Value("data").Object().Value("tags").Array().Length().Equal(len(Menu.MenuTags))
-	menuTag := obj.Value("data").Object().Value("tags").Array().First().Object()
-	menuTag.Value("id").Equal(Menu.MenuTags[0].ID)
-	menuTag.Value("name").Equal(Menu.MenuTags[0].Name)
+	if len(Menu.MenuTags) > 0 {
+		menuTag := obj.Value("data").Object().Value("tags").Array().First().Object()
+		menuTag.Value("id").Equal(Menu.MenuTags[0].ID)
+		menuTag.Value("name").Equal(Menu.MenuTags[0].Name)
+	}
+
 }

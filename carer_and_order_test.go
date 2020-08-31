@@ -81,7 +81,7 @@ func TestCarrListNoPageSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	obj.Value("data").Array().Length().Equal(model.CarerCount)
+	obj.Value("data").Array().Length().Equal(model.CarerNoTagCount)
 	obj.Value("data").Array().Last().Object().Value("id").Equal(Carer.ID)
 }
 
@@ -213,7 +213,7 @@ func TestCarrOrderCommentSuccess(t *testing.T) {
 		"star":       1,
 		"content":    "content",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   careOrderCarerId,
 	}
 
@@ -234,7 +234,7 @@ func TestCarrOrderCommentNoContentError(t *testing.T) {
 		"star":       1,
 		"content":    "",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   careOrderCarerId,
 	}
 
@@ -255,7 +255,7 @@ func TestCarrOrderCommentNoIdCardNoError(t *testing.T) {
 		"star":       1,
 		"content":    "456952158962254456",
 		"id_card_no": "",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   careOrderCarerId,
 	}
 
@@ -276,7 +276,7 @@ func TestCarrOrderCommentNoOrderIdError(t *testing.T) {
 		"star":       1,
 		"content":    "456952158962254456",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 	}
 
 	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
@@ -296,7 +296,7 @@ func TestCarrOrderCommentOrderNotExistsError(t *testing.T) {
 		"star":       1,
 		"content":    "456952158962254456",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   9999,
 	}
 

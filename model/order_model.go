@@ -70,7 +70,7 @@ func CreateOrderComment(userId, orderId int, commentableType string) *Comments {
 		CommentableID:   orderId,
 		CommentableType: commentableType,
 		ApplicationID:   AppId,
-		Pics:            Pics,
+		Pics:            GetPics(),
 		Star:            5,
 		CreateAt:        time.Now(),
 		UpdateAt:        time.Now(),

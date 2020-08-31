@@ -63,7 +63,7 @@ func CreateCareOrderComment(userId, orderId, star int, commentableType string) *
 		CommentableID:   orderId,
 		CommentableType: commentableType,
 		ApplicationID:   AppId,
-		Pics:            Pics,
+		Pics:            GetPics(),
 		Star:            star,
 		CreateAt:        time.Now(),
 		UpdateAt:        time.Now(),

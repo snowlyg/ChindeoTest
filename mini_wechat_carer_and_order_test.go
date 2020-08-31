@@ -79,6 +79,7 @@ func TestMiniWechatCarrListNoPageSuccess(t *testing.T) {
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		WithQuery("page_size", "-1").
+		WithQuery("carer_tag_id", CarerTag.ID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -203,7 +204,7 @@ func TestMiniWechatCarrOrderCommentSuccess(t *testing.T) {
 		"star":       1,
 		"content":    "content",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   miniCareOrderCarerId,
 	}
 
@@ -224,7 +225,7 @@ func TestMiniWechatCarrOrderCommentOrderNotExistsError(t *testing.T) {
 		"star":       1,
 		"content":    "fdssdfs",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   9999,
 	}
 
@@ -245,7 +246,7 @@ func TestMiniWechatCarrOrderCommentNoContentError(t *testing.T) {
 		"star":       1,
 		"content":    "",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   miniCareOrderCarerId,
 	}
 
@@ -266,7 +267,7 @@ func TestMiniWechatCarrOrderCommentNoIdCardNoError(t *testing.T) {
 		"star":       1,
 		"content":    "456952158962254456",
 		"id_card_no": "",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 		"order_id":   miniCareOrderCarerId,
 	}
 
@@ -287,7 +288,7 @@ func TestMiniWechatCarrOrderCommentNoOrderIdError(t *testing.T) {
 		"star":       1,
 		"content":    "456952158962254456",
 		"id_card_no": "456952158962254456",
-		"pics":       model.Pics,
+		"pics":       model.GetPics(),
 	}
 
 	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
@@ -461,7 +462,7 @@ func TestMiniWechatCarrOrderShowReturnCarerSuccess(t *testing.T) {
 	comment.Value("id").NotNull()
 	comment.Value("user_id").Equal(User.ID)
 	comment.Value("application_id").Equal(model.AppId)
-	comment.Value("star").Equal(5)
+	comment.Value("star").Equal(MiniCarerOrder.CareOrderComments[0].Star)
 	comment.Value("content").Equal(MiniCarerOrder.CareOrderComments[0].Content)
 	comment.Value("pics").Array().Length().Equal(2)
 	comment.Value("pics").Array().First().Equal("https")
