@@ -74,14 +74,18 @@ func ClearTables() {
 	DB.Unscoped().Delete(CareReturnOrderInfos{}, "id > ?", 0)
 	DB.Unscoped().Delete(CareReturnOrderCarerInfos{}, "id > ?", 0)
 
-	DB.Unscoped().Delete(Articles{}, "id > ?", 0)
-	DB.Unscoped().Delete(Quals{}, "id > ?", 0)
-	DB.Unscoped().Delete(LocTypes{}, "id > ?", 0)
-	DB.Unscoped().Delete(Locs{}, "id > ?", 0)
-	DB.Unscoped().Delete(UserTypes{}, "id > ?", 0)
-	DB.Unscoped().Delete(Patients{}, "id > ?", 0)
-	DB.Unscoped().Delete(PatientProfiles{}, "id > ?", 0)
-	DB.Unscoped().Table("user_patient").Delete(UserPatient{}, "id > ?", 0)
-	DB.Unscoped().Delete(Comments{}, "id > ?", 0)
+	DB.Unscoped().Delete(OnlineArticles{}, "id > ?", 0)
+	DB.Unscoped().Delete(OnlineQuals{}, "id > ?", 0)
+	DB.Unscoped().Delete(OnlineLocTypes{}, "id > ?", 0)
+	DB.Unscoped().Delete(OnlineLocs{}, "id > ?", 0)
+	DB.Unscoped().Delete(OnlineUserTypes{}, "id > ?", 0)
+	DB.Unscoped().Delete(OnlinePatients{}, "id > ?", 0)
+	DB.Unscoped().Delete(OnlinePatientProfiles{}, "id > ?", 0)
+	DB.Unscoped().Table("online_user_patient").Delete(OnlineUserPatient{}, "id > ?", 0)
+	DB.Unscoped().Delete(CommonComments{}, "id > ?", 0)
+
+	DB.Unscoped().Delete(ShopCates{}, "id > ?", 0)
+	DB.Unscoped().Table("shop_brand_cate").Delete(ShopBrandCate{}, "id > ?", 0)
+	DB.Unscoped().Delete(ShopBrands{}, "id > ?", 0)
 
 }

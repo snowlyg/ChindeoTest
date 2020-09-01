@@ -63,8 +63,8 @@ func CreateOrderMenus(menu *APIMenus, menuType string, orderId, num int) []*APIO
 	return menus
 }
 
-func CreateOrderComment(userId, orderId int, commentableType string) *Comments {
-	orderComment := &Comments{
+func CreateOrderComment(userId, orderId int, commentableType string) *CommonComments {
+	orderComment := &CommonComments{
 		Content:         Fake.Paragraph(1, true),
 		UserID:          userId,
 		CommentableID:   orderId,
@@ -82,8 +82,8 @@ func CreateOrderComment(userId, orderId int, commentableType string) *Comments {
 	return orderComment
 }
 
-func CreateOrderComments(num, userId, orderId int, commentableType string) []*Comments {
-	var comments []*Comments
+func CreateOrderComments(num, userId, orderId int, commentableType string) []*CommonComments {
+	var comments []*CommonComments
 	for num > 0 {
 		comment := CreateOrderComment(userId, orderId, commentableType)
 		comments = append(comments, comment)

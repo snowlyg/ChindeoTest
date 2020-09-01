@@ -9,8 +9,8 @@ import (
 
 var LocCount int
 
-func CreateLoc() *Locs {
-	loc := &Locs{
+func CreateLoc() *OnlineLocs {
+	loc := &OnlineLocs{
 		LocID:         rand.Int(),
 		CtHospitalID:  rand.Int(),
 		LocWardFlag:   rand.Int(),

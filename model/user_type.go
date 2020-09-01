@@ -9,9 +9,9 @@ import (
 
 var UserTypeCount int
 
-func CreateUserType() *UserTypes {
+func CreateUserType() *OnlineUserTypes {
 	letters := []byte("NDO")
-	userType := &UserTypes{
+	userType := &OnlineUserTypes{
 		UtpID:       rand.Int(),
 		UtpCode:     Fake.CellPhoneNumber(),
 		UtpDesc:     Fake.Paragraph(1, true),

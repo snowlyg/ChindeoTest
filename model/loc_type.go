@@ -8,8 +8,8 @@ import (
 
 var LocTypeCount int
 
-func CreateLocType() *LocTypes {
-	locType := &LocTypes{
+func CreateLocType() *OnlineLocTypes {
+	locType := &OnlineLocTypes{
 		Name:          Fake.JobTitle(),
 		ApplicationID: AppId,
 		CreateAt:      time.Now(),

@@ -9,8 +9,8 @@ import (
 
 var PatientCount int
 
-func CreatePatient(userId int) *Patients {
-	patient := &Patients{
+func CreatePatient(userId int) *OnlinePatients {
+	patient := &OnlinePatients{
 		Username:  Fake.Name(),
 		Nickname:  Fake.Name(),
 		Phone:     Fake.PhoneNumber(),
@@ -33,8 +33,8 @@ func CreatePatient(userId int) *Patients {
 		fmt.Println(fmt.Sprintf("patient create error :%v", err))
 	}
 
-	userPatient := UserPatient{PatientID: patient.ID, UserID: userId, UpdateAt: time.Now(), CreateAt: time.Now()}
-	if err := DB.Table("user_patient").Create(&userPatient).Error; err != nil {
+	userPatient := OnlineUserPatient{PatientID: patient.ID, UserID: userId, UpdateAt: time.Now(), CreateAt: time.Now()}
+	if err := DB.Table("online_user_patient").Create(&userPatient).Error; err != nil {
 		fmt.Println(fmt.Sprintf("userPatient create error :%v", err))
 	}
 	PatientCount++

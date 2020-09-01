@@ -56,8 +56,8 @@ func getTotalPrice(tt time.Time, timeType string, price float64) float64 {
 
 var CareOrderCommentCount int
 
-func CreateCareOrderComment(userId, orderId, star int, commentableType string) *Comments {
-	orderComment := &Comments{
+func CreateCareOrderComment(userId, orderId, star int, commentableType string) *CommonComments {
+	orderComment := &CommonComments{
 		Content:         Fake.Paragraph(1, true),
 		UserID:          userId,
 		CommentableID:   orderId,
@@ -76,8 +76,8 @@ func CreateCareOrderComment(userId, orderId, star int, commentableType string) *
 	return orderComment
 }
 
-func CreateCareOrderComments(num, userId, orderId, star int, commentableType string) []*Comments {
-	var comments []*Comments
+func CreateCareOrderComments(num, userId, orderId, star int, commentableType string) []*CommonComments {
+	var comments []*CommonComments
 	for num > 0 {
 		comment := CreateCareOrderComment(userId, orderId, star, commentableType)
 		comments = append(comments, comment)

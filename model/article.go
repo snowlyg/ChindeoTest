@@ -8,8 +8,8 @@ import (
 
 var ArticleCount int
 
-func CreateArticle() *Articles {
-	artice := &Articles{
+func CreateArticle() *OnlineArticles {
+	artice := &OnlineArticles{
 		Title:            Fake.JobTitle(),
 		Digest:           Fake.Paragraph(1, true),
 		Content:          Fake.Paragraph(1, true),

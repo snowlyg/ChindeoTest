@@ -15,7 +15,6 @@ var App *model.APIApplications
 var User *model.APIUsers
 var Addr *model.APIAddrs
 var MenuType *model.APIMenuTypes
-var MenuTag *model.APIMenuTags
 var Menu *model.APIMenus
 var CareType *model.CareTypes
 var CareTag *model.CareTags
@@ -30,11 +29,16 @@ var MiniCareOrder *model.CareOrders
 var CarerOrder *model.CareOrders
 var MiniCarerOrder *model.CareOrders
 
-var Article *model.Articles
-var LocType *model.LocTypes
-var Loc *model.Locs
-var UserType *model.UserTypes
-var Patient *model.Patients
+var Article *model.OnlineArticles
+var LocType *model.OnlineLocTypes
+var Loc *model.OnlineLocs
+var UserType *model.OnlineUserTypes
+var Patient *model.OnlinePatients
+
+var Brand *model.ShopBrands
+var Cate1 *model.ShopCates
+var Cate2 *model.ShopCates
+var Cate3 *model.ShopCates
 
 //单元测试基境
 func TestMain(m *testing.M) {
@@ -48,7 +52,7 @@ func TestMain(m *testing.M) {
 
 	Addr = model.CreateAddr(User.ID)
 	MenuType = model.CreateMenuType()
-	MenuTag = model.CreateMenuTag()
+	model.CreateMenuTag()
 	Menu = model.CreateMenu(true)
 	model.CreateMenu(false)
 
@@ -96,6 +100,12 @@ func TestMain(m *testing.M) {
 	Loc = model.CreateLoc()
 	UserType = model.CreateUserType()
 	Patient = model.CreatePatient(User.ID)
+
+	model.CreateBrand(false)
+	Brand = model.CreateBrand(true)
+	Cate1 = model.CreateCate(0, 1)
+	Cate2 = model.CreateCate(Cate1.ID, 2)
+	Cate3 = model.CreateCate(Cate2.ID, 3)
 
 	flag.Parse()
 	exitCode := m.Run()

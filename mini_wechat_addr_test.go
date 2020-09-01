@@ -9,10 +9,15 @@ import (
 var delAddrId string
 
 func TestMiniWechatAddrAddSuccess(t *testing.T) {
+	address := model.Fake.StreetAddress()
+	province := model.Fake.Country()
+	county := model.Fake.Country()
+	city := model.Fake.City()
+	postCode := model.Fake.PostCode()
 	addr := map[string]interface{}{
 		"name":          "name",
 		"phone":         "13800138000",
-		"addr":          "addr",
+		"addr":          address,
 		"sex":           1,
 		"age":           10,
 		"is_default":    1,
@@ -22,6 +27,10 @@ func TestMiniWechatAddrAddSuccess(t *testing.T) {
 		"loc_name":      "泥马",
 		"bed_num":       "05",
 		"hospital_no":   "9556854545",
+		"province":      province,
+		"county":        county,
+		"city":          city,
+		"postcode":      postCode,
 	}
 
 	obj := model.GetE(t).POST("/api/v1/outline/addr/add").
@@ -37,7 +46,7 @@ func TestMiniWechatAddrAddSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("id").NotEqual(0)
 	obj.Value("data").Object().Value("name").Equal("name")
 	obj.Value("data").Object().Value("phone").Equal("13800138000")
-	obj.Value("data").Object().Value("addr").Equal("addr")
+	obj.Value("data").Object().Value("addr").Equal(address)
 	obj.Value("data").Object().Value("sex").Equal("男")
 	obj.Value("data").Object().Value("age").Equal("10")
 	obj.Value("data").Object().Value("is_default").Equal("1")
@@ -46,6 +55,10 @@ func TestMiniWechatAddrAddSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("loc_name").Equal("泥马")
 	obj.Value("data").Object().Value("bed_num").Equal("05")
 	obj.Value("data").Object().Value("hospital_no").Equal("9556854545")
+	obj.Value("data").Object().Value("province").Equal(province)
+	obj.Value("data").Object().Value("county").Equal(county)
+	obj.Value("data").Object().Value("city").Equal(city)
+	obj.Value("data").Object().Value("postcode").Equal(postCode)
 
 	id := obj.Value("data").Object().Value("id").Raw()
 	data, ok := id.(string)
@@ -97,10 +110,15 @@ func TestMiniWechatAddrAddError(t *testing.T) {
 }
 
 func TestMiniWechatAddrUpdateSuccess(t *testing.T) {
+	address := model.Fake.StreetAddress()
+	province := model.Fake.Country()
+	county := model.Fake.Country()
+	city := model.Fake.City()
+	postCode := model.Fake.PostCode()
 	addr := map[string]interface{}{
 		"name":          "update",
 		"phone":         "13800138001",
-		"addr":          "update",
+		"addr":          address,
 		"sex":           0,
 		"age":           12,
 		"is_default":    0,
@@ -110,6 +128,10 @@ func TestMiniWechatAddrUpdateSuccess(t *testing.T) {
 		"loc_name":      "update",
 		"bed_num":       "update",
 		"hospital_no":   "update",
+		"province":      province,
+		"county":        county,
+		"city":          city,
+		"postcode":      postCode,
 	}
 
 	obj := model.GetE(t).POST("/api/v1/outline/addr/{id}", delAddrId).
@@ -125,7 +147,7 @@ func TestMiniWechatAddrUpdateSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("id").NotEqual(0)
 	obj.Value("data").Object().Value("name").Equal("update")
 	obj.Value("data").Object().Value("phone").Equal("13800138001")
-	obj.Value("data").Object().Value("addr").Equal("update")
+	obj.Value("data").Object().Value("addr").Equal(address)
 	obj.Value("data").Object().Value("sex").Equal("女")
 	obj.Value("data").Object().Value("age").Equal("12")
 	obj.Value("data").Object().Value("is_default").Equal("0")
@@ -134,6 +156,10 @@ func TestMiniWechatAddrUpdateSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("loc_name").Equal("update")
 	obj.Value("data").Object().Value("bed_num").Equal("update")
 	obj.Value("data").Object().Value("hospital_no").Equal("update")
+	obj.Value("data").Object().Value("province").Equal(province)
+	obj.Value("data").Object().Value("county").Equal(county)
+	obj.Value("data").Object().Value("city").Equal(city)
+	obj.Value("data").Object().Value("postcode").Equal(postCode)
 }
 
 func TestMiniWechatAddrUpdateNoName(t *testing.T) {
