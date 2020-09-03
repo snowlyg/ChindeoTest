@@ -39,11 +39,15 @@ var Brand *model.ShopBrands
 var Cate1 *model.ShopCates
 var Cate2 *model.ShopCates
 var Cate3 *model.ShopCates
+var SpecGroup *model.ShopSpecGroups
 
 //单元测试基境
 func TestMain(m *testing.M) {
 
 	println(fmt.Sprintf("-------------------main start-------------------"))
+
+	cleanTables := flag.Bool("clean", false, "Set Clean tables (default false)")
+	flag.Parse()
 
 	model.GetAuthToken()
 	App = model.GetApp()
@@ -106,12 +110,55 @@ func TestMain(m *testing.M) {
 	Cate1 = model.CreateCate(0, 1)
 	Cate2 = model.CreateCate(Cate1.ID, 2)
 	Cate3 = model.CreateCate(Cate2.ID, 3)
+	spec := &model.SpecGroup{
+		Name: "基本信息",
+		Params: []*model.SpecParam{
+			{
+				Name:      "机身颜色",
+				Unit:      "",
+				Numeric:   false,
+				Generic:   false,
+				Searching: true,
+				Value:     []string{"白色", "金色", "黑色"},
+			}, {
+				Name:      "机身长度",
+				Unit:      "mm",
+				Numeric:   true,
+				Generic:   true,
+				Searching: true,
+				Value:     []string{"112"},
+			}, {
+				Name:      "输入方法",
+				Unit:      "",
+				Numeric:   false,
+				Generic:   true,
+				Searching: true,
+				Value:     []string{"触控"},
+			}, {
+				Name:      "内存",
+				Unit:      "G",
+				Numeric:   true,
+				Generic:   false,
+				Searching: true,
+				Value:     []string{"6", "8"},
+			}, {
+				Name:      "机身存储",
+				Unit:      "GB",
+				Numeric:   true,
+				Generic:   false,
+				Searching: true,
+				Value:     []string{"16", "32", "64", "128"},
+			},
+		},
+	}
+	SpecGroup = model.CreateSpecGroup(Cate1.ID, spec)
+	model.CreateSpu(Brand.ID, Cate1.ID, 1, "", "", spec)
 
 	flag.Parse()
 	exitCode := m.Run()
 
 	model.ClearToken()
-	model.ClearTables()
+	model.ClearTables(*cleanTables)
 	model.Close()
 
 	println(fmt.Sprintf("-------------------main end-------------------"))

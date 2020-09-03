@@ -30,7 +30,7 @@ func CreateAddr(userId int) *APIAddrs {
 		IsDeleted:    sql.NullTime{},
 	}
 	if err := DB.Create(&addr).Error; err != nil {
-		fmt.Println(fmt.Sprintf("menuType create error :%v", err))
+		fmt.Println(fmt.Sprintf("addr create error :%v", err))
 	}
 	AddrCount++
 	return &addr

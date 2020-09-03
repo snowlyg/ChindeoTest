@@ -15,8 +15,12 @@ gormt
 修改 `TimeType      string` 为 	`TimeType      model.MenuTimeType`
 
 ```shell script
-#全部执行
+#全部执行 , 不清楚数据
 go test -v 
+
+#清楚数据
+go test -v -clean 
+
 #部分执行
 go test -v --run Test***
 ```

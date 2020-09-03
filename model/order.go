@@ -1053,7 +1053,6 @@ type ShopSkus struct {
 	OwnSpec   string       `gorm:"column:own_spec;type:varchar(1024);not null" json:"own_spec"` // SKU的特有规格参数键值对 (json格式，反序列化时请使用linkedHashMap，保证有序)
 	SpuID     int          `gorm:"column:spu_id;type:int;not null" json:"spu_id"`               // SPU Id
 	Status    bool         `gorm:"column:status;type:tinyint(1);not null" json:"status"`        // 是否有效 (true或false)
-	Segments  string       `gorm:"column:segments;type:varchar(1024);not null" json:"segments"` // 区间 (数值类型参数的预设区间值，如果需要搜索，则添加分段间隔值，如CPU频率间隔：0.5-1.0)
 	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
 	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
 	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
@@ -1061,12 +1060,13 @@ type ShopSkus struct {
 
 // ShopSpecGroups 规格参数的分组表，每个商品分类下有多个规格参数组
 type ShopSpecGroups struct {
-	ID        int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
-	CateID    int          `gorm:"index:cate_id;column:cate_id;type:int;not null" json:"cate_id"` // cate_id
-	Name      string       `gorm:"column:name;type:varchar(32);not null" json:"name"`             // 名称
-	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
-	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
-	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+	ID         int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	CateID     int          `gorm:"index:cate_id;column:cate_id;type:int;not null" json:"cate_id"` // cate_id
+	Name       string       `gorm:"column:name;type:varchar(32);not null" json:"name"`             // 名称
+	CreateAt   time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt   time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	IsDeleted  sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+	SpecParams []*ShopSpecParams
 }
 
 // ShopSpecParams 规格参数组下的参数名
@@ -1077,7 +1077,7 @@ type ShopSpecParams struct {
 	Name        string       `gorm:"column:name;type:varchar(128);not null" json:"name"`                        // 参数
 	Numeric     bool         `gorm:"column:numeric;type:tinyint(1);not null" json:"numeric"`                    // 是否是数字类型参数 (true或false)
 	Unit        string       `gorm:"column:unit;type:varchar(128);not null" json:"unit"`                        // 数字类型参数的单位 (非数字类型可以为空)
-	Generic     bool         `gorm:"column:generic;type:tinyint(1);not null" json:"generic"`                    // 是否是SKU通用规格 (true或false
+	Generic     bool         `gorm:"column:generic;type:tinyint(1);not null" json:"generic"`                    // 是否是SKU通用规格 (true或false)
 	Searching   bool         `gorm:"column:searching;type:tinyint(1);not null" json:"searching"`                // 是否用于搜索过滤 (true或false)
 	Segments    string       `gorm:"column:segments;type:varchar(1024);not null" json:"segments"`               // 区间 (数值类型参数的预设区间值，如果需要搜索，则添加分段间隔值，如CPU频率间隔：0.5-1.0)
 	CreateAt    time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
@@ -1094,8 +1094,6 @@ type ShopSpuDetails struct {
 	PackingList  string       `gorm:"column:packing_list;type:varchar(1024);not null" json:"packing_list"`   // 包装清单
 	AfterService string       `gorm:"column:after_service;type:varchar(1024);not null" json:"after_service"` // 售后服务
 	SpuID        int          `gorm:"index:spu_id;column:spu_id;type:int;not null" json:"spu_id"`            // SPU Id
-	Status       bool         `gorm:"column:status;type:tinyint(1);not null" json:"status"`                  // 是否上架 (true或false)
-	Segments     string       `gorm:"column:segments;type:varchar(1024);not null" json:"segments"`           // 区间 (数值类型参数的预设区间值，如果需要搜索，则添加分段间隔值，如CPU频率间隔：0.5-1.0)
 	CreateAt     time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
 	UpdateAt     time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
 	IsDeleted    sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
@@ -1106,13 +1104,19 @@ type ShopSpus struct {
 	ID        int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
 	Name      string       `gorm:"column:name;type:varchar(256);not null" json:"name"`               // 商品名称
 	SubTitle  string       `gorm:"column:sub_title;type:varchar(256);not null" json:"sub_title"`     // 副标题 (一般是促销信息)
-	Cid1      int          `gorm:"column:cid1;type:int;not null" json:"cid1"`                        // 1级分类Id
-	Cid2      int          `gorm:"column:cid2;type:int;not null" json:"cid2"`                        // 2级分类Id
-	Cid3      int          `gorm:"column:cid3;type:int;not null" json:"cid3"`                        // 3级分类Id
 	BrandID   int          `gorm:"index:brand_id;column:brand_id;type:int;not null" json:"brand_id"` // 品牌Id (商品所属的品牌)
 	Status    bool         `gorm:"column:status;type:tinyint(1);not null" json:"status"`             // 是否上架 (true或false)
-	Segments  string       `gorm:"column:segments;type:varchar(1024);not null" json:"segments"`      // 区间 (数值类型参数的预设区间值，如果需要搜索，则添加分段间隔值，如CPU频率间隔：0.5-1.0)
 	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
 	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
 	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+	Detail    *ShopSpuDetails
+	Skus      []*ShopSkus
+}
+
+type ShopCateSpu struct {
+	ID       int       `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	CateID   int       `gorm:"index:cate_id;column:cate_id;type:int;not null" json:"cate_id"` // cate_id
+	SpuID    int       `gorm:"index:cate_id;column:spu_id;type:int;not null" json:"spu_id"`   // spu_id
+	CreateAt time.Time `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt time.Time `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
 }

@@ -20,9 +20,11 @@ func CreateArticle() *OnlineArticles {
 		UpdateAt:         time.Now(),
 		IsDeleted:        sql.NullTime{},
 	}
+
 	if err := DB.Create(&artice).Error; err != nil {
 		fmt.Println(fmt.Sprintf("artice create error :%v", err))
 	}
+
 	ArticleCount++
 	return artice
 }

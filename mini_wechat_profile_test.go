@@ -16,6 +16,78 @@ func TestMiniWechatProfileSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("查询成功")
+	obj.Value("data").Object().Keys().ContainsOnly(
+		"id",
+		"username",
+		"nickname",
+		"phone",
+		"email",
+		"sex", "password",
+		"status",
+		"avatar_url",
+		"open_id",
+		"union_id",
+		"country",
+		"province",
+		"city",
+		"mac",
+		"create_at",
+		"update_at",
+		"id_card_no",
+		"is_auth",
+		"realname",
+		"area",
+		"birthday",
+
+		"addrs",
+		"warn_times",
+		"collects",
+		"cares",
+		"profile",
+		"qual",
+		"patients",
+		"families",
+		"vitals",
+		"companies",
+	)
+	obj.Value("data").Object().Value("id").Equal(15)
+}
+
+func TestMiniWechatProfileWithCompaniesRelationSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/api/v1/profile").
+		WithHeaders(model.GetMiniHeader()).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("relation", "companies").
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("查询成功")
+	obj.Value("data").Object().Keys().ContainsOnly(
+		"id",
+		"username",
+		"nickname",
+		"phone",
+		"email",
+		"sex", "password",
+		"status",
+		"avatar_url",
+		"open_id",
+		"union_id",
+		"country",
+		"province",
+		"city",
+		"mac",
+		"create_at",
+		"update_at",
+		"id_card_no",
+		"is_auth",
+		"realname",
+		"companies",
+		"area",
+		"birthday",
+	)
 	obj.Value("data").Object().Value("id").Equal(15)
 }
 
