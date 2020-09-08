@@ -246,7 +246,7 @@ func TestOrderCommentNoOrderIdError(t *testing.T) {
 
 func TestOrderAfterOrderAddMenuShowSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/menu/{id}", Menu.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		Expect().

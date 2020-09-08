@@ -34,7 +34,7 @@ func TestMiniWechatAddrAddSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/outline/addr/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(addr).
 		Expect().
@@ -70,7 +70,7 @@ func TestMiniWechatAddrAddSuccess(t *testing.T) {
 
 func TestMiniWechatAddrListSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/addr").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -98,7 +98,7 @@ func TestMiniWechatAddrAddError(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/outline/addr/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(addr).
 		Expect().
@@ -135,7 +135,7 @@ func TestMiniWechatAddrUpdateSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/outline/addr/{id}", delAddrId).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(addr).
 		Expect().
@@ -179,7 +179,7 @@ func TestMiniWechatAddrUpdateNoName(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/outline/addr/{id}", delAddrId).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(addr).
 		Expect().
@@ -207,7 +207,7 @@ func TestMiniWechatAddrUpdateErrorSex(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/outline/addr/{id}", delAddrId).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(addr).
 		Expect().
@@ -220,7 +220,7 @@ func TestMiniWechatAddrUpdateErrorSex(t *testing.T) {
 
 func TestMiniWechatAddrDeleteSuccess(t *testing.T) {
 	obj := model.GetE(t).DELETE("/api/v1/outline/addr/{id}", delAddrId).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -234,7 +234,7 @@ func TestMiniWechatAddrDeleteSuccess(t *testing.T) {
 func TestMiniWechatAddrDeleteError(t *testing.T) {
 
 	obj := model.GetE(t).DELETE("/api/v1/outline/addr/{id}", 0).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -246,7 +246,7 @@ func TestMiniWechatAddrDeleteError(t *testing.T) {
 
 func TestMiniWechatAddrDeleteNoExistError(t *testing.T) {
 	obj := model.GetE(t).DELETE("/api/v1/outline/addr/{id}", 999999).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

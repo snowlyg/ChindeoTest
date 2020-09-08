@@ -8,7 +8,7 @@ import (
 
 func TestMiniWechatOnlineMyPatientListSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/online/v1/patient/my_patient").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -36,7 +36,7 @@ func TestMiniWechatOnlineMyPatientListSuccess(t *testing.T) {
 
 func TestMiniWechatOnlineMyPatientNoPageSizeListSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/online/v1/patient/my_patient").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("page_size", -1).
 		Expect().
@@ -64,7 +64,7 @@ func TestMiniWechatOnlineMyPatientNoPageSizeListSuccess(t *testing.T) {
 
 func TestMiniWechatOnlineMyPatientShowSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/online/v1/patient/{id}", Patient.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("page_size", -1).
 		Expect().

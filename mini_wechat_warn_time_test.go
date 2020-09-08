@@ -18,7 +18,7 @@ func TestMiniWechatWarmTimeAddSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/outline/warn_time/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(warmTime).
 		Expect().
@@ -48,7 +48,7 @@ func TestMiniWechatWarmTimeUpdateSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/outline/warn_time/{id}", warmTimeId).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(warmTime).
 		Expect().
@@ -70,7 +70,7 @@ func TestMiniWechatWarmTimeStatusSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).GET("/api/v1/outline/warn_time/status/{id}", warmTimeId).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(warmTime).
 		Expect().
@@ -87,7 +87,7 @@ func TestMiniWechatWarmTimeStatusSuccess(t *testing.T) {
 
 func TestMiniWechatWarmTimeSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/warn_time").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -106,7 +106,7 @@ func TestMiniWechatWarmTimeDeleteSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).DELETE("/api/v1/outline/warn_time/{id}", warmTimeId).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(warmTime).
 		Expect().
@@ -120,7 +120,7 @@ func TestMiniWechatWarmTimeDeleteSuccess(t *testing.T) {
 
 func TestMiniWechatWarmTimeAfterDelSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/warn_time").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

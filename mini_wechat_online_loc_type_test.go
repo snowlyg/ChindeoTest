@@ -8,7 +8,7 @@ import (
 
 func TestMiniWechatOnlineLocTypeListSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/online/v1/loc_type").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		Expect().
@@ -25,7 +25,7 @@ func TestMiniWechatOnlineLocTypeListSuccess(t *testing.T) {
 
 func TestMiniWechatOnlineLocTypeListError(t *testing.T) {
 	obj := model.GetE(t).GET("/online/v1/loc_type").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

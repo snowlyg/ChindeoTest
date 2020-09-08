@@ -424,7 +424,6 @@ func TestCareOrderPayCareSuccess(t *testing.T) {
 }
 
 func TestCareOrderCancelNoPayCareSuccess(t *testing.T) {
-
 	obj := model.GetE(t).GET("/care/v1/inner/order/cancel/{id}", careOrderCareId).
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
@@ -437,7 +436,6 @@ func TestCareOrderCancelNoPayCareSuccess(t *testing.T) {
 }
 
 func TestCareOrderCancelPayCareSuccess(t *testing.T) {
-
 	obj := model.GetE(t).GET("/care/v1/inner/order/cancel/{id}", CareOrder.ID).
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).

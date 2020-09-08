@@ -17,7 +17,7 @@ func TestMiniWechatOnlineQualAddSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/online/v1/qual/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
@@ -46,7 +46,7 @@ func TestMiniWechatOnlineQualAddNoLocError(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/online/v1/qual/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
@@ -68,7 +68,7 @@ func TestMiniWechatOnlineQualAddNoHospitalError(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/online/v1/qual/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
@@ -90,7 +90,7 @@ func TestMiniWechatOnlineQualAddNoQualImgError(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/online/v1/qual/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
@@ -112,7 +112,7 @@ func TestMiniWechatOnlineQualAddNoPostionError(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/online/v1/qual/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
@@ -134,7 +134,7 @@ func TestMiniWechatOnlineQualAddNoExpertiseImgError(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/online/v1/qual/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().
@@ -156,7 +156,7 @@ func TestMiniWechatOnlineQualAddNoLocImgError(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/online/v1/qual/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(data).
 		Expect().

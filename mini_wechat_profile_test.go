@@ -8,7 +8,7 @@ import (
 
 func TestMiniWechatProfileSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/profile").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -49,13 +49,14 @@ func TestMiniWechatProfileSuccess(t *testing.T) {
 		"families",
 		"vitals",
 		"companies",
+		"mini_apps",
 	)
 	obj.Value("data").Object().Value("id").Equal(15)
 }
 
 func TestMiniWechatProfileWithCompaniesRelationSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/profile").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("relation", "companies").
 		Expect().
@@ -98,7 +99,7 @@ func TestMiniWechatProfileUpdateSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/profile/update").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(info).
 		Expect().
@@ -120,7 +121,7 @@ func TestMiniWechatProfileSetServerSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/api/v1/profile/set_server").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(info).
 		Expect().
@@ -145,7 +146,7 @@ func TestMiniWechatProfileNoDevHeader(t *testing.T) {
 
 func TestMiniWechatProfileSetServerOpenSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/profile/set_server_open").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -157,7 +158,7 @@ func TestMiniWechatProfileSetServerOpenSuccess(t *testing.T) {
 
 func TestMiniWechatProfileAuthSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/profile/auth").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -165,4 +166,28 @@ func TestMiniWechatProfileAuthSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("设置成功")
+}
+
+func TestMiniWechatProfileSubSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/api/v1/profile/sub").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("订阅成功")
+}
+
+func TestMiniWechatProfileUnSubSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/api/v1/profile/unsub").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("取消订阅成功")
 }

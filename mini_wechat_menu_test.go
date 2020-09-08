@@ -8,7 +8,7 @@ import (
 
 func TestMiniWechatMenuSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/menu").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		WithQuery("menu_type_id", Menu.MenuType.ID).
@@ -27,7 +27,7 @@ func TestMiniWechatMenuSuccess(t *testing.T) {
 
 func TestMiniWechatMenuNoPageSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/menu").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		WithQuery("menu_type_id", Menu.MenuType.ID).
@@ -46,7 +46,7 @@ func TestMiniWechatMenuNoPageSuccess(t *testing.T) {
 
 func TestMiniWechatMenuNoPageNoTagSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/menu").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		WithQuery("page_size", "-1").
@@ -62,7 +62,7 @@ func TestMiniWechatMenuNoPageNoTagSuccess(t *testing.T) {
 
 func TestMiniWechatMenuShowSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/menu/{id}", Menu.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		Expect().
@@ -95,7 +95,7 @@ func TestMiniWechatMenuShowSuccess(t *testing.T) {
 
 func TestMiniWechatMenuCollectAddSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/collect/add/{id}", Menu.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -107,7 +107,7 @@ func TestMiniWechatMenuCollectAddSuccess(t *testing.T) {
 
 func TestMiniWechatMenuCollectSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/collect").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -120,7 +120,7 @@ func TestMiniWechatMenuCollectSuccess(t *testing.T) {
 
 func TestMiniWechatMenuCollectCancelSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/collect/cancel/{id}", Menu.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

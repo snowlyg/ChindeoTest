@@ -8,7 +8,7 @@ import (
 
 func TestMiniWechatOnlineUserTypeListSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/online/v1/user_type").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		Expect().

@@ -8,7 +8,7 @@ import (
 
 func TestMiniWechatMenuTypeSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/menu_type").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		Expect().

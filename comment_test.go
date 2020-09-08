@@ -10,7 +10,7 @@ func TestCommentDeleteOrderCommentSuccess(t *testing.T) {
 	order := model.CreateOrder("I202008241612348468756914", User.ID, model.OrderAppTypeBed, model.IOrderPayTypeWechat)
 	comemnt := model.CreateOrderComment(User.ID, order.ID, COMMENTABLETYPE)
 	obj := model.GetE(t).DELETE("/common/v1/comment/{id}", comemnt.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

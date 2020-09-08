@@ -9,7 +9,7 @@ import (
 func TestMiniWechatOnlineArticleListSuccess(t *testing.T) {
 
 	obj := model.GetE(t).GET("/online/v1/article").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -33,7 +33,7 @@ func TestMiniWechatOnlineArticleListSuccess(t *testing.T) {
 func TestMiniWechatOnlineArticleShowSuccess(t *testing.T) {
 
 	obj := model.GetE(t).GET("/online/v1/article/{id}", Article.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

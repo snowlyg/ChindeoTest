@@ -7,14 +7,9 @@ import (
 )
 
 func TestMiniWechatRefreshTokenSuccess(t *testing.T) {
-	auth := map[string]interface{}{
-		"uuid": "5205857593c2eacc6f6c1da376b32ca3",
-	}
-
 	obj := model.GetE(t).POST("/api/v1/refresh_access_token").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
-		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -33,7 +28,7 @@ func TestMiniWechatRefreshTokenSuccess(t *testing.T) {
 func TestMiniWechatRefreshTokenError(t *testing.T) {
 
 	obj := model.GetE(t).POST("/api/v1/refresh_access_token").
-		WithHeaders(model.GetMiniHeaderNoToken()).
+		WithHeaders(model.GetMiniHeaderNoToken("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

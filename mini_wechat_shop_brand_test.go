@@ -8,7 +8,7 @@ import (
 
 func TestMiniWechatShopBrandSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/shop/v1/brand").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -22,7 +22,7 @@ func TestMiniWechatShopBrandSuccess(t *testing.T) {
 
 func TestMiniWechatShopBrandWithCateSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/shop/v1/brand").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("cate_id", Brand.Cates[0].ID).
 		Expect().

@@ -16,7 +16,7 @@ var miniCareTimeTypeText string
 
 func TestMiniWechatCareListSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/care/v1/care").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		WithQuery("care_type_id", CareType.ID).
@@ -47,7 +47,7 @@ func TestMiniWechatCareListSuccess(t *testing.T) {
 func TestMiniWechatCareNoTagIdListSuccess(t *testing.T) {
 
 	obj := model.GetE(t).GET("/care/v1/care").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		Expect().
@@ -76,7 +76,7 @@ func TestMiniWechatCareNoTagIdListSuccess(t *testing.T) {
 func TestMiniWechatCareListNoAppError(t *testing.T) {
 
 	obj := model.GetE(t).GET("/care/v1/care").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("care_type_id", CareType.ID).
 		WithQuery("care_tag_id", CareTag.ID).
@@ -92,7 +92,7 @@ func TestMiniWechatCareListNoAppError(t *testing.T) {
 func TestMiniWechatCareListNoPageSuccess(t *testing.T) {
 
 	obj := model.GetE(t).GET("/care/v1/care").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		WithQuery("care_type_id", CareType.ID).
@@ -124,7 +124,7 @@ func TestMiniWechatCareListNoPageSuccess(t *testing.T) {
 func TestMiniWechatCareShowSuccess(t *testing.T) {
 
 	obj := model.GetE(t).GET("/care/v1/care/{id}", Care.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -148,7 +148,7 @@ func TestMiniWechatCareShowSuccess(t *testing.T) {
 func TestMiniWechatCareOrderListSuccess(t *testing.T) {
 
 	obj := model.GetE(t).GET("/care/v1/order").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("application_id", model.AppId).
 		Expect().
@@ -178,7 +178,7 @@ func TestMiniWechatCareOrderAddCareSuccess(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/care/v1/order/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(careOrder).
 		Expect().
@@ -304,7 +304,7 @@ func TestMiniWechatCareOrderCommentNoOrderIdError(t *testing.T) {
 func TestMiniWechatCareShowAfterOrderAddSuccess(t *testing.T) {
 
 	obj := model.GetE(t).GET("/care/v1/care/{id}", Care.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -342,7 +342,7 @@ func TestMiniWechatCareOrderNoAddrError(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/care/v1/order/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(careOrder).
 		Expect().
@@ -363,7 +363,7 @@ func TestMiniWechatCareOrderNoAppError(t *testing.T) {
 	}
 
 	obj := model.GetE(t).POST("/care/v1/order/add").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithJSON(careOrder).
 		Expect().
@@ -377,7 +377,7 @@ func TestMiniWechatCareOrderNoAppError(t *testing.T) {
 func TestMiniWechatCareOrderShowCareSuccess(t *testing.T) {
 
 	obj := model.GetE(t).GET("/care/v1/order/{id}", miniCareOrderCareId).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -440,7 +440,7 @@ func TestMiniWechatCareOrderShowCareSuccess(t *testing.T) {
 func TestMiniWechatCareOrderPayCareSuccess(t *testing.T) {
 
 	obj := model.GetE(t).GET("/care/v1/order/pay/{id}", miniCareOrderCareId).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -453,7 +453,7 @@ func TestMiniWechatCareOrderPayCareSuccess(t *testing.T) {
 func TestMiniWechatCareOrderCancelNoPayCareSuccess(t *testing.T) {
 
 	obj := model.GetE(t).GET("/care/v1/order/cancel/{id}", miniCareOrderCareId).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -465,7 +465,7 @@ func TestMiniWechatCareOrderCancelNoPayCareSuccess(t *testing.T) {
 
 func TestMiniWechatCareOrderCancelPayCareSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/care/v1/order/cancel/{id}", MiniCareOrder.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -478,7 +478,7 @@ func TestMiniWechatCareOrderCancelPayCareSuccess(t *testing.T) {
 func TestMiniWechatCareOrderShowReturnSuccess(t *testing.T) {
 
 	obj := model.GetE(t).GET("/care/v1/order/{id}", MiniCareOrder.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -595,7 +595,7 @@ func TestMiniWechatCareOrderShowReturnSuccess(t *testing.T) {
 func TestMiniWechatCareOrderDeleteCareSuccess(t *testing.T) {
 
 	obj := model.GetE(t).DELETE("/care/v1/order/{id}", miniCareOrderCareId).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -607,7 +607,7 @@ func TestMiniWechatCareOrderDeleteCareSuccess(t *testing.T) {
 
 func TestMiniWechatCareOrderDeleteCareRetrunSuccess(t *testing.T) {
 	obj := model.GetE(t).DELETE("/care/v1/order/{id}", MiniCareOrder.ID).
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

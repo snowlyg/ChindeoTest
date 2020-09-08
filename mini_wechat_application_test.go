@@ -8,7 +8,7 @@ import (
 
 func TestMiniWechatApplicationSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/application/482024").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

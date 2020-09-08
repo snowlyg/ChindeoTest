@@ -8,14 +8,13 @@ import (
 
 func TestMiniWechatGetTokenSuccess(t *testing.T) {
 	auth := map[string]interface{}{
-		"uuid":           "5205857593c2eacc6f6c1da376b32ca3",
 		"code":           "5205857593c2eacc6f6c1da376b32ca3",
 		"iv":             "5205857593c2eacc6f6c1da376b32ca3",
 		"encrypted_data": "5205857593c2eacc6f6c1da376b32ca3",
 	}
 
 	obj := model.GetE(t).POST("/api/v1/get_access_token").
-		WithHeaders(model.GetMiniHeader()).
+		WithHeaders(model.GetMiniHeader("")).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -33,14 +32,13 @@ func TestMiniWechatGetTokenSuccess(t *testing.T) {
 
 func TestMiniWechatGetTokenErrorAuthType(t *testing.T) {
 	auth := map[string]interface{}{
-		"uuid":           "5205857593c2eacc6f6c1da376b32ca3",
 		"code":           "5205857593c2eacc6f6c1da376b32ca3",
 		"iv":             "5205857593c2eacc6f6c1da376b32ca3",
 		"encrypted_data": "5205857593c2eacc6f6c1da376b32ca3",
 	}
 
 	obj := model.GetE(t).POST("/api/v1/get_access_token").
-		WithHeaders(model.GetMiniHeaderAuthServer()).
+		WithHeaders(model.GetMiniHeaderAuthServer("")).
 		WithJSON(auth).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
