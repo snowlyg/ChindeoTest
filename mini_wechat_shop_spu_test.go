@@ -105,10 +105,51 @@ func TestMiniWechatShopSpuWithCateIdAndBrandAndKeyWordSuccess(t *testing.T) {
 }
 
 func TestMiniWechatShopSpuShowSuccess(t *testing.T) {
+	spec := &model.SpecGroup{
+		Name: "基本信息",
+		Params: []*model.SpecParam{
+			{
+				Name:      "机身颜色",
+				Unit:      "",
+				Numeric:   false,
+				Generic:   false,
+				Searching: true,
+				Value:     []string{"白色", "金色", "黑色"},
+			}, {
+				Name:      "机身长度",
+				Unit:      "mm",
+				Numeric:   true,
+				Generic:   true,
+				Searching: true,
+				Value:     []string{"112"},
+			}, {
+				Name:      "输入方法",
+				Unit:      "",
+				Numeric:   false,
+				Generic:   true,
+				Searching: true,
+				Value:     []string{"触控"},
+			}, {
+				Name:      "内存",
+				Unit:      "G",
+				Numeric:   true,
+				Generic:   false,
+				Searching: true,
+				Value:     []string{"6", "8"},
+			}, {
+				Name:      "机身存储",
+				Unit:      "GB",
+				Numeric:   true,
+				Generic:   false,
+				Searching: true,
+				Value:     []string{"16", "32", "64", "128"},
+			},
+		},
+	}
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
-	spu := model.CreateSpu(brand.ID, Cate2.ID, 3, name, title, nil)
+	spu := model.CreateSpu(brand.ID, Cate2.ID, 3, name, title, spec)
 	obj := model.GetE(t).GET("/shop/v1/spu/{id}", spu.ID).
 		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
