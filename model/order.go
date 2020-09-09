@@ -1089,14 +1089,24 @@ type ShopSpecParams struct {
 type ShopSpuDetails struct {
 	ID           int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
 	Description  string       `gorm:"column:description;type:tinytext;not null" json:"description"`          // 商品描述信息
-	GenericSpec  string       `gorm:"column:generic_spec;type:varchar(2048);not null" json:"generic_spec"`   // 通用规格键值对 (json格式)
-	SpecialSpec  string       `gorm:"column:special_spec;type:varchar(1024);not null" json:"special_spec"`   // 特有规格可选值 (json格式)
 	PackingList  string       `gorm:"column:packing_list;type:varchar(1024);not null" json:"packing_list"`   // 包装清单
 	AfterService string       `gorm:"column:after_service;type:varchar(1024);not null" json:"after_service"` // 售后服务
 	SpuID        int          `gorm:"index:spu_id;column:spu_id;type:int;not null" json:"spu_id"`            // SPU Id
 	CreateAt     time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
 	UpdateAt     time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
 	IsDeleted    sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+}
+
+// ShopSpuSpecs spu generic_spec 特殊规格参数
+type ShopSpuSpecs struct {
+	ID          int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	IsGeneric   bool         `gorm:"column:is_generic;type:tinyint(1);not null" json:"is_generic"`             // 是否为一般规格参数 (true或false)
+	Value       string       `gorm:"column:value;type:varchar(1024);not null" json:"value"`                    // 特有规格可选值 (json格式)
+	SpuID       int          `gorm:"index:spu_id;column:spu_id;type:int;not null" json:"spu_id"`               // SPU Id
+	SpecParamID int          `gorm:"index:spu_id;column:spec_param_id;type:int;not null" json:"spec_param_id"` // spec_param_id
+	CreateAt    time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt    time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	IsDeleted   sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
 }
 
 // ShopSpus spu表描述的是一个抽象性的商品，比如 iphone8
@@ -1111,6 +1121,7 @@ type ShopSpus struct {
 	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
 	Detail    *ShopSpuDetails
 	Skus      []*ShopSkus
+	Specs     []*ShopSpuSpecs
 }
 
 type ShopCateSpu struct {

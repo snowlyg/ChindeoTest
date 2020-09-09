@@ -93,5 +93,6 @@ func ClearTables(cleanTables bool) {
 		DB.Unscoped().Delete(ShopSpus{}, "id > ?", 0)
 		DB.Unscoped().Delete(ShopSpuDetails{}, "id > ?", 0)
 		DB.Unscoped().Delete(ShopSkus{}, "id > ?", 0)
+		DB.Unscoped().Delete(ShopSpuSpecs{}, "id > ?", 0)
 	}
 }

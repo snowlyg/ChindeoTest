@@ -29,14 +29,16 @@ func CreateSpu(brandId, cateId, skuNum int, name, subTitle string, spec *SpecGro
 		fmt.Println(fmt.Sprintf("sup create error :%v", err))
 	}
 
-	sup.Detail = CreateSpuDetail(sup.ID, GetGenericSpec(spec), GetSpecialSpec(spec))
+	sup.Detail = CreateSpuDetail(sup.ID)
+
+	var specs []*ShopSpuSpecs
+	sup.Specs = GetSpecs(sup.ID, specs, spec)
 
 	var skus []*ShopSkus
 	for skuNum > 0 {
 		skus = append(skus, CreateSku(sup.ID))
 		skuNum--
 	}
-
 	sup.Skus = skus
 	cateSpu := ShopCateSpu{SpuID: sup.ID, CateID: cateId, UpdateAt: time.Now(), CreateAt: time.Now()}
 	if err := DB.Table("shop_cate_spu").Create(&cateSpu).Error; err != nil {
@@ -47,34 +49,19 @@ func CreateSpu(brandId, cateId, skuNum int, name, subTitle string, spec *SpecGro
 	return sup
 }
 
-func GetGenericSpec(spec *SpecGroup) string {
-	genericSpec := make(GenericSpec)
-	if spec != nil {
-		gsps := GetGenericSpecParams()
-		for _, gsp := range gsps {
-			for _, sp := range spec.Params {
+func GetSpecs(supId int, specs []*ShopSpuSpecs, specGroup *SpecGroup) []*ShopSpuSpecs {
+	gsps := GetSpecParams()
+	for _, gsp := range gsps {
+		if specGroup != nil {
+			for _, sp := range specGroup.Params {
 				if sp.Name == gsp.Name {
-					genericSpec[gsp.ID] = sp.Value
+					gs, _ := json.Marshal(sp.Value)
+					spec := CreateSpuSpec(gsp.ID, supId, gsp.Generic, string(gs))
+					specs = append(specs, spec)
 				}
 			}
 		}
 	}
-	gs, _ := json.Marshal(genericSpec)
-	return string(gs)
-}
 
-func GetSpecialSpec(spec *SpecGroup) string {
-	specialSpec := make(SpecialSpec)
-	if spec != nil {
-		gsps := GetNotGenericSpecParams()
-		for _, gsp := range gsps {
-			for _, sp := range spec.Params {
-				if sp.Name == gsp.Name {
-					specialSpec[gsp.ID] = sp.Value
-				}
-			}
-		}
-	}
-	ss, _ := json.Marshal(specialSpec)
-	return string(ss)
+	return specs
 }

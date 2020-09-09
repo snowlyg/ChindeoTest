@@ -30,18 +30,10 @@ func CreateSpecParam(groupCateId, groupId int, name, unit string, numeric, gener
 	return specParam
 }
 
-func GetGenericSpecParams() []*ShopSpecParams {
+func GetSpecParams() []*ShopSpecParams {
 	var sp []*ShopSpecParams
-	if err := DB.Where("generic = ?", true).Find(&sp).Error; err != nil {
-		fmt.Println(fmt.Sprintf("GetUserByIdCardNo create error :%v", err))
-	}
-	return sp
-}
-
-func GetNotGenericSpecParams() []*ShopSpecParams {
-	var sp []*ShopSpecParams
-	if err := DB.Where("generic = ?", false).Find(&sp).Error; err != nil {
-		fmt.Println(fmt.Sprintf("GetUserByIdCardNo create error :%v", err))
+	if err := DB.Find(&sp).Error; err != nil {
+		fmt.Println(fmt.Sprintf("GetSpecParams error :%v", err))
 	}
 	return sp
 }
