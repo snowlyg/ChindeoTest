@@ -58,11 +58,11 @@ var CareOrderCommentCount int
 
 func CreateCareOrderComment(userId, orderId, star int, commentableType string) *CommonComments {
 	orderComment := &CommonComments{
-		Content:         Fake.Paragraph(1, true),
 		UserID:          userId,
 		CommentableID:   orderId,
 		CommentableType: commentableType,
 		ApplicationID:   AppId,
+		Content:         Fake.Paragraph(1, true),
 		Pics:            GetPics(),
 		Star:            star,
 		CreateAt:        time.Now(),

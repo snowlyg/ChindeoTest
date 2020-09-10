@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/shopspring/decimal"
 	"github.com/snowlyg/ChindeoTest/model"
 
@@ -12,8 +11,6 @@ import (
 )
 
 var miniCareOrderCarerId float64
-var miniCarerPrice decimal.Decimal
-var miniCarerTimeTypeText string
 
 func TestMiniWechatCarrListSuccess(t *testing.T) {
 
@@ -208,9 +205,10 @@ func TestMiniWechatCarrOrderCommentSuccess(t *testing.T) {
 		"order_id":   miniCareOrderCarerId,
 	}
 
-	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
-		WithHeaders(model.GetHeader()).
-		WithCookie("PHPSESSID", model.GetSessionId()).
+	obj := model.GetE(t).POST("/common/v1/comment/care").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -229,9 +227,10 @@ func TestMiniWechatCarrOrderCommentOrderNotExistsError(t *testing.T) {
 		"order_id":   9999,
 	}
 
-	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
-		WithHeaders(model.GetHeader()).
-		WithCookie("PHPSESSID", model.GetSessionId()).
+	obj := model.GetE(t).POST("/common/v1/comment/care").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -250,9 +249,10 @@ func TestMiniWechatCarrOrderCommentNoContentError(t *testing.T) {
 		"order_id":   miniCareOrderCarerId,
 	}
 
-	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
-		WithHeaders(model.GetHeader()).
-		WithCookie("PHPSESSID", model.GetSessionId()).
+	obj := model.GetE(t).POST("/common/v1/comment/care").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -271,9 +271,10 @@ func TestMiniWechatCarrOrderCommentNoIdCardNoError(t *testing.T) {
 		"order_id":   miniCareOrderCarerId,
 	}
 
-	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
-		WithHeaders(model.GetHeader()).
-		WithCookie("PHPSESSID", model.GetSessionId()).
+	obj := model.GetE(t).POST("/common/v1/comment/care").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -291,9 +292,10 @@ func TestMiniWechatCarrOrderCommentNoOrderIdError(t *testing.T) {
 		"pics":       model.GetPics(),
 	}
 
-	obj := model.GetE(t).POST("/common/v1/inner/comment/care").
-		WithHeaders(model.GetHeader()).
-		WithCookie("PHPSESSID", model.GetSessionId()).
+	obj := model.GetE(t).POST("/common/v1/comment/care").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -325,10 +327,6 @@ func TestMiniWechatCarrShowAfterOrderAddSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("amount").Equal(model.CarerAmount + 1)
 	model.CarerAmount++
 	obj.Value("data").Object().Value("avatar").Equal(Carer.Avatar)
-
-	carerPriceF, _ := strconv.ParseFloat(model.GetS(obj.Value("data").Object().Value("price").Raw()), 10)
-	miniCarerPrice = decimal.NewFromFloat(carerPriceF)
-	miniCarerTimeTypeText = model.GetS(obj.Value("data").Object().Value("time_type").Raw())
 }
 
 func TestMiniWechatCarrOrderShowCarerSuccess(t *testing.T) {
@@ -349,14 +347,18 @@ func TestMiniWechatCarrOrderShowCarerSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("start_at").Equal(miniCarerStartAt.Format("2006-01-02 15:04:05"))
 	obj.Value("data").Object().Value("end_at").Equal(miniCarerEndAt.Format("2006-01-02 15:04:05"))
 	var total decimal.Decimal
+	miniCarerStartAt = time.Now().AddDate(0, 0, 1)
+	miniCarerEndAt = time.Now().AddDate(0, 0, 2)
 	sub := int(miniCarerEndAt.Sub(miniCarerStartAt).Hours())
-	if miniCarerTimeTypeText == "天" {
+	miniCarerPrice := decimal.NewFromFloat(model.CarerPrice)
+	timeType := model.GetS(obj.Value("data").Object().Value("order_carer_info").Object().Value("time_type").Raw())
+	if timeType == "天" {
 		total = miniCarerPrice.Mul(decimal.NewFromFloat(float64(sub / 24)))
-	} else if miniCarerTimeTypeText == "时" {
+	} else if timeType == "时" {
 		total = miniCarerPrice.Mul(decimal.NewFromFloat(float64(sub)))
 	}
 	f, _ := total.Float64()
-	obj.Value("data").Object().Value("total").Equal(fmt.Sprintf("%.2f", f))
+	obj.Value("data").Object().Value("total").Equal(model.Ftos(f))
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
 	obj.Value("data").Object().Value("pay_type").Equal(1)
 	obj.Value("data").Object().Value("is_return").Equal(0)
@@ -445,14 +447,18 @@ func TestMiniWechatCarrOrderShowReturnCarerSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("start_at").String().Contains(MiniCarerOrder.StartAt.Format("2006-01-02 15:04"))
 	obj.Value("data").Object().Value("end_at").String().Contains(MiniCarerOrder.EndAt.Format("2006-01-02 15:04"))
 	var total decimal.Decimal
+	miniCarerStartAt = time.Now().AddDate(0, 0, 1)
+	miniCarerEndAt = time.Now().AddDate(0, 0, 2)
 	sub := int(miniCarerEndAt.Sub(miniCarerStartAt).Hours())
-	if miniCarerTimeTypeText == "天" {
+	miniCarerPrice := decimal.NewFromFloat(model.CarerPrice)
+	timeType := model.GetS(obj.Value("data").Object().Value("order_carer_info").Object().Value("time_type").Raw())
+	if timeType == "天" {
 		total = miniCarerPrice.Mul(decimal.NewFromFloat(float64(sub / 24)))
-	} else if miniCarerTimeTypeText == "时" {
+	} else if timeType == "时" {
 		total = miniCarerPrice.Mul(decimal.NewFromFloat(float64(sub)))
 	}
 	f, _ := total.Float64()
-	obj.Value("data").Object().Value("total").Equal(fmt.Sprintf("%.2f", f))
+	obj.Value("data").Object().Value("total").Equal(model.Ftos(f))
 	obj.Value("data").Object().Value("rmk").Equal(MiniCarerOrder.Rmk)
 	obj.Value("data").Object().Value("pay_type").Equal(MiniCarerOrder.PayType)
 	obj.Value("data").Object().Value("is_return").Equal(1)

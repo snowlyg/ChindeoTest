@@ -34,7 +34,7 @@ var LocType *model.OnlineLocTypes
 var Loc *model.OnlineLocs
 var UserType *model.OnlineUserTypes
 var Patient *model.OnlinePatients
-
+var Spec *model.SpecGroup
 var Brand *model.ShopBrands
 var Cate1 *model.ShopCates
 var Cate2 *model.ShopCates
@@ -110,7 +110,7 @@ func TestMain(m *testing.M) {
 	Cate1 = model.CreateCate(0, 1)
 	Cate2 = model.CreateCate(Cate1.ID, 2)
 	Cate3 = model.CreateCate(Cate2.ID, 3)
-	spec := &model.SpecGroup{
+	Spec := &model.SpecGroup{
 		Name: "基本信息",
 		Params: []*model.SpecParam{
 			{
@@ -151,8 +151,10 @@ func TestMain(m *testing.M) {
 			},
 		},
 	}
-	SpecGroup = model.CreateSpecGroup(Cate1.ID, spec)
-	model.CreateSpu(Brand.ID, Cate1.ID, 1, "", "", spec)
+	SpecGroup = model.CreateSpecGroup(Cate1.ID, Spec)
+	spu := model.CreateSpu(Brand.ID, Cate1.ID, 1, "", "", Spec)
+
+	model.CreateShopOrder("S202008241612348468756914", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeMini, spu.Skus)
 
 	flag.Parse()
 	exitCode := m.Run()

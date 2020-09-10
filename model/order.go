@@ -1131,3 +1131,80 @@ type ShopCateSpu struct {
 	CreateAt time.Time `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
 	UpdateAt time.Time `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
 }
+
+// ShopOrderAddrs 订单地址表
+type ShopOrderAddrs struct {
+	ID            int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	Name          string       `gorm:"column:name;type:varchar(50);not null" json:"name"`                   // 联系人姓名
+	Phone         string       `gorm:"column:phone;type:varchar(30);not null" json:"phone"`                 // 手机
+	Addr          string       `gorm:"column:addr;type:varchar(200);not null" json:"addr"`                  // 地址
+	Sex           int          `gorm:"column:sex;type:int;not null" json:"sex"`                             // 性别:1:男,0:女
+	HospitalName  string       `gorm:"column:hospital_name;type:varchar(50);not null" json:"hospital_name"` // 医院名称
+	LocName       string       `gorm:"column:loc_name;type:varchar(50);not null" json:"loc_name"`           // 病区名称
+	BedNum        string       `gorm:"column:bed_num;type:varchar(10);not null" json:"bed_num"`             // 床号
+	HospitalNo    string       `gorm:"column:hospital_no;type:varchar(20);not null" json:"hospital_no"`     // 住院号
+	Disease       string       `gorm:"column:disease;type:varchar(150);not null" json:"disease"`            // 病种
+	Age           int          `gorm:"column:age;type:int;not null" json:"age"`                             // 年龄
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+	ApplicationID int          `gorm:"column:application_id;type:int;not null" json:"application_id"`                   // application_id
+	ShopOrderID   int          `gorm:"index:shop_order_id;column:shop_order_id;type:int;not null" json:"shop_order_id"` // care_order_id
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+}
+
+// ShopOrderComments 评论表
+type ShopOrderComments struct {
+	ID            int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	UserID        int          `gorm:"index:user_id;column:user_id;type:int;not null" json:"user_id"`               // 评价人id
+	ShopSkuID     int          `gorm:"index:user_id;column:shop_sku_id;type:int;not null" json:"shop_sku_id"`       // shop_sku_id
+	SkuID         int          `gorm:"index:user_id;column:sku_id;type:int;not null" json:"sku_id"`                 // sku_id
+	ApplicationID int          `gorm:"index:user_id;column:application_id;type:int;not null" json:"application_id"` // application_id
+	Content       string       `gorm:"column:content;type:varchar(800);not null" json:"content"`                    // 评价内容
+	Star          int          `gorm:"column:star;type:int;not null" json:"star"`                                   // 评价评分1-5
+	Pics          string       `gorm:"column:pics;type:varchar(2000);not null" json:"pics"`                         // 评价图片数组
+	IsUnnamed     bool         `gorm:"column:is_unnamed;type:tinyint(1);not null" json:"is_unnamed"`                // 是否匿名
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+}
+
+// ShopOrderSkus 商城订单详情表
+type ShopOrderSkus struct {
+	ID            int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	Title         string       `gorm:"column:title;type:varchar(256);not null" json:"title"`          // 商品标题
+	SkuNo         string       `gorm:"column:sku_no;type:varchar(256);not null" json:"sku_no"`        // 商品编码
+	Images        string       `gorm:"column:images;type:varchar(1024);not null" json:"images"`       // 商品图片 (多个图片用,号分割)
+	Price         float64      `gorm:"column:price;type:decimal(10,2);not null" json:"price"`         // 价格
+	Indexes       string       `gorm:"column:indexes;type:varchar(32);not null" json:"indexes"`       // 特有规格参数在SPU规格模板中对应的下标组合(如1_0_0)
+	OwnSpec       string       `gorm:"column:own_spec;type:varchar(1024);not null" json:"own_spec"`   // SKU的特有规格参数键值对 (json格式，反序列化时请使用linkedHashMap，保证有序)
+	Num           int          `gorm:"column:num;type:int;not null" json:"num"`                       // 购买数量
+	ShopOrderID   int          `gorm:"column:shop_order_id;type:int;not null" json:"shop_order_id"`   // shop_order_id
+	SkuID         int          `gorm:"column:sku_id;type:int;not null" json:"sku_id"`                 // sku_id
+	ApplicationID int          `gorm:"column:application_id;type:int;not null" json:"application_id"` // application_id
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+	Comments      []*ShopOrderComments
+}
+
+// ShopOrders 商城订单表
+type ShopOrders struct {
+	ID            int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	OrderNo       string       `gorm:"column:order_no;type:varchar(50);not null" json:"order_no"`                   // 订单号
+	TransactionID string       `gorm:"column:transaction_id;type:varchar(50);not null" json:"transaction_id"`       // 微信，支付宝支付号
+	Status        int          `gorm:"column:status;type:int;not null" json:"status"`                               // 订单状态：1：待付款，2：已付款，3，进行中，4：已取消，5：已完成
+	PayType       int          `gorm:"column:pay_type;type:int;not null" json:"pay_type"`                           // 订单支付类型：1：微信，2：支付宝
+	Total         float64      `gorm:"column:total;type:decimal(10,2);not null" json:"total"`                       // 总金额
+	Rmk           string       `gorm:"column:rmk;type:varchar(500);not null" json:"rmk"`                            // 备注
+	OpenID        string       `gorm:"column:open_id;type:varchar(100);not null" json:"open_id"`                    // open_id
+	TradeType     string       `gorm:"column:trade_type;type:varchar(10);not null" json:"trade_type"`               // JSAPI、NATIVE、APP
+	IsReturn      bool         `gorm:"column:is_return;type:tinyint(1);not null" json:"is_return"`                  // 是否退款
+	AppType       int          `gorm:"column:app_type;type:int;not null" json:"app_type"`                           // 订单应用类型，1：小程序，2：床旁
+	ApplicationID int          `gorm:"index:user_id;column:application_id;type:int;not null" json:"application_id"` // application_id
+	UserID        int          `gorm:"index:user_id;column:user_id;type:int;not null" json:"user_id"`               // user_id
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	Skus          []*ShopOrderSkus
+	Addr          *ShopOrderAddrs
+}
