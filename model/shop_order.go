@@ -8,10 +8,10 @@ import (
 
 var ShopOrderCount int
 
-func CreateShopOrder(orderNo string, userId, payType, appType int, skus []*ShopSkus) *ShopOrders {
+func CreateShopOrder(orderNo string, userId, payType, appType, status int, skus []*ShopSkus) *ShopOrders {
 	shopOrder := &ShopOrders{
 		OrderNo:       orderNo,
-		Status:        IOrderStatusForDelivery,
+		Status:        status,
 		PayType:       payType,
 		Rmk:           "备注",
 		AppType:       appType,
@@ -79,7 +79,7 @@ func CreateShopOrderSku(orderID, userId int, sku *ShopSkus) *ShopOrderSkus {
 	if err := DB.Create(shopOrderSku).Error; err != nil {
 		fmt.Println(fmt.Sprintf("shopOrderSku create error :%v", err))
 	}
-	shopOrderSku.Comments = CreateShopOrderComments(userId, shopOrderSku.ID, 5, 4, sku)
+	shopOrderSku.Comments = CreateShopOrderComments(userId, shopOrderSku.ID, 5, 4)
 	return shopOrderSku
 }
 
@@ -92,19 +92,18 @@ func CreateShopOrderSkus(orderID, userId int, skus []*ShopSkus) []*ShopOrderSkus
 	return shopSkus
 }
 
-func CreateShopOrderComment(userId, shopSkuId, star int, sku *ShopSkus) *ShopOrderComments {
+func CreateShopOrderComment(userId, shopOrderSkuId, star int) *ShopOrderComments {
 	shopOrderComment := &ShopOrderComments{
-		UserID:        userId,
-		ShopSkuID:     shopSkuId,
-		SkuID:         sku.ID,
-		Content:       Fake.Paragraph(1, true),
-		Pics:          GetPics(),
-		Star:          star,
-		ApplicationID: AppId,
-		IsUnnamed:     false,
-		CreateAt:      time.Now(),
-		UpdateAt:      time.Now(),
-		IsDeleted:     sql.NullTime{},
+		UserID:         userId,
+		ShopOrderSkuID: shopOrderSkuId,
+		Content:        Fake.Paragraph(1, true),
+		Pics:           GetPics(),
+		Star:           star,
+		ApplicationID:  AppId,
+		IsUnnamed:      false,
+		CreateAt:       time.Now(),
+		UpdateAt:       time.Now(),
+		IsDeleted:      sql.NullTime{},
 	}
 	if err := DB.Create(shopOrderComment).Error; err != nil {
 		fmt.Println(fmt.Sprintf("shopOrderComment create error :%v", err))
@@ -113,10 +112,10 @@ func CreateShopOrderComment(userId, shopSkuId, star int, sku *ShopSkus) *ShopOrd
 	return shopOrderComment
 }
 
-func CreateShopOrderComments(userId, shopSkuId, star, num int, sku *ShopSkus) []*ShopOrderComments {
+func CreateShopOrderComments(userId, shopOrderSkuId, star, num int) []*ShopOrderComments {
 	var comments []*ShopOrderComments
 	for num > 0 {
-		comment := CreateShopOrderComment(userId, shopSkuId, star, sku)
+		comment := CreateShopOrderComment(userId, shopOrderSkuId, star)
 		comments = append(comments, comment)
 		num--
 	}

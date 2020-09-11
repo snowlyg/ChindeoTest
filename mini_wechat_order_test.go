@@ -369,7 +369,6 @@ func TestMiniWechatOrderShowReturnSuccess(t *testing.T) {
 }
 
 func TestMiniWechatOrderDeleteSuccess(t *testing.T) {
-
 	obj := model.GetE(t).DELETE("/api/v1/outline/o_order/{id}", miniWechatOrderId).
 		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).

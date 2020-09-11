@@ -395,7 +395,7 @@ func TestMiniWechatCareOrderShowCareSuccess(t *testing.T) {
 	miniCareEndAt = time.Now().AddDate(0, 0, 2)
 	sub := int(miniCareEndAt.Sub(miniCareStartAt).Hours())
 	miniCarePrice := decimal.NewFromFloat(model.CareMaxPrice)
-	timeType := model.GetS(obj.Value("data").Object().Value("order_carer_info").Object().Value("time_type").Raw())
+	timeType := model.GetS(obj.Value("data").Object().Value("order_info").Object().Value("time_type").Raw())
 	if timeType == "天" {
 		total = miniCarePrice.Mul(decimal.NewFromFloat(float64(sub / 24)))
 	} else if timeType == "时" {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/shopspring/decimal"
 	"github.com/snowlyg/ChindeoTest/model"
 
@@ -365,7 +364,7 @@ func TestCarrOrderShowCarerSuccess(t *testing.T) {
 		total = carerPrice.Mul(decimal.NewFromFloat(float64(sub)))
 	}
 	f, _ := total.Float64()
-	obj.Value("data").Object().Value("total").Equal(fmt.Sprintf("%.2f", f))
+	obj.Value("data").Object().Value("total").Equal(model.Ftos(f))
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
 	obj.Value("data").Object().Value("pay_type").Equal(1)
 	obj.Value("data").Object().Value("is_return").Equal(0)
@@ -463,7 +462,7 @@ func TestCarrOrderShowReturnCarerSuccess(t *testing.T) {
 		total = carerPrice.Mul(decimal.NewFromFloat(float64(sub)))
 	}
 	f, _ := total.Float64()
-	obj.Value("data").Object().Value("total").Equal(fmt.Sprintf("%.2f", f))
+	obj.Value("data").Object().Value("total").Equal(model.Ftos(f))
 	obj.Value("data").Object().Value("rmk").Equal(CarerOrder.Rmk)
 	obj.Value("data").Object().Value("pay_type").Equal(CarerOrder.PayType)
 	obj.Value("data").Object().Value("is_return").Equal(1)
