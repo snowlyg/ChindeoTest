@@ -1,16 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
-	"strconv"
 	"testing"
 )
 
-var miniShopOrderId float64
+var miniShopOrderId interface{}
 var miniShopOrdeTotal float64
-var miniShopOrderSkuId float64
+var miniShopOrderSkuId interface{}
 
 func TestMiniWechatShopOrderSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/shop/v1/order").
@@ -66,7 +64,7 @@ func TestMiniWechatShopOrderAddSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("app_type").Object().Value("value").Equal(model.OrderAppTypeMini)
 	obj.Value("data").Object().Value("app_type").Object().Value("text").Equal("小程序")
 	obj.Value("data").Object().Value("application_id").Equal(13)
-	miniShopOrderId, _ = strconv.ParseFloat(model.GetS(obj.Value("data").Object().Value("id").Raw()), 10)
+	miniShopOrderId = obj.Value("data").Object().Value("id").Raw()
 }
 
 func TestMiniWechatShopOrderNoAddrError(t *testing.T) {
@@ -142,7 +140,7 @@ func TestMiniWechatShopOrderShowSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Contains("请求成功")
-	obj.Value("data").Object().Value("id").Equal(miniShopOrderId)
+	obj.Value("data").Object().Value("id").Equal(model.GetSToI(miniShopOrderId))
 	obj.Value("data").Object().Value("order_no").String().Contains("S")
 	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.IOrderStatusForPay)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("待付款")
@@ -157,9 +155,7 @@ func TestMiniWechatShopOrderShowSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("skus").Array().Length().Equal(2)
 	sku := obj.Value("data").Object().Value("skus").Array().First().Object()
 
-	miniShopOrderSkuId, _ = strconv.ParseFloat(model.GetS(sku.Value("id").Raw()), 10)
-
-	fmt.Print(miniShopOrderSkuId)
+	miniShopOrderSkuId = sku.Value("id").Raw()
 
 	sku.Value("id").NotNull()
 	sku.Value("title").NotNull()
@@ -182,7 +178,7 @@ func TestMiniWechatShopOrderShowSuccess(t *testing.T) {
 	addr.Value("id").NotNull()
 	addr.Value("name").Equal(Addr.Name)
 	addr.Value("sex").Equal(Addr.Sex)
-	addr.Value("shop_order_id").Equal(miniShopOrderId)
+	addr.Value("shop_order_id").Equal(model.GetSToI(miniShopOrderId))
 	addr.Value("loc_name").Equal(Addr.LocName)
 	addr.Value("hospital_no").Equal(Addr.HospitalNo)
 	addr.Value("hospital_name").Equal(Addr.HospitalName)
@@ -246,7 +242,7 @@ func TestMiniWechatShopOrderShowReturnSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("已取消")
 	obj.Value("data").Object().Value("total").Equal(model.Ftos(MiniShopOrder.Total))
 
-	obj.Value("data").Object().Value("total").Equal(0)
+	obj.Value("data").Object().Value("total").Equal("0.00")
 	obj.Value("data").Object().Value("rmk").Equal(MiniShopOrder.Rmk)
 	obj.Value("data").Object().Value("pay_type").Object().Value("value").Equal(MiniShopOrder.PayType)
 	obj.Value("data").Object().Value("pay_type").Object().Value("text").Equal("支付宝")
@@ -357,7 +353,7 @@ func TestMiniWechatShopOrderShowAfterCommentSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Contains("请求成功")
-	obj.Value("data").Object().Value("id").Equal(miniShopOrderId)
+	obj.Value("data").Object().Value("id").Equal(model.GetSToI(miniShopOrderId))
 	obj.Value("data").Object().Value("order_no").String().Contains("S")
 	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.IOrderStatusForCancel)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("已取消")
@@ -372,7 +368,6 @@ func TestMiniWechatShopOrderShowAfterCommentSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("skus").Array().Length().Equal(2)
 	sku := obj.Value("data").Object().Value("skus").Array().First().Object()
 
-	miniShopOrderSkuId, _ = strconv.ParseFloat(model.GetS(sku.Value("id").Raw()), 10)
 	sku.Value("id").NotNull()
 	sku.Value("title").NotNull()
 	sku.Value("sku_no").NotNull()
@@ -388,7 +383,7 @@ func TestMiniWechatShopOrderShowAfterCommentSuccess(t *testing.T) {
 
 	obj.Value("data").Object().Value("return_order").Null()
 
-	obj.Value("data").Object().Value("comments").Array().Length().Equal(0)
+	obj.Value("data").Object().Value("comments").Array().Length().Equal(1)
 	comments := obj.Value("data").Object().Value("comments").Array().First().Object()
 	comments.Value("id").NotNull()
 
@@ -396,7 +391,7 @@ func TestMiniWechatShopOrderShowAfterCommentSuccess(t *testing.T) {
 	addr.Value("id").NotNull()
 	addr.Value("name").Equal(Addr.Name)
 	addr.Value("sex").Equal(Addr.Sex)
-	addr.Value("shop_order_id").Equal(miniShopOrderId)
+	addr.Value("shop_order_id").Equal(model.GetSToI(miniShopOrderId))
 	addr.Value("loc_name").Equal(Addr.LocName)
 	addr.Value("hospital_no").Equal(Addr.HospitalNo)
 	addr.Value("hospital_name").Equal(Addr.HospitalName)

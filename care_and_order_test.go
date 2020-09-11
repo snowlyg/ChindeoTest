@@ -5,14 +5,13 @@ import (
 
 	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
-	"strconv"
 	"testing"
 	"time"
 
 	"github.com/shopspring/decimal"
 )
 
-var careOrderCareId float64
+var careOrderCareId int
 var carePrice decimal.Decimal
 var careTimeTypeText string
 
@@ -180,7 +179,7 @@ func TestCareOrderAddCareSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
 	obj.Value("data").Object().Value("app_type").Equal(model.OrderAppTypeBed)
 	obj.Value("data").Object().Value("application_id").Equal(13)
-	careOrderCareId, _ = strconv.ParseFloat(model.GetS(obj.Value("data").Object().Value("id").Raw()), 10)
+	careOrderCareId = model.GetSToI(obj.Value("data").Object().Value("id").Raw())
 }
 
 func TestCareShowAfterOrderAddSuccess(t *testing.T) {
@@ -207,7 +206,7 @@ func TestCareShowAfterOrderAddSuccess(t *testing.T) {
 	careType.Value("id").Equal(CareType.ID)
 	careType.Value("name").Equal(CareType.Name)
 
-	carePriceF, _ := strconv.ParseFloat(model.GetS(obj.Value("data").Object().Value("max_price").Raw()), 10)
+	carePriceF := float64(model.GetSToI(obj.Value("data").Object().Value("max_price").Raw()))
 	carePrice = decimal.NewFromFloat(carePriceF)
 	careTimeTypeText = model.GetS(obj.Value("data").Object().Value("time_type").Raw())
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/manveru/faker"
 	"github.com/shopspring/decimal"
+	"strconv"
 )
 
 const AppId = 13
@@ -59,12 +60,29 @@ func (m MenuTimeType) String() string {
 	return ""
 }
 
+func GetSToI(i interface{}) int {
+	tt, ok := i.(string)
+	if ok {
+		atoi, _ := strconv.Atoi(tt)
+		return atoi
+	}
+	return 0
+}
+
 func GetS(i interface{}) string {
 	tt, ok := i.(string)
 	if ok {
 		return tt
 	}
 	return ""
+}
+
+func GetI(i interface{}) int64 {
+	tt, ok := i.(int64)
+	if ok {
+		return tt
+	}
+	return 0
 }
 
 func Ftos(f float64) string {
