@@ -26,6 +26,25 @@ func TestShopOrderSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("data").Array().Length().Equal(model.ShopOrderCount)
 }
 
+func TestShopOrderWithKeyWordSuccess(t *testing.T) {
+	spu := model.CreateSpu(Brand.ID, Cate1.ID, 1, "这是一个很神奇的中德澳商品", "", Spec)
+	ShopOrder = model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDelivery, spu.Skus)
+	obj := model.GetE(t).GET("/shop/v1/inner/order").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithQuery("application_id", model.AppId).
+		WithQuery("id_card_no", model.IdCardNo).
+		WithQuery("key_word", "中德澳").
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.ShopOrderCount)
+}
+
 func TestShopOrderAddSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"

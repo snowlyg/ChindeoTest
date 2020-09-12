@@ -36,7 +36,7 @@ func CreateSpu(brandId, cateId, skuNum int, name, subTitle string, spec *SpecGro
 
 	var skus []*ShopSkus
 	for skuNum > 0 {
-		skus = append(skus, CreateSku(sup.ID))
+		skus = append(skus, CreateSku(sup.ID, name))
 		skuNum--
 	}
 	sup.Skus = skus

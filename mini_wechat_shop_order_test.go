@@ -26,6 +26,25 @@ func TestMiniWechatShopOrderSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("data").Array().Length().Equal(model.ShopOrderCount)
 }
 
+func TestMiniWechatShopOrderWithKeyWordSuccess(t *testing.T) {
+	spu := model.CreateSpu(Brand.ID, Cate1.ID, 1, "这是一个很神奇的中德澳商品", "", Spec)
+
+	MiniShopOrder = model.CreateShopOrder("S202008241612348468756914", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeMini, model.IOrderStatusForDelivery, spu.Skus)
+	obj := model.GetE(t).GET("/shop/v1/order").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
+		WithQuery("key_word", "中德澳").
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.ShopOrderCount)
+}
+
 func TestMiniWechatShopOrderAddSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"

@@ -7,11 +7,11 @@ import (
 	"time"
 )
 
-func CreateSku(supId int) *ShopSkus {
+func CreateSku(supId int, name string) *ShopSkus {
 	images := []string{"https://wx.qlogo.cn/mmopen/vi_32/08uGpO07ibo8JrANxTDWjPbZHOtZsSkFfTNRksMtibzSRjcQ76xewGZra1AgnKz2EstBFueFcJIJCqucmJAGPgNw/132", "https://wx.qlogo.cn/mmopen/vi_32/08uGpO07ibo8JrANxTDWjPbZHOtZsSkFfTNRksMtibzSRjcQ76xewGZra1AgnKz2EstBFueFcJIJCqucmJAGPgNw/132", "https://wx.qlogo.cn/mmopen/vi_32/08uGpO07ibo8JrANxTDWjPbZHOtZsSkFfTNRksMtibzSRjcQ76xewGZra1AgnKz2EstBFueFcJIJCqucmJAGPgNw/132"}
 	i, _ := json.Marshal(images)
 	sku := &ShopSkus{
-		Title:     Fake.Paragraph(1, true),
+		Title:     name,
 		SkuNo:     Fake.PostCode(),
 		Weight:    10,
 		Images:    string(i),
