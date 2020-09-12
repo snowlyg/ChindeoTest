@@ -144,7 +144,7 @@ func TestOrderCommentSuccess(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "content",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   orderId,
 	}
@@ -165,7 +165,7 @@ func TestOrderCommentNoContentError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   orderId,
 	}
@@ -186,7 +186,7 @@ func TestOrderCommentOrderNotExistsError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "dsfsdfsd",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   9999,
 	}
@@ -228,7 +228,7 @@ func TestOrderCommentNoOrderIdError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "456952158962254456",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 	}
 

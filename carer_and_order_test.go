@@ -164,7 +164,7 @@ func TestCarrOrderAddCarerError(t *testing.T) {
 		"end_at":       endAt.Format("2006-01-02 15:04:05"),
 		"rmk":          "年轻貌美",
 		"carer_id":     Carer.ID,
-		"id_card_no":   "456952158962254456",
+		"id_card_no":   model.IdCardNo,
 	}
 
 	obj := model.GetE(t).POST("/care/v1/inner/order/add").
@@ -192,7 +192,7 @@ func TestCarrOrderAddCarerErrorTime(t *testing.T) {
 		"end_at":       endAt.Format("2006-01-02 15:04:05"),
 		"rmk":          "年轻貌美",
 		"carer_id":     Carer.ID,
-		"id_card_no":   "456952158962254456",
+		"id_card_no":   model.IdCardNo,
 	}
 
 	obj := model.GetE(t).POST("/care/v1/inner/order/add").
@@ -211,7 +211,7 @@ func TestCarrOrderCommentSuccess(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "content",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   careOrderCarerId,
 	}
@@ -232,7 +232,7 @@ func TestCarrOrderCommentNoContentError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   careOrderCarerId,
 	}
@@ -274,7 +274,7 @@ func TestCarrOrderCommentNoOrderIdError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "456952158962254456",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 	}
 
@@ -294,7 +294,7 @@ func TestCarrOrderCommentOrderNotExistsError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "456952158962254456",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   9999,
 	}
@@ -334,7 +334,7 @@ func TestCarrShowAfterOrderAddSuccess(t *testing.T) {
 	model.CarerAmount++
 	obj.Value("data").Object().Value("avatar").Equal(Carer.Avatar)
 
-	carerPriceF, _ := strconv.ParseFloat(model.GetS(obj.Value("data").Object().Value("price").Raw()), 10)
+	carerPriceF := model.GetSToF(obj.Value("data").Object().Value("price").Raw())
 	carerPrice = decimal.NewFromFloat(carerPriceF)
 	carerTimeTypeText = model.GetS(obj.Value("data").Object().Value("time_type").Raw())
 }

@@ -198,7 +198,7 @@ func TestMiniWechatCareOrderCommentSuccess(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "content",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   miniCareOrderCareId,
 	}
@@ -220,7 +220,7 @@ func TestMiniWechatCareOrderCommentNoContentError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   miniCareOrderCareId,
 	}
@@ -242,7 +242,7 @@ func TestMiniWechatCareOrderCommentOrderNotExistsError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "sdfsdf",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   9999,
 	}
@@ -286,7 +286,7 @@ func TestMiniWechatCareOrderCommentNoOrderIdError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "456952158962254456",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 	}
 

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
 	"testing"
@@ -159,7 +157,7 @@ func TestCareOrderAddCareSuccess(t *testing.T) {
 		"start_at":     careStartAt.Format("2006-01-02 15:04:05"),
 		"end_at":       careEndAt.Format("2006-01-02 15:04:05"),
 		"rmk":          "年轻貌美",
-		"id_card_no":   "456952158962254456",
+		"id_card_no":   model.IdCardNo,
 	}
 
 	obj := model.GetE(t).POST("/care/v1/inner/order/add").
@@ -206,7 +204,7 @@ func TestCareShowAfterOrderAddSuccess(t *testing.T) {
 	careType.Value("id").Equal(CareType.ID)
 	careType.Value("name").Equal(CareType.Name)
 
-	carePriceF := float64(model.GetSToI(obj.Value("data").Object().Value("max_price").Raw()))
+	carePriceF := model.GetSToF(obj.Value("data").Object().Value("max_price").Raw())
 	carePrice = decimal.NewFromFloat(carePriceF)
 	careTimeTypeText = model.GetS(obj.Value("data").Object().Value("time_type").Raw())
 
@@ -225,7 +223,7 @@ func TestCareOrderAddCareError(t *testing.T) {
 		"end_at":       endAt.Format("2006-01-02 15:04:05"),
 		"rmk":          "年轻貌美",
 		"care_id":      Care.ID,
-		"id_card_no":   "456952158962254456",
+		"id_card_no":   model.IdCardNo,
 	}
 
 	obj := model.GetE(t).POST("/care/v1/inner/order/add").
@@ -244,7 +242,7 @@ func TestCareOrderCommentSuccess(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "content",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   careOrderCareId,
 	}
@@ -265,7 +263,7 @@ func TestCareOrderCommentNoContentError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   careOrderCareId,
 	}
@@ -286,7 +284,7 @@ func TestCareOrderCommentOrderExistsError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "sdfsdfs",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 		"order_id":   9999,
 	}
@@ -328,7 +326,7 @@ func TestCareOrderCommentNoOrderIdError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":       1,
 		"content":    "456952158962254456",
-		"id_card_no": "456952158962254456",
+		"id_card_no": model.IdCardNo,
 		"pics":       model.GetPics(),
 	}
 
@@ -363,6 +361,8 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("end_at").Equal(careEndAt.Format("2006-01-02 15:04:05"))
 
 	var total decimal.Decimal
+	careStartAt = time.Now().AddDate(0, 0, 1)
+	careEndAt = time.Now().AddDate(0, 0, 2)
 	sub := int(careEndAt.Sub(careStartAt).Hours())
 	if careTimeTypeText == "天" {
 		total = carePrice.Mul(decimal.NewFromFloat(float64(sub / 24)))
@@ -371,7 +371,6 @@ func TestCareOrderShowCareSuccess(t *testing.T) {
 	}
 
 	f, _ := total.Float64()
-
 	obj.Value("data").Object().Value("total").Equal(model.Ftos(f))
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
 	obj.Value("data").Object().Value("pay_type").Equal(1)
@@ -475,7 +474,7 @@ func TestCareOrderShowReturnSuccess(t *testing.T) {
 	}
 	f, _ := total.Float64()
 
-	obj.Value("data").Object().Value("total").Equal(fmt.Sprintf("%.2f", f))
+	obj.Value("data").Object().Value("total").Equal(model.Ftos(f))
 	obj.Value("data").Object().Value("rmk").Equal(CareOrder.Rmk)
 	obj.Value("data").Object().Value("pay_type").Equal(CareOrder.PayType)
 	obj.Value("data").Object().Value("is_return").Equal(1)

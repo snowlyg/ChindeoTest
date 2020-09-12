@@ -3,19 +3,19 @@ package main
 import (
 	"github.com/snowlyg/ChindeoTest/model"
 	"net/http"
-	"strconv"
 	"testing"
 )
 
-var miniShopOrderId interface{}
-var miniShopOrdeTotal float64
-var miniShopOrderSkuId interface{}
+var shopOrderId interface{}
+var shopOrderTotal float64
+var shopOrderSkuId interface{}
 
-func TestMiniWechatShopOrderSuccess(t *testing.T) {
-	obj := model.GetE(t).GET("/shop/v1/order").
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+func TestShopOrderSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/shop/v1/inner/order").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("application_id", model.AppId).
+		WithQuery("id_card_no", model.IdCardNo).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -26,7 +26,7 @@ func TestMiniWechatShopOrderSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("data").Array().Length().Equal(model.ShopOrderCount)
 }
 
-func TestMiniWechatShopOrderAddSuccess(t *testing.T) {
+func TestShopOrderAddSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
@@ -44,14 +44,22 @@ func TestMiniWechatShopOrderAddSuccess(t *testing.T) {
 		},
 		"rmk":            "年轻貌美",
 		"application_id": model.AppId,
-		"addr_id":        Addr.ID,
+		"id_card_no":     model.IdCardNo,
+		"patient_name":   "操蛋",
+		"loc_name":       "泥马",
+		"bed_num":        05,
+		"hospital_no":    "9556854545",
+		"disease":        "disease",
+		"addr":           "addr",
+		"phone":          "13800138000",
+		"age":            1,
 	}
 
-	miniShopOrdeTotal = spu.Skus[0].Price*3 + spu.Skus[1].Price*3
+	shopOrderTotal = spu.Skus[0].Price*3 + spu.Skus[1].Price*3
 
-	obj := model.GetE(t).POST("/shop/v1/order/add").
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).POST("/shop/v1/inner/order/add").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(shopOrder).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -61,16 +69,16 @@ func TestMiniWechatShopOrderAddSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Value("id").NotEqual(0)
 	obj.Value("data").Object().Value("order_no").String().Contains("S")
-	obj.Value("data").Object().Value("total").Equal(miniShopOrdeTotal)
+	obj.Value("data").Object().Value("total").Equal(shopOrderTotal)
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
 	obj.Value("data").Object().Value("app_type").Object().Value("value").Equal(model.OrderAppTypeMini)
 	obj.Value("data").Object().Value("app_type").Object().Value("text").Equal("小程序")
-	obj.Value("data").Object().Value("application_id").Equal(strconv.FormatInt(model.AppId, 10))
-	miniShopOrderId = obj.Value("data").Object().Value("id").Raw()
+	obj.Value("data").Object().Value("application_id").Equal(13)
+	shopOrderId = obj.Value("data").Object().Value("id").Raw()
 	model.ShopOrderCount++
 }
 
-func TestMiniWechatShopOrderNoAddrError(t *testing.T) {
+func TestShopOrderAddNoBedNumError(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
@@ -88,21 +96,31 @@ func TestMiniWechatShopOrderNoAddrError(t *testing.T) {
 		},
 		"rmk":            "年轻貌美",
 		"application_id": model.AppId,
+		"id_card_no":     model.IdCardNo,
+		"patient_name":   "操蛋",
+		"loc_name":       "泥马",
+		"hospital_no":    "9556854545",
+		"disease":        "disease",
+		"addr":           "addr",
+		"phone":          "13800138000",
+		"age":            1,
 	}
 
-	obj := model.GetE(t).POST("/shop/v1/order/add").
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	shopOrderTotal = spu.Skus[0].Price*3 + spu.Skus[1].Price*3
+
+	obj := model.GetE(t).POST("/shop/v1/inner/order/add").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(shopOrder).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(400)
-	obj.Value("message").String().Equal("收货地址不存在")
+	obj.Value("message").String().Equal("床号不能为空！")
 }
 
-func TestMiniWechatShopOrderNoAppError(t *testing.T) {
+func TestShopOrderNoPatientNameError(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
@@ -118,37 +136,84 @@ func TestMiniWechatShopOrderNoAppError(t *testing.T) {
 				"num": 3,
 			},
 		},
-		"rmk":     "年轻貌美",
-		"addr_id": Addr.ID,
+		"rmk":            "年轻貌美",
+		"application_id": model.AppId,
+		"id_card_no":     model.IdCardNo,
+		"loc_name":       "泥马",
+		"bed_num":        05,
+		"hospital_no":    "9556854545",
+		"disease":        "disease",
+		"addr":           "addr",
+		"phone":          "13800138000",
+		"age":            1,
 	}
-	obj := model.GetE(t).POST("/shop/v1/order/add").
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+
+	obj := model.GetE(t).POST("/shop/v1/inner/order/add").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(shopOrder).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(400)
-	obj.Value("message").String().Equal("医院不能为空！")
+	obj.Value("message").String().Equal("患者名称不能为空！")
 }
 
-func TestMiniWechatShopOrderShowSuccess(t *testing.T) {
-	obj := model.GetE(t).GET("/shop/v1/order/{id}", miniShopOrderId).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+func TestShopOrderNoLocNameError(t *testing.T) {
+	brand := model.CreateBrand(false)
+	name := "这是一个很神奇的商品"
+	title := "这是一个很神奇的商品的超厉害的副标题"
+	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, Spec)
+	shopOrder := map[string]interface{}{
+		"sku_ids": []map[string]interface{}{
+			{
+				"id":  spu.Skus[0].ID,
+				"num": 3,
+			},
+			{
+				"id":  spu.Skus[1].ID,
+				"num": 3,
+			},
+		},
+		"rmk":          "年轻貌美",
+		"id_card_no":   model.IdCardNo,
+		"patient_name": "操蛋",
+		"bed_num":      05,
+		"hospital_no":  "9556854545",
+		"disease":      "disease",
+		"addr":         "addr",
+		"phone":        "13800138000",
+		"age":          1,
+	}
+	obj := model.GetE(t).POST("/shop/v1/inner/order/add").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithJSON(shopOrder).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(400)
+	obj.Value("message").String().Equal("病区/科室不能为空！")
+}
+
+func TestShopOrderShowSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/shop/v1/inner/order/{id}", shopOrderId).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Contains("请求成功")
-	obj.Value("data").Object().Value("id").Equal(model.GetSToI(miniShopOrderId))
+	obj.Value("data").Object().Value("id").Equal(model.GetSToI(shopOrderId))
 	obj.Value("data").Object().Value("order_no").String().Contains("S")
 	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.IOrderStatusForPay)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("待付款")
 
-	obj.Value("data").Object().Value("total").Equal(model.Ftos(miniShopOrdeTotal))
+	obj.Value("data").Object().Value("total").Equal(model.Ftos(shopOrderTotal))
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
 	obj.Value("data").Object().Value("pay_type").Object().Value("value").Equal(model.IOrderPayTypeWechat)
 	obj.Value("data").Object().Value("pay_type").Object().Value("text").Equal("微信")
@@ -158,7 +223,7 @@ func TestMiniWechatShopOrderShowSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("skus").Array().Length().Equal(2)
 	sku := obj.Value("data").Object().Value("skus").Array().First().Object()
 
-	miniShopOrderSkuId = sku.Value("id").Raw()
+	shopOrderSkuId = sku.Value("id").Raw()
 
 	sku.Value("id").NotNull()
 	sku.Value("title").NotNull()
@@ -168,7 +233,7 @@ func TestMiniWechatShopOrderShowSuccess(t *testing.T) {
 	sku.Value("indexes").NotNull()
 	sku.Value("own_spec").NotNull()
 	sku.Value("num").NotNull()
-	sku.Value("shop_order_id").NotNull()
+	sku.Value("shop_order_id").Equal(model.GetSToI(shopOrderId))
 	sku.Value("sku_id").NotNull()
 	sku.Value("application_id").NotNull()
 	sku.Value("comments").NotNull()
@@ -179,35 +244,37 @@ func TestMiniWechatShopOrderShowSuccess(t *testing.T) {
 
 	addr := obj.Value("data").Object().Value("addr").Object()
 	addr.Value("id").NotNull()
-	addr.Value("name").Equal(Addr.Name)
-	addr.Value("sex").Equal(Addr.Sex)
-	addr.Value("shop_order_id").Equal(model.GetSToI(miniShopOrderId))
-	addr.Value("loc_name").Equal(Addr.LocName)
-	addr.Value("hospital_no").Equal(Addr.HospitalNo)
-	addr.Value("hospital_name").Equal(Addr.HospitalName)
-	addr.Value("age").Equal(Addr.Age)
-	addr.Value("disease").Equal(Addr.Disease)
-	addr.Value("phone").Equal(Addr.Phone)
-	addr.Value("addr").Equal(Addr.Addr)
+	addr.Value("name").Equal("操蛋")
+	addr.Value("sex").Equal(1)
+	addr.Value("shop_order_id").Equal(model.GetSToI(shopOrderId))
+	addr.Value("loc_name").Equal("泥马")
+	addr.Value("hospital_no").Equal("9556854545")
+	addr.Value("hospital_name").Equal("我的医院")
+	addr.Value("age").Equal(1)
+	addr.Value("disease").Equal("disease")
+	addr.Value("phone").Equal("13800138000")
+	addr.Value("addr").Equal("")
+
 }
 
-func TestMiniWechatShopOrderPaySuccess(t *testing.T) {
-
-	obj := model.GetE(t).GET("/shop/v1/order/pay/{id}", miniShopOrderId).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+func TestShopOrderPaySuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/shop/v1/inner/order/pay/{id}", shopOrderId).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
-	obj.Value("code").Equal(400)
-	obj.Value("message").String().Contains("PARAM_ERROR:appid和openid不匹配")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Contains("请求成功")
+	//data := fmt.Sprintf("支付返回数据 %v",obj.Value("data").Raw())
+	//fmt.Print(data)
 }
 
-func TestMiniWechatShopOrderCancelNoPaySuccess(t *testing.T) {
-	obj := model.GetE(t).GET("/shop/v1/order/cancel/{id}", miniShopOrderId).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+func TestShopOrderCancelNoPaySuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/shop/v1/inner/order/cancel/{id}", shopOrderId).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -216,10 +283,10 @@ func TestMiniWechatShopOrderCancelNoPaySuccess(t *testing.T) {
 	obj.Value("message").String().Contains("请求成功")
 }
 
-func TestMiniWechatShopOrderCancelPaySuccess(t *testing.T) {
-	obj := model.GetE(t).GET("/shop/v1/order/cancel/{id}", MiniShopOrder.ID).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+func TestShopOrderCancelPaySuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/shop/v1/inner/order/cancel/{id}", ShopOrder.ID).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -228,26 +295,26 @@ func TestMiniWechatShopOrderCancelPaySuccess(t *testing.T) {
 	obj.Value("message").String().Contains("请求成功")
 }
 
-func TestMiniWechatShopOrderShowReturnSuccess(t *testing.T) {
+func TestShopOrderShowReturnSuccess(t *testing.T) {
 
-	obj := model.GetE(t).GET("/shop/v1/order/{id}", MiniShopOrder.ID).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).GET("/shop/v1/inner/order/{id}", ShopOrder.ID).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
-	obj.Value("data").Object().Value("id").Equal(MiniShopOrder.ID)
+	obj.Value("data").Object().Value("id").Equal(ShopOrder.ID)
 	obj.Value("data").Object().Value("order_no").String().Contains("S")
 	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.IOrderStatusForCancel)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("已取消")
-	obj.Value("data").Object().Value("total").Equal(model.Ftos(MiniShopOrder.Total))
+	obj.Value("data").Object().Value("total").Equal(model.Ftos(ShopOrder.Total))
 
 	obj.Value("data").Object().Value("total").Equal("0.00")
-	obj.Value("data").Object().Value("rmk").Equal(MiniShopOrder.Rmk)
-	obj.Value("data").Object().Value("pay_type").Object().Value("value").Equal(MiniShopOrder.PayType)
+	obj.Value("data").Object().Value("rmk").Equal(ShopOrder.Rmk)
+	obj.Value("data").Object().Value("pay_type").Object().Value("value").Equal(ShopOrder.PayType)
 	obj.Value("data").Object().Value("pay_type").Object().Value("text").Equal("支付宝")
 	obj.Value("data").Object().Value("is_return").Object().Value("value").Equal(1)
 	obj.Value("data").Object().Value("is_return").Object().Value("text").Equal("有退款")
@@ -262,53 +329,50 @@ func TestMiniWechatShopOrderShowReturnSuccess(t *testing.T) {
 	sku.Value("indexes").NotNull()
 	sku.Value("own_spec").NotNull()
 	sku.Value("num").NotNull()
-	sku.Value("shop_order_id").NotNull()
+	sku.Value("shop_order_id").Equal(ShopOrder.ID)
 	sku.Value("sku_id").NotNull()
 	sku.Value("application_id").NotNull()
 	sku.Value("comments").NotNull()
 
 	addr := obj.Value("data").Object().Value("addr").Object()
 	addr.Value("id").NotNull()
-	addr.Value("name").Equal(MiniShopOrder.Addr.Name)
-	addr.Value("loc_name").Equal(MiniShopOrder.Addr.LocName)
-	addr.Value("bed_num").Equal(MiniShopOrder.Addr.BedNum)
-	addr.Value("hospital_no").Equal(MiniShopOrder.Addr.HospitalNo)
-	addr.Value("disease").Equal(MiniShopOrder.Addr.Disease)
-	addr.Value("shop_order_id").Equal(MiniShopOrder.Addr.ShopOrderID)
-	addr.Value("sex").Equal(MiniShopOrder.Addr.Sex)
-	addr.Value("hospital_name").Equal(MiniShopOrder.Addr.HospitalName)
-	addr.Value("phone").Equal(MiniShopOrder.Addr.Phone)
-	addr.Value("age").Equal(MiniShopOrder.Addr.Age)
-	addr.Value("addr").Equal(MiniShopOrder.Addr.Addr)
+	addr.Value("name").Equal(ShopOrder.Addr.Name)
+	addr.Value("sex").Equal(ShopOrder.Addr.Sex)
+	addr.Value("shop_order_id").Equal(ShopOrder.ID)
+	addr.Value("loc_name").Equal(ShopOrder.Addr.LocName)
+	addr.Value("hospital_no").Equal(ShopOrder.Addr.HospitalNo)
+	addr.Value("hospital_name").Equal(ShopOrder.Addr.HospitalName)
+	addr.Value("age").Equal(ShopOrder.Addr.Age)
+	addr.Value("disease").Equal(ShopOrder.Addr.Disease)
+	addr.Value("phone").Equal(ShopOrder.Addr.Phone)
+	addr.Value("addr").Equal(ShopOrder.Addr.Addr)
 
 	orderReturn := obj.Value("data").Object().Value("return_order").Object()
 	orderReturn.Value("id").NotNull()
-
 	orderReturnId := model.GetF(orderReturn.Value("id").Raw())
-
 	orderReturn.Value("order_no").String().Contains("RS")
 	orderReturn.Value("status").Object().Value("value").Equal(model.IReturnOrderStatusForAudit)
 	orderReturn.Value("status").Object().Value("text").Equal("待审核")
-	orderReturn.Value("total").Equal(model.Ftos(MiniShopOrder.Total))
+	orderReturn.Value("total").Equal(model.Ftos(ShopOrder.Total))
 	orderReturn.Value("open_id").Equal("")
-	orderReturn.Value("app_type").Equal(MiniShopOrder.AppType)
+	orderReturn.Value("app_type").Equal(ShopOrder.AppType)
 	orderReturn.Value("trade_type").Equal("")
-	orderReturn.Value("shop_order_id").Equal(MiniShopOrder.ID)
-	orderReturn.Value("application_id").Equal(MiniShopOrder.ApplicationID)
-	orderReturn.Value("pay_type").Equal(MiniShopOrder.PayType)
+	orderReturn.Value("shop_order_id").Equal(ShopOrder.ID)
+	orderReturn.Value("application_id").Equal(ShopOrder.ApplicationID)
+	orderReturn.Value("pay_type").Equal(ShopOrder.PayType)
 
 	returnAddr := orderReturn.Value("addr").Object()
 	returnAddr.Value("id").NotNull()
-	returnAddr.Value("name").Equal(MiniShopOrder.Addr.Name)
-	returnAddr.Value("sex").Equal(MiniShopOrder.Addr.Sex)
+	returnAddr.Value("name").Equal(ShopOrder.Addr.Name)
+	returnAddr.Value("sex").Equal(ShopOrder.Addr.Sex)
 	returnAddr.Value("shop_return_order_id").Equal(orderReturnId)
-	returnAddr.Value("loc_name").Equal(MiniShopOrder.Addr.LocName)
-	returnAddr.Value("hospital_no").Equal(MiniShopOrder.Addr.HospitalNo)
-	returnAddr.Value("hospital_name").Equal(MiniShopOrder.Addr.HospitalName)
-	returnAddr.Value("age").Equal(MiniShopOrder.Addr.Age)
-	returnAddr.Value("disease").Equal(MiniShopOrder.Addr.Disease)
-	returnAddr.Value("phone").Equal(MiniShopOrder.Addr.Phone)
-	returnAddr.Value("addr").Equal(MiniShopOrder.Addr.Addr)
+	returnAddr.Value("loc_name").Equal(ShopOrder.Addr.LocName)
+	returnAddr.Value("hospital_no").Equal(ShopOrder.Addr.HospitalNo)
+	returnAddr.Value("hospital_name").Equal(ShopOrder.Addr.HospitalName)
+	returnAddr.Value("age").Equal(ShopOrder.Addr.Age)
+	returnAddr.Value("disease").Equal(ShopOrder.Addr.Disease)
+	returnAddr.Value("phone").Equal(ShopOrder.Addr.Phone)
+	returnAddr.Value("addr").Equal(ShopOrder.Addr.Addr)
 
 	orderReturn.Value("skus").Array().Length().Equal(1)
 	returnSku := orderReturn.Value("skus").Array().First().Object()
@@ -324,7 +388,7 @@ func TestMiniWechatShopOrderShowReturnSuccess(t *testing.T) {
 	returnSku.Value("application_id").NotNull()
 }
 
-func TestMiniWechatShopOrderCommentSuccess(t *testing.T) {
+func TestShopOrderCommentSuccess(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":           1,
 		"content":        "content",
@@ -333,9 +397,9 @@ func TestMiniWechatShopOrderCommentSuccess(t *testing.T) {
 		"application_id": model.AppId,
 	}
 
-	obj := model.GetE(t).POST("/shop/v1/comment/{shop_order_sku_id}", miniShopOrderSkuId).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).POST("/shop/v1/inner/comment/{shop_order_sku_id}", shopOrderSkuId).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -345,22 +409,22 @@ func TestMiniWechatShopOrderCommentSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("评论成功")
 }
 
-func TestMiniWechatShopOrderShowAfterCommentSuccess(t *testing.T) {
-	obj := model.GetE(t).GET("/shop/v1/order/{id}", miniShopOrderId).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+func TestShopOrderShowAfterCommentSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/shop/v1/inner/order/{id}", shopOrderId).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Contains("请求成功")
-	obj.Value("data").Object().Value("id").Equal(model.GetSToI(miniShopOrderId))
+	obj.Value("data").Object().Value("id").Equal(model.GetSToI(shopOrderId))
 	obj.Value("data").Object().Value("order_no").String().Contains("S")
 	obj.Value("data").Object().Value("status").Object().Value("value").Equal(model.IOrderStatusForCancel)
 	obj.Value("data").Object().Value("status").Object().Value("text").Equal("已取消")
 
-	obj.Value("data").Object().Value("total").Equal(model.Ftos(miniShopOrdeTotal))
+	obj.Value("data").Object().Value("total").Equal(model.Ftos(shopOrderTotal))
 	obj.Value("data").Object().Value("rmk").Equal("年轻貌美")
 	obj.Value("data").Object().Value("pay_type").Object().Value("value").Equal(model.IOrderPayTypeWechat)
 	obj.Value("data").Object().Value("pay_type").Object().Value("text").Equal("微信")
@@ -378,7 +442,7 @@ func TestMiniWechatShopOrderShowAfterCommentSuccess(t *testing.T) {
 	sku.Value("indexes").NotNull()
 	sku.Value("own_spec").NotNull()
 	sku.Value("num").NotNull()
-	sku.Value("shop_order_id").NotNull()
+	sku.Value("shop_order_id").Equal(model.GetSToI(shopOrderId))
 	sku.Value("sku_id").NotNull()
 	sku.Value("application_id").NotNull()
 	sku.Value("comments").NotNull()
@@ -391,19 +455,20 @@ func TestMiniWechatShopOrderShowAfterCommentSuccess(t *testing.T) {
 
 	addr := obj.Value("data").Object().Value("addr").Object()
 	addr.Value("id").NotNull()
-	addr.Value("name").Equal(Addr.Name)
-	addr.Value("sex").Equal(Addr.Sex)
-	addr.Value("shop_order_id").Equal(model.GetSToI(miniShopOrderId))
-	addr.Value("loc_name").Equal(Addr.LocName)
-	addr.Value("hospital_no").Equal(Addr.HospitalNo)
-	addr.Value("hospital_name").Equal(Addr.HospitalName)
-	addr.Value("age").Equal(Addr.Age)
-	addr.Value("disease").Equal(Addr.Disease)
-	addr.Value("phone").Equal(Addr.Phone)
-	addr.Value("addr").Equal(Addr.Addr)
+	addr.Value("name").Equal("操蛋")
+	addr.Value("sex").Equal(1)
+	addr.Value("shop_order_id").Equal(model.GetSToI(shopOrderId))
+	addr.Value("loc_name").Equal("泥马")
+	addr.Value("hospital_no").Equal("9556854545")
+	addr.Value("hospital_name").Equal("我的医院")
+	addr.Value("age").Equal(1)
+	addr.Value("disease").Equal("disease")
+	addr.Value("phone").Equal("13800138000")
+	addr.Value("addr").Equal("")
+
 }
 
-func TestMiniWechatShopOrderCommentNoContentError(t *testing.T) {
+func TestShopOrderCommentNoContentError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":           1,
 		"content":        "",
@@ -412,9 +477,9 @@ func TestMiniWechatShopOrderCommentNoContentError(t *testing.T) {
 		"application_id": model.AppId,
 	}
 
-	obj := model.GetE(t).POST("/shop/v1/comment/{shop_order_sku_id}", miniShopOrderSkuId).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).POST("/shop/v1/inner/comment/{shop_order_sku_id}", shopOrderSkuId).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -424,7 +489,7 @@ func TestMiniWechatShopOrderCommentNoContentError(t *testing.T) {
 	obj.Value("message").String().Equal("评论内容不能为空！")
 }
 
-func TestMiniWechatShopOrderCommentNoOrderIdError(t *testing.T) {
+func TestShopOrderCommentNoOrderIdError(t *testing.T) {
 	comment := map[string]interface{}{
 		"star":           1,
 		"content":        "456952158962254456",
@@ -433,9 +498,9 @@ func TestMiniWechatShopOrderCommentNoOrderIdError(t *testing.T) {
 		"application_id": model.AppId,
 	}
 
-	obj := model.GetE(t).POST("/shop/v1/comment/{shop_order_sku_id}", 0).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).POST("/shop/v1/inner/comment/{shop_order_sku_id}", 0).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithJSON(comment).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -445,11 +510,11 @@ func TestMiniWechatShopOrderCommentNoOrderIdError(t *testing.T) {
 	obj.Value("message").String().Equal("参数错误")
 }
 
-func TestMiniWechatShopOrderDeleteSuccess(t *testing.T) {
+func TestShopOrderDeleteSuccess(t *testing.T) {
 
-	obj := model.GetE(t).DELETE("/shop/v1/order/{id}", miniShopOrderId).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).DELETE("/shop/v1/inner/order/{id}", shopOrderId).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -459,10 +524,10 @@ func TestMiniWechatShopOrderDeleteSuccess(t *testing.T) {
 	model.ShopOrderCount--
 }
 
-func TestMiniWechatShopOrderDeleteRetrunSuccess(t *testing.T) {
-	obj := model.GetE(t).DELETE("/shop/v1/order/{id}", MiniShopOrder.ID).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+func TestShopOrderDeleteRetrunSuccess(t *testing.T) {
+	obj := model.GetE(t).DELETE("/shop/v1/inner/order/{id}", ShopOrder.ID).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

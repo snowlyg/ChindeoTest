@@ -41,6 +41,7 @@ var Cate2 *model.ShopCates
 var Cate3 *model.ShopCates
 var SpecGroup *model.ShopSpecGroups
 var MiniShopOrder *model.ShopOrders
+var ShopOrder *model.ShopOrders
 
 //单元测试基境
 func TestMain(m *testing.M) {
@@ -156,6 +157,7 @@ func TestMain(m *testing.M) {
 	spu := model.CreateSpu(Brand.ID, Cate1.ID, 1, "", "", Spec)
 
 	MiniShopOrder = model.CreateShopOrder("S202008241612348468756914", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeMini, model.IOrderStatusForDelivery, spu.Skus)
+	ShopOrder = model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDelivery, spu.Skus)
 
 	flag.Parse()
 	exitCode := m.Run()

@@ -6,10 +6,10 @@ import (
 	"testing"
 )
 
-func TestMiniWechatShopSpuSuccess(t *testing.T) {
-	obj := model.GetE(t).GET("/shop/v1/spu").
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+func TestShopSpuSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/shop/v1/inner/spu").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -19,12 +19,12 @@ func TestMiniWechatShopSpuSuccess(t *testing.T) {
 	obj.Value("data").Array().Length().Equal(model.SpuCount)
 }
 
-func TestMiniWechatShopSpuWithBrandIdSuccess(t *testing.T) {
+func TestShopSpuWithBrandIdSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	model.CreateSpu(brand.ID, Cate1.ID, 1, "", "", Spec)
-	obj := model.GetE(t).GET("/shop/v1/spu").
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).GET("/shop/v1/inner/spu").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("brand_id", Brand.ID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -35,12 +35,12 @@ func TestMiniWechatShopSpuWithBrandIdSuccess(t *testing.T) {
 	obj.Value("data").Array().Length().Equal(1)
 }
 
-func TestMiniWechatShopSpuWithCateIdSuccess(t *testing.T) {
+func TestShopSpuWithCateIdSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	model.CreateSpu(brand.ID, Cate2.ID, 1, "", "", Spec)
-	obj := model.GetE(t).GET("/shop/v1/spu").
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).GET("/shop/v1/inner/spu").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("cate_id", Cate2.ID).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -48,16 +48,16 @@ func TestMiniWechatShopSpuWithCateIdSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("查询成功")
-	obj.Value("data").Array().Length().Equal(1)
+	obj.Value("data").Array().Length().Equal(4)
 }
 
-func TestMiniWechatShopSpuWithCateIdAndBrandSuccess(t *testing.T) {
+func TestShopSpuWithCateIdAndBrandSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	model.CreateSpu(brand.ID, Cate2.ID, 1, "", "", Spec)
 	model.CreateSpu(brand.ID, Cate1.ID, 1, "", "", Spec)
-	obj := model.GetE(t).GET("/shop/v1/spu").
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).GET("/shop/v1/inner/spu").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("cate_id", Cate2.ID).
 		WithQuery("brand_id", brand.ID).
 		Expect().
@@ -69,13 +69,13 @@ func TestMiniWechatShopSpuWithCateIdAndBrandSuccess(t *testing.T) {
 	obj.Value("data").Array().Length().Equal(1)
 }
 
-func TestMiniWechatShopSpuWithKeyWordSuccess(t *testing.T) {
+func TestShopSpuWithKeyWordSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	model.CreateSpu(brand.ID, Cate1.ID, 1, "这是一个很牛逼的商品", "这是一个很牛逼的商品的超厉害的副标题", Spec)
 	model.CreateSpu(brand.ID, Cate1.ID, 1, "很牛逼的商品", "很牛逼的商品的超厉害的副标题", Spec)
-	obj := model.GetE(t).GET("/shop/v1/spu").
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).GET("/shop/v1/inner/spu").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("key_word", "牛逼").
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -83,17 +83,17 @@ func TestMiniWechatShopSpuWithKeyWordSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("查询成功")
-	obj.Value("data").Array().Length().Equal(2)
+	obj.Value("data").Array().Length().Equal(4)
 }
 
-func TestMiniWechatShopSpuWithCateIdAndBrandAndKeyWordSuccess(t *testing.T) {
+func TestShopSpuWithCateIdAndBrandAndKeyWordSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	model.CreateSpu(brand.ID, Cate2.ID, 1, "这是一个很神奇的商品", "这是一个很神奇的商品的超厉害的副标题", Spec)
 	model.CreateSpu(brand.ID, Cate1.ID, 1, "这是一个很神奇的商品", "这是一个很神奇的商品的超厉害的副标题", Spec)
 	model.CreateSpu(brand.ID, Cate1.ID, 1, "很神奇的商品", "很神奇的商品的超厉害的副标题", Spec)
-	obj := model.GetE(t).GET("/shop/v1/spu").
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).GET("/shop/v1/inner/spu").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("key_word", "神奇").
 		WithQuery("cate_id", Cate2.ID).
 		WithQuery("brand_id", brand.ID).
@@ -106,14 +106,14 @@ func TestMiniWechatShopSpuWithCateIdAndBrandAndKeyWordSuccess(t *testing.T) {
 	obj.Value("data").Array().Length().Equal(1)
 }
 
-func TestMiniWechatShopSpuShowSuccess(t *testing.T) {
+func TestShopSpuShowSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
 	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, Spec)
-	obj := model.GetE(t).GET("/shop/v1/spu/{id}", spu.ID).
-		WithHeaders(model.GetMiniHeader("")).
-		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+	obj := model.GetE(t).GET("/shop/v1/inner/spu/{id}", spu.ID).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

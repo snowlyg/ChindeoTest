@@ -61,12 +61,14 @@ func (m MenuTimeType) String() string {
 }
 
 func GetSToI(i interface{}) int {
-	tt, ok := i.(string)
-	if ok {
-		atoi, _ := strconv.Atoi(tt)
-		return atoi
-	}
-	return 0
+	atoi, _ := strconv.Atoi(GetS(i))
+	return atoi
+
+}
+
+func GetSToF(i interface{}) float64 {
+	atoi, _ := strconv.ParseFloat(GetS(i), 10)
+	return atoi
 }
 
 func GetS(i interface{}) string {
@@ -79,6 +81,13 @@ func GetS(i interface{}) string {
 
 func GetI(i interface{}) int64 {
 	tt, ok := i.(int64)
+	if ok {
+		return tt
+	}
+	return 0
+}
+func GetF(i interface{}) float64 {
+	tt, ok := i.(float64)
 	if ok {
 		return tt
 	}
