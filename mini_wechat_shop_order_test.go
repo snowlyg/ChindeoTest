@@ -27,7 +27,9 @@ func TestMiniWechatShopOrderSuccess(t *testing.T) {
 }
 
 func TestMiniWechatShopOrderWithKeyWordSuccess(t *testing.T) {
-	spu := model.CreateSpu(Brand.ID, Cate1.ID, 1, "这是一个很神奇的中德澳商品", "", Spec)
+	brand := model.CreateBrand(false)
+	cate := model.CreateCate(Cate1.ID, 1)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", Spec)
 
 	MiniShopOrder = model.CreateShopOrder("S202008241612348468756914", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeMini, model.IOrderStatusForDelivery, spu.Skus)
 	obj := model.GetE(t).GET("/shop/v1/order").

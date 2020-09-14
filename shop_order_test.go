@@ -27,7 +27,9 @@ func TestShopOrderSuccess(t *testing.T) {
 }
 
 func TestShopOrderWithKeyWordSuccess(t *testing.T) {
-	spu := model.CreateSpu(Brand.ID, Cate1.ID, 1, "这是一个很神奇的中德澳商品", "", Spec)
+	brand := model.CreateBrand(false)
+	cate := model.CreateCate(Cate1.ID, 1)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", Spec)
 	ShopOrder = model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDelivery, spu.Skus)
 	obj := model.GetE(t).GET("/shop/v1/inner/order").
 		WithHeaders(model.GetHeader()).
