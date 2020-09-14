@@ -43,6 +43,7 @@ func TestMiniWechatProfileSuccess(t *testing.T) {
 		"warn_times",
 		"collects",
 		"cares",
+		"spus",
 		"profile",
 		"qual",
 		"patients",
