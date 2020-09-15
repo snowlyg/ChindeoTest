@@ -11,7 +11,7 @@ var orderId int
 
 func TestOrderListSuccess(t *testing.T) {
 	re := map[string]interface{}{
-		"status":      0,
+		"status":      2,
 		"page_size":   10,
 		"hospital_no": "9556854545",
 		"id_card_no":  model.IdCardNo,

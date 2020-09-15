@@ -48,7 +48,7 @@ func TestShopSpuWithCateIdSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("查询成功")
-	obj.Value("data").Array().Length().Equal(4)
+	obj.Value("data").Array().Length().Equal(5)
 }
 
 func TestShopSpuWithCateIdAndBrandSuccess(t *testing.T) {

@@ -22,7 +22,8 @@ func TestMiniWechatProfileSuccess(t *testing.T) {
 		"nickname",
 		"phone",
 		"email",
-		"sex", "password",
+		"sex",
+		"password",
 		"status",
 		"avatar_url",
 		"open_id",
@@ -38,12 +39,10 @@ func TestMiniWechatProfileSuccess(t *testing.T) {
 		"realname",
 		"area",
 		"birthday",
-
 		"addrs",
 		"warn_times",
 		"collects",
 		"cares",
-		"spus",
 		"profile",
 		"qual",
 		"patients",
@@ -51,6 +50,7 @@ func TestMiniWechatProfileSuccess(t *testing.T) {
 		"vitals",
 		"companies",
 		"mini_apps",
+		"visit_spus",
 	)
 	obj.Value("data").Object().Value("id").Equal(15)
 }
