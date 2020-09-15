@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+var showSpu *model.ShopSpus
+
 func TestMiniWechatShopSpuSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/shop/v1/spu").
 		WithHeaders(model.GetMiniHeader("")).
@@ -110,8 +112,8 @@ func TestMiniWechatShopSpuShowSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
-	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, Spec)
-	obj := model.GetE(t).GET("/shop/v1/spu/{id}", spu.ID).
+	showSpu = model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, Spec)
+	obj := model.GetE(t).GET("/shop/v1/spu/{id}", showSpu.ID).
 		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
@@ -120,16 +122,41 @@ func TestMiniWechatShopSpuShowSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("查询成功")
-	obj.Value("data").Object().Value("id").Equal(spu.ID)
+	obj.Value("data").Object().Value("id").Equal(showSpu.ID)
 	obj.Value("data").Object().Value("name").Equal(name)
 	obj.Value("data").Object().Value("sub_title").Equal(title)
 	obj.Value("data").Object().Value("specs").Array().Length().Equal(0)
-	obj.Value("data").Object().Value("detail").Object().Value("id").Equal(spu.Detail.ID)
-	obj.Value("data").Object().Value("detail").Object().Value("description").Equal(spu.Detail.Description)
-	obj.Value("data").Object().Value("detail").Object().Value("packing_list").Equal(spu.Detail.PackingList)
-	obj.Value("data").Object().Value("detail").Object().Value("after_service").Equal(spu.Detail.AfterService)
+	obj.Value("data").Object().Value("detail").Object().Value("id").Equal(showSpu.Detail.ID)
+	obj.Value("data").Object().Value("detail").Object().Value("description").Equal(showSpu.Detail.Description)
+	obj.Value("data").Object().Value("detail").Object().Value("packing_list").Equal(showSpu.Detail.PackingList)
+	obj.Value("data").Object().Value("detail").Object().Value("after_service").Equal(showSpu.Detail.AfterService)
 	obj.Value("data").Object().Value("cates").Array().Length().Equal(1)
 	obj.Value("data").Object().Value("cates").Array().First().Object().Value("id").Equal(Cate1.ID)
 	obj.Value("data").Object().Value("brand").Object().Value("id").Equal(brand.ID)
 	obj.Value("data").Object().Value("skus").Array().Length().Equal(3)
+}
+
+func TestMiniWechatShopSpuVisitSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/shop/v1/visit").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("查询成功")
+	obj.Value("data").Array().Length().Equal(1)
+}
+
+func TestMiniWechatShopSpuVisitCancelSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/shop/v1/visit/cancel/{id}", showSpu.ID).
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("取消成功")
 }
