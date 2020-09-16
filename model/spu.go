@@ -11,7 +11,7 @@ import (
 var SpuCount int
 var SpuTitleNameCount int
 
-func CreateSpu(brandId, cateId, skuNum int, name, subTitle string, spec *SpecGroup) *ShopSpus {
+func CreateSpu(brandId, cateId, skuNum int, name, subTitle string, price float64, spec *SpecGroup) *ShopSpus {
 	if len(name) == 0 {
 		name = Fake.Name()
 	}
@@ -38,7 +38,7 @@ func CreateSpu(brandId, cateId, skuNum int, name, subTitle string, spec *SpecGro
 
 	var skus []*ShopSkus
 	for skuNum > 0 {
-		skus = append(skus, CreateSku(sup.ID, name))
+		skus = append(skus, CreateSku(sup.ID, name, price))
 		skuNum--
 	}
 	sup.Skus = skus

@@ -158,7 +158,7 @@ func TestMain(m *testing.M) {
 		},
 	}
 	SpecGroup = model.CreateSpecGroup(Cate1.ID, Spec)
-	spu := model.CreateSpu(Brand.ID, Cate1.ID, 1, "", "", Spec)
+	spu := model.CreateSpu(Brand.ID, Cate1.ID, 1, "", "", 100.00, Spec)
 
 	MiniShopOrder = model.CreateShopOrder("S202008241612348468756914", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeMini, model.IOrderStatusForDelivery, spu.Skus)
 	ShopOrder = model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDelivery, spu.Skus)

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func CreateSku(supId int, name string) *ShopSkus {
+func CreateSku(supId int, name string, price float64) *ShopSkus {
 	images := []string{"https://wx.qlogo.cn/mmopen/vi_32/08uGpO07ibo8JrANxTDWjPbZHOtZsSkFfTNRksMtibzSRjcQ76xewGZra1AgnKz2EstBFueFcJIJCqucmJAGPgNw/132", "https://wx.qlogo.cn/mmopen/vi_32/08uGpO07ibo8JrANxTDWjPbZHOtZsSkFfTNRksMtibzSRjcQ76xewGZra1AgnKz2EstBFueFcJIJCqucmJAGPgNw/132", "https://wx.qlogo.cn/mmopen/vi_32/08uGpO07ibo8JrANxTDWjPbZHOtZsSkFfTNRksMtibzSRjcQ76xewGZra1AgnKz2EstBFueFcJIJCqucmJAGPgNw/132"}
 	i, _ := json.Marshal(images)
 	sku := &ShopSkus{
@@ -16,7 +16,7 @@ func CreateSku(supId int, name string) *ShopSkus {
 		Weight:    10,
 		Images:    string(i),
 		Stock:     100,
-		Price:     100.00,
+		Price:     price,
 		Indexes:   "[\"白色\", \"3GB\",\"16GB\"]",
 		OwnSpec:   "[\"白色\", \"3GB\",\"16GB\"]",
 		Status:    true,

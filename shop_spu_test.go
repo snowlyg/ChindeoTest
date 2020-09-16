@@ -19,9 +19,27 @@ func TestShopSpuSuccess(t *testing.T) {
 	obj.Value("data").Array().Length().Equal(model.SpuCount)
 }
 
+func TestShopSpuSortByPriceSuccess(t *testing.T) {
+	brand := model.CreateBrand(false)
+	shopOrder := model.CreateSpu(brand.ID, Cate1.ID, 1, "", "", 1.00, Spec)
+	obj := model.GetE(t).GET("/shop/v1/inner/spu").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithQuery("order_by", "price").
+		WithQuery("sort", "desc").
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("查询成功")
+	obj.Value("data").Array().Length().Equal(model.SpuCount)
+	obj.Value("data").Array().First().Object().Value("id").Equal(shopOrder.ID)
+}
+
 func TestShopSpuWithBrandIdSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
-	model.CreateSpu(brand.ID, Cate1.ID, 1, "", "", Spec)
+	model.CreateSpu(brand.ID, Cate1.ID, 1, "", "", 100.00, Spec)
 	obj := model.GetE(t).GET("/shop/v1/inner/spu").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
@@ -37,7 +55,7 @@ func TestShopSpuWithBrandIdSuccess(t *testing.T) {
 
 func TestShopSpuWithCateIdSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
-	model.CreateSpu(brand.ID, Cate2.ID, 1, "", "", Spec)
+	model.CreateSpu(brand.ID, Cate2.ID, 1, "", "", 100.00, Spec)
 	obj := model.GetE(t).GET("/shop/v1/inner/spu").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
@@ -55,8 +73,8 @@ func TestShopSpuWithCateIdSuccess(t *testing.T) {
 
 func TestShopSpuWithCateIdAndBrandSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
-	model.CreateSpu(brand.ID, Cate2.ID, 1, "", "", Spec)
-	model.CreateSpu(brand.ID, Cate1.ID, 1, "", "", Spec)
+	model.CreateSpu(brand.ID, Cate2.ID, 1, "", "", 100.00, Spec)
+	model.CreateSpu(brand.ID, Cate1.ID, 1, "", "", 100.00, Spec)
 	obj := model.GetE(t).GET("/shop/v1/inner/spu").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
@@ -73,8 +91,8 @@ func TestShopSpuWithCateIdAndBrandSuccess(t *testing.T) {
 
 func TestShopSpuWithKeyWordSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
-	model.CreateSpu(brand.ID, Cate1.ID, 1, "这是一个很牛逼的商品", "这是一个很牛逼的商品的超厉害的副标题", Spec)
-	model.CreateSpu(brand.ID, Cate1.ID, 1, "很牛逼的商品", "很牛逼的商品的超厉害的副标题", Spec)
+	model.CreateSpu(brand.ID, Cate1.ID, 1, "这是一个很牛逼的商品", "这是一个很牛逼的商品的超厉害的副标题", 100.00, Spec)
+	model.CreateSpu(brand.ID, Cate1.ID, 1, "很牛逼的商品", "很牛逼的商品的超厉害的副标题", 100.00, Spec)
 	obj := model.GetE(t).GET("/shop/v1/inner/spu").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
@@ -90,9 +108,9 @@ func TestShopSpuWithKeyWordSuccess(t *testing.T) {
 
 func TestShopSpuWithCateIdAndBrandAndKeyWordSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
-	model.CreateSpu(brand.ID, Cate2.ID, 1, "这是一个很神奇的商品", "这是一个很神奇的商品的超厉害的副标题", Spec)
-	model.CreateSpu(brand.ID, Cate1.ID, 1, "这是一个很神奇的商品", "这是一个很神奇的商品的超厉害的副标题", Spec)
-	model.CreateSpu(brand.ID, Cate1.ID, 1, "很神奇的商品", "很神奇的商品的超厉害的副标题", Spec)
+	model.CreateSpu(brand.ID, Cate2.ID, 1, "这是一个很神奇的商品", "这是一个很神奇的商品的超厉害的副标题", 100.00, Spec)
+	model.CreateSpu(brand.ID, Cate1.ID, 1, "这是一个很神奇的商品", "这是一个很神奇的商品的超厉害的副标题", 100.00, Spec)
+	model.CreateSpu(brand.ID, Cate1.ID, 1, "很神奇的商品", "很神奇的商品的超厉害的副标题", 100.00, Spec)
 	obj := model.GetE(t).GET("/shop/v1/inner/spu").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
@@ -112,7 +130,7 @@ func TestShopSpuShowSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
-	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, Spec)
+	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 100.00, Spec)
 	obj := model.GetE(t).GET("/shop/v1/inner/spu/{id}", spu.ID).
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).

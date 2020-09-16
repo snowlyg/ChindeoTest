@@ -29,7 +29,7 @@ func TestMiniWechatShopOrderSuccess(t *testing.T) {
 func TestMiniWechatShopOrderWithKeyWordSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	cate := model.CreateCate(Cate1.ID, 1)
-	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", Spec)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 100.00, Spec)
 
 	MiniShopOrder = model.CreateShopOrder("S202008241612348468756914", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeMini, model.IOrderStatusForDelivery, spu.Skus)
 	obj := model.GetE(t).GET("/shop/v1/order").
@@ -51,7 +51,7 @@ func TestMiniWechatShopOrderAddSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
-	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, Spec)
+	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 100.00, Spec)
 	shopOrder := map[string]interface{}{
 		"sku_ids": []map[string]interface{}{
 			{
@@ -95,7 +95,7 @@ func TestMiniWechatShopOrderNoAddrError(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
-	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, Spec)
+	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 100.00, Spec)
 	shopOrder := map[string]interface{}{
 		"sku_ids": []map[string]interface{}{
 			{
@@ -127,7 +127,7 @@ func TestMiniWechatShopOrderNoAppError(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
-	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, Spec)
+	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 100.00, Spec)
 	shopOrder := map[string]interface{}{
 		"sku_ids": []map[string]interface{}{
 			{

@@ -29,9 +29,6 @@ func TestMiniWechatIndexInvoiceCreateSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("创建发票信息成功")
 	id := obj.Value("data").Object().Value("id").Raw()
 	invoiceId = model.GetSToI(id)
-	println(id)
-	println(invoiceId)
-	println()
 }
 
 func TestMiniWechatIndexInvoiceIndexSuccess(t *testing.T) {
@@ -49,7 +46,7 @@ func TestMiniWechatIndexInvoiceIndexSuccess(t *testing.T) {
 
 func TestMiniWechatIndexInvoiceDeleteSuccess(t *testing.T) {
 
-	obj := model.GetE(t).POST("/index/invoice/delete").
+	obj := model.GetE(t).GET("/index/invoice/delete").
 		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		WithQuery("id", invoiceId).
