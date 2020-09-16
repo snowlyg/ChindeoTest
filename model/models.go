@@ -1220,3 +1220,115 @@ type ShopOrders struct {
 	Addr          *ShopOrderAddrs
 	Comments      []*ShopOrderComments
 }
+
+// IndexCompanies 企业表
+type IndexCompanies struct {
+	ID        int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	Name      string       `gorm:"column:name;type:varchar(100);not null" json:"name"`          // 名称
+	Logo      string       `gorm:"column:logo;type:varchar(250);not null" json:"logo"`          // logo
+	DeviceNo  string       `gorm:"column:device_no;type:varchar(50);not null" json:"device_no"` // 设备编号
+	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+}
+
+// IndexCompanyUser [...]
+type IndexCompanyUser struct {
+	ID        int       `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	CompanyID int       `gorm:"index:user_id;column:company_id;type:int;not null" json:"company_id"` // company_id
+	UserID    int       `gorm:"index:user_id;column:user_id;type:int;not null" json:"user_id"`       // user_id
+	CreateAt  time.Time `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt  time.Time `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+}
+
+// IndexFamilies 家属表
+type IndexFamilies struct {
+	ID             int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	Name           string       `gorm:"unique_index:name;column:name;type:varchar(30);not null" json:"name"`   // 用户名
+	Phone          string       `gorm:"unique_index:name;column:phone;type:varchar(30);not null" json:"phone"` // 手机
+	Email          string       `gorm:"unique_index:name;column:email;type:varchar(50);not null" json:"email"` // 邮箱
+	Sex            int          `gorm:"column:sex;type:int;not null" json:"sex"`                               // 性别
+	IDentify       string       `gorm:"column:identify;type:varchar(100);not null" json:"identify"`            // 身份证号码
+	RelationshipID int          `gorm:"column:relationship_id;type:int;not null" json:"relationship_id"`       // 家属关系
+	CreateAt       time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt       time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	UserID         int          `gorm:"index:user_id;column:user_id;type:int;not null" json:"user_id"` // user_id
+	IsDeleted      sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+	Birthday       time.Time    `gorm:"column:birthday;type:date" json:"birthday"`
+}
+
+// IndexInvoices 票据表
+type IndexInvoices struct {
+	ID          int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	Title       string       `gorm:"column:title;type:varchar(50);not null" json:"title"`               // 抬头名称
+	TaxNumber   string       `gorm:"column:tax_number;type:varchar(50);not null" json:"tax_number"`     // 抬头税号
+	Address     string       `gorm:"column:address;type:varchar(100);not null" json:"address"`          // 单位地址
+	Telephone   string       `gorm:"column:telephone;type:varchar(15);not null" json:"telephone"`       // 电话号码
+	BankName    string       `gorm:"column:bank_name;type:varchar(20);not null" json:"bank_name"`       // 银行名称
+	BankAccount string       `gorm:"column:bank_account;type:varchar(25);not null" json:"bank_account"` // 银行账号
+	Type        int          `gorm:"column:type;type:int;not null" json:"type"`                         // 发票类型，0:企业，1:个人
+	CreateAt    time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt    time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	UserID      int          `gorm:"index:user_id;column:user_id;type:int;not null" json:"user_id"` // user_id
+	IsDeleted   sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+}
+
+// IndexRelationships 家庭成员关系表
+type IndexRelationships struct {
+	ID        int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	Code      string       `gorm:"column:code;type:varchar(40);not null" json:"code"` // 代码
+	Name      string       `gorm:"column:name;type:varchar(20);not null" json:"name"` // 名称
+	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+}
+
+// IndexVitalConfigs 生命体征配置项表
+type IndexVitalConfigs struct {
+	ID                int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	Code              string       `gorm:"column:code;type:varchar(10);not null" json:"code"`                              // 代码
+	Name              string       `gorm:"column:name;type:varchar(20);not null" json:"name"`                              // 显示名称
+	Unit              string       `gorm:"column:unit;type:varchar(20);not null" json:"unit"`                              // 单位
+	AlarmingCondition string       `gorm:"column:alarming_condition;type:varchar(200);not null" json:"alarming_condition"` // 报警条件
+	Color             string       `gorm:"column:color;type:varchar(40);not null" json:"color"`                            // 背景颜色，CSS值
+	BgImg             string       `gorm:"column:bg_img;type:varchar(40);not null" json:"bg_img"`                          // 背景图片路径
+	Icon              string       `gorm:"column:icon;type:varchar(512);not null" json:"icon"`                             // 显示图标地址
+	AppIcon           string       `gorm:"column:app_icon;type:varchar(512);not null" json:"app_icon"`                     // app应用图标
+	Status            bool         `gorm:"column:status;type:tinyint(1);not null" json:"status"`                           // 是否启用
+	Sort              int          `gorm:"column:sort;type:int;not null" json:"sort"`                                      // 排序
+	StartAt           time.Time    `gorm:"column:start_at;type:datetime" json:"start_at"`                                  // 开始时间项
+	EndAt             time.Time    `gorm:"column:end_at;type:datetime" json:"end_at"`                                      // 截止时间项
+	CreateAt          time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt          time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	IsDeleted         sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+}
+
+// IndexVitalTimes 体征测量时间配置项表
+type IndexVitalTimes struct {
+	ID        int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	Status    bool         `gorm:"column:status;type:tinyint(1);not null" json:"status"` // 是否启用
+	StartAt   time.Time    `gorm:"column:start_at;type:time" json:"start_at"`            // 开始时间项
+	EndAt     time.Time    `gorm:"column:end_at;type:time" json:"end_at"`                // 截止时间项
+	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+}
+
+// IndexVitals 用户体征信息表
+type IndexVitals struct {
+	ID            int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	VitalConfigID int          `gorm:"column:vital_config_id;type:int;not null" json:"vital_config_id"` // 体征配置id
+	VitalCode     string       `gorm:"column:vital_code;type:varchar(10);not null" json:"vital_code"`   // 体征代码
+	VitalName     string       `gorm:"column:vital_name;type:varchar(50);not null" json:"vital_name"`   // 体征名称
+	VitalValue    string       `gorm:"column:vital_value;type:varchar(20);not null" json:"vital_value"` // 体征值
+	IsAbnormal    bool         `gorm:"column:is_abnormal;type:tinyint(1);not null" json:"is_abnormal"`  // 是否异常
+	VitalTimeID   int          `gorm:"column:vital_time_id;type:int;not null" json:"vital_time_id"`     // 体征时间id
+	VitalTime     time.Time    `gorm:"column:vital_time;type:time" json:"vital_time"`                   // 体征时间
+	VitalDate     time.Time    `gorm:"column:vital_date;type:datetime" json:"vital_date"`               // 体征日期
+	CreateAt      time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt      time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	IsDeleted     sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+	FamilyID      int          `gorm:"column:family_id;type:int;not null" json:"family_id"`           // family_id
+	UserID        int          `gorm:"index:user_id;column:user_id;type:int;not null" json:"user_id"` // user_id
+	VitalUnit     string       `gorm:"column:vital_unit;type:varchar(20)" json:"vital_unit"`          // 体征单位
+}

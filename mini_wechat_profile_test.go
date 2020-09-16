@@ -194,3 +194,57 @@ func TestMiniWechatProfileUnSubSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("取消订阅成功")
 }
+
+func TestMiniWechatProfileAddVitalSuccess(t *testing.T) {
+	re := map[string]interface{}{
+		"member": 0,
+		"data": map[string]string{
+			"01": "36.5",
+			"02": "168",
+		},
+	}
+	obj := model.GetE(t).POST("/api/v1/profile/addVital").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithJSON(re).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(1)
+	obj.Value("message").String().Equal("上传成功")
+}
+
+func TestMiniWechatProfileVitalsSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/api/v1/profile/vitals").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(1)
+	obj.Value("message").String().Equal("监测信息获取成功")
+}
+
+func TestMiniWechatProfileSaveMemberSuccess(t *testing.T) {
+	re := map[string]interface{}{
+		"relation": 1,
+		"name":     "name",
+		"phone":    "phone",
+		"birthday": "2015-01-02",
+		"sex":      1,
+		"identify": 1,
+		"email":    "email",
+	}
+	obj := model.GetE(t).POST("/api/v1/profile/saveMember").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithJSON(re).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(1)
+	obj.Value("message").String().Equal("保存成功")
+}

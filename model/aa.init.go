@@ -102,5 +102,14 @@ func ClearTables(cleanTables bool) {
 		DB.Unscoped().Delete(ShopOrderSkus{}, "id > ?", 0)
 		DB.Unscoped().Delete(ShopOrderComments{}, "id > ?", 0)
 		DB.Unscoped().Delete(UserSpu{}, "id > ?", 0)
+
+		DB.Unscoped().Delete(IndexCompanies{}, "id > ?", 0)
+		DB.Unscoped().Delete(IndexFamilies{}, "id > ?", 0)
+		DB.Unscoped().Delete(IndexInvoices{}, "id > ?", 0)
+		DB.Unscoped().Delete(IndexRelationships{}, "id > ?", 0)
+		DB.Unscoped().Delete(IndexVitalConfigs{}, "id > ?", 0)
+		DB.Unscoped().Delete(IndexVitalTimes{}, "id > ?", 0)
+		DB.Unscoped().Delete(IndexVitals{}, "id > ?", 0)
+		DB.Unscoped().Table("index_company_user").Delete(IndexCompanyUser{}, "id > ?", 0)
 	}
 }

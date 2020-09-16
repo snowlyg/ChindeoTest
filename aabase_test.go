@@ -56,6 +56,10 @@ func TestMain(m *testing.M) {
 	User = model.GetUserByIdCardNo()
 	model.GetFake()
 
+	model.CreateIndexRelationShips()
+	model.CreateIndexVitalConfigs()
+	model.CreateIndexVitalTimes()
+
 	Addr = model.CreateAddr(User.ID)
 	MenuType = model.CreateMenuType()
 	model.CreateMenuTag()
