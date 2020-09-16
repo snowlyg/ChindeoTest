@@ -95,10 +95,12 @@ func ClearTables(cleanTables bool) {
 		DB.Unscoped().Delete(ShopSpuDetails{}, "id > ?", 0)
 		DB.Unscoped().Delete(ShopSkus{}, "id > ?", 0)
 		DB.Unscoped().Delete(ShopSpuSpecs{}, "id > ?", 0)
+		DB.Unscoped().Table("shop_cate_spu").Delete(ShopCateSpu{}, "id > ?", 0)
 
 		DB.Unscoped().Delete(ShopOrders{}, "id > ?", 0)
 		DB.Unscoped().Delete(ShopOrderAddrs{}, "id > ?", 0)
 		DB.Unscoped().Delete(ShopOrderSkus{}, "id > ?", 0)
 		DB.Unscoped().Delete(ShopOrderComments{}, "id > ?", 0)
+		DB.Unscoped().Delete(UserSpu{}, "id > ?", 0)
 	}
 }

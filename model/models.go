@@ -1038,6 +1038,8 @@ type ShopCates struct {
 	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
 	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
 	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+
+	Spus []ShopSpus `gorm:"many2many:shop_cate_spu;foreignKey:Id;joinForeignKey:CateId;References:Spu;JoinReferences:Id"`
 }
 
 // ShopSkus sku表,该表表示具体的商品实体,如黑色的 64g的iphone 8
@@ -1165,6 +1167,16 @@ type ShopOrderComments struct {
 	CreateAt       time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
 	UpdateAt       time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
 	IsDeleted      sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+}
+
+// UserSpu 商城收藏中间表
+type UserSpu struct {
+	ID       int       `gorm:"primary_key;column:id;type:int;not null" json:"-"`
+	UserID   int       `gorm:"index:user_id;column:user_id;type:int;not null" json:"user_id"` // user_id
+	SpuID    int       `gorm:"index:user_id;column:spu_id;type:int;not null" json:"spu_id"`   // spu_id
+	CreateAt time.Time `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
+	UpdateAt time.Time `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
+	Type     int       `gorm:"column:type;type:int;not null" json:"type"` // 1:收藏，2：足迹
 }
 
 // ShopOrderSkus 商城订单详情表

@@ -62,12 +62,12 @@ func TestMain(m *testing.M) {
 	Menu = model.CreateMenu(true)
 	model.CreateMenu(false)
 
-	Order = model.CreateOrder("I202008241612348468756914", User.ID, model.OrderAppTypeBed, model.IOrderPayTypeWechat)
+	Order = model.CreateOrder("I202008241612348468756914", User.ID, model.OrderAppTypeBed, model.IOrderPayTypeWechat, model.IOrderStatusForDelivery)
 	Order.OrderAddr = model.CreateOrderAddr(Order.ID)
 	Order.OrderMenus = model.CreateOrderMenus(Menu, MenuType.Name, Order.ID, 5)
 	Order.OrderComments = model.CreateOrderComments(5, User.ID, Order.ID, COMMENTABLETYPE)
 
-	MiniOrder = model.CreateOrder("O202008241612348468756914", User.ID, model.OrderAppTypeMini, model.IOrderPayTypeAli)
+	MiniOrder = model.CreateOrder("O202008241612348468756914", User.ID, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.IOrderStatusForDelivery)
 	MiniOrder.OrderAddr = model.CreateOrderAddr(MiniOrder.ID)
 	MiniOrder.OrderMenus = model.CreateOrderMenus(Menu, MenuType.Name, MiniOrder.ID, 3)
 	MiniOrder.OrderComments = model.CreateOrderComments(4, User.ID, MiniOrder.ID, COMMENTABLETYPE)
@@ -77,12 +77,12 @@ func TestMain(m *testing.M) {
 	Care = model.CreateCare(CareTag.ID, CareType.ID, true)
 	model.CreateCare(CareTag.ID, CareType.ID, false)
 
-	MiniCareOrder = model.CreateCareOrder(Care.TimeType, "OC202008241612348468756914", User.ID, 0, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.CareMaxPrice)
+	MiniCareOrder = model.CreateCareOrder(Care.TimeType, "OC202008241612348468756914", User.ID, 0, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.IOrderStatusForDelivery, model.CareMaxPrice)
 	MiniCareOrder.CareOrderComments = model.CreateCareOrderComments(4, User.ID, MiniCareOrder.ID, 1, CARECOMMENTABLETYPE)
 	MiniCareOrder.CareOrderInfo = model.CreateCareOrderInfo(MiniCareOrder.ID, Care, App.Name, CareType.Name, CareTag.Name)
 	MiniCareOrder.CareOrderAddr = model.CreateCareOrderAddr(MiniCareOrder.ID, Addr)
 
-	CareOrder = model.CreateCareOrder(Care.TimeType, "IC202008241612348468756914", User.ID, 0, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.CareMaxPrice)
+	CareOrder = model.CreateCareOrder(Care.TimeType, "IC202008241612348468756914", User.ID, 0, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.IOrderStatusForDelivery, model.CareMaxPrice)
 	CareOrder.CareOrderComments = model.CreateCareOrderComments(3, User.ID, CareOrder.ID, 1, CARECOMMENTABLETYPE)
 	CareOrder.CareOrderInfo = model.CreateCareOrderInfo(CareOrder.ID, Care, App.Name, CareType.Name, CareTag.Name)
 	CareOrder.CareOrderAddr = model.CreateCareOrderAddr(CareOrder.ID, Addr)
@@ -91,12 +91,12 @@ func TestMain(m *testing.M) {
 	Carer = model.CreateCarer(CarerTag.ID, true)
 	model.CreateCarer(CarerTag.ID, false)
 
-	MiniCarerOrder = model.CreateCareOrder(Carer.TimeType, "OC202008241612348468756914", User.ID, Carer.ID, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.CarerPrice)
+	MiniCarerOrder = model.CreateCareOrder(Carer.TimeType, "OC202008241612348468756914", User.ID, Carer.ID, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.IOrderStatusForDelivery, model.CarerPrice)
 	MiniCarerOrder.CareOrderComments = model.CreateCareOrderComments(4, User.ID, MiniCarerOrder.ID, 1, CARECOMMENTABLETYPE)
 	MiniCarerOrder.CareOrderCarerInfo = model.CreateCareOrderCarerInfo(MiniCarerOrder.ID, Carer, App.Name, CarerTag.Name)
 	MiniCarerOrder.CareOrderAddr = model.CreateCareOrderAddr(MiniCarerOrder.ID, Addr)
 
-	CarerOrder = model.CreateCareOrder(Carer.TimeType, "IC202008241612348468756914", User.ID, Carer.ID, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.CarerPrice)
+	CarerOrder = model.CreateCareOrder(Carer.TimeType, "IC202008241612348468756914", User.ID, Carer.ID, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.IOrderStatusForDelivery, model.CarerPrice)
 	CarerOrder.CareOrderComments = model.CreateCareOrderComments(7, User.ID, CarerOrder.ID, 1, CARECOMMENTABLETYPE)
 	CarerOrder.CareOrderCarerInfo = model.CreateCareOrderCarerInfo(CarerOrder.ID, Carer, App.Name, CarerTag.Name)
 	CarerOrder.CareOrderAddr = model.CreateCareOrderAddr(CarerOrder.ID, Addr)

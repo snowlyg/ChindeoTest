@@ -9,13 +9,13 @@ import (
 
 var CareOrderCount int
 
-func CreateCareOrder(timeType, orderNo string, userId, carerId, payType, appType int, price float64) *CareOrders {
+func CreateCareOrder(timeType, orderNo string, userId, carerId, payType, appType, status int, price float64) *CareOrders {
 	tt := time.Now()
 	total := getTotalPrice(tt, timeType, price)
 
 	order := &CareOrders{
 		OrderNo:       orderNo,
-		Status:        IOrderStatusForDelivery,
+		Status:        status,
 		Total:         total,
 		ApplicationID: AppId,
 		PayType:       payType,
@@ -156,4 +156,11 @@ func CreateCareOrderCarerInfo(orderId int, carer *Carers, AppName, carerTagName 
 		fmt.Println(fmt.Sprintf("orderInfo create error :%v", err))
 	}
 	return orderCarerInfo
+}
+
+func DelCareOrder(careOrder *CareOrders) {
+	if err := DB.Delete(careOrder).Error; err != nil {
+		fmt.Println(fmt.Sprintf("careOrder delete error :%v", err))
+	}
+	CareOrderCount--
 }

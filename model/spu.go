@@ -4,10 +4,12 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 )
 
 var SpuCount int
+var SpuTitleNameCount int
 
 func CreateSpu(brandId, cateId, skuNum int, name, subTitle string, spec *SpecGroup) *ShopSpus {
 	if len(name) == 0 {
@@ -44,6 +46,9 @@ func CreateSpu(brandId, cateId, skuNum int, name, subTitle string, spec *SpecGro
 	if err := DB.Table("shop_cate_spu").Create(&cateSpu).Error; err != nil {
 		fmt.Println(fmt.Sprintf("cateSpu create error :%v", err))
 	}
+	if strings.Contains(name, "牛逼") || strings.Contains(subTitle, "牛逼") {
+		SpuTitleNameCount++
+	}
 
 	SpuCount++
 	return sup
@@ -64,4 +69,23 @@ func GetSpecs(supId int, specs []*ShopSpuSpecs, specGroup *SpecGroup) []*ShopSpu
 	}
 
 	return specs
+}
+
+func GetSpuByCateId(cateId int) []*ShopSpus {
+	var spus []*ShopSpus
+	var shopCateSpus []*ShopCateSpu
+	if err := DB.Table("shop_cate_spu").Model(&ShopCateSpu{}).Where("cate_id = ?", cateId).Find(&shopCateSpus).Error; err != nil {
+		fmt.Println(fmt.Sprintf("spus find error :%v", err))
+	}
+
+	var spuIds []int
+	for _, shopCateSpu := range shopCateSpus {
+		spuIds = append(spuIds, shopCateSpu.SpuID)
+	}
+
+	if err := DB.Model(&ShopSpus{}).Find(&spus, spuIds).Error; err != nil {
+		fmt.Println(fmt.Sprintf("spus find error :%v", err))
+	}
+
+	return spus
 }

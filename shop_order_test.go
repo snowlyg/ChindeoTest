@@ -26,6 +26,113 @@ func TestShopOrderSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("data").Array().Length().Equal(model.ShopOrderCount)
 }
 
+func TestShopOrderStatusForDeliveryingSuccess(t *testing.T) {
+	brand := model.CreateBrand(false)
+	cate := model.CreateCate(Cate1.ID, 1)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", Spec)
+	shopOrder := model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDeliverying, spu.Skus)
+	re := map[string]interface{}{
+		"status":      model.IOrderStatusForDeliverying,
+		"page_size":   10,
+		"hospital_no": "9556854545",
+		"id_card_no":  model.IdCardNo,
+	}
+
+	obj := model.GetE(t).GET("/shop/v1/inner/order").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithQueryObject(re).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+	model.DelShopOrder(shopOrder)
+}
+
+func TestShopOrderStatusForDeliveryingNoIdCardNoSuccess(t *testing.T) {
+	brand := model.CreateBrand(false)
+	cate := model.CreateCate(Cate1.ID, 1)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", Spec)
+	shopOrder := model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDeliverying, spu.Skus)
+	re := map[string]interface{}{
+		"status":      model.IOrderStatusForDeliverying,
+		"page_size":   10,
+		"hospital_no": "9556854545",
+	}
+
+	obj := model.GetE(t).GET("/shop/v1/inner/order").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithQueryObject(re).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(0)
+	model.DelShopOrder(shopOrder)
+}
+
+func TestShopOrderNoStatusSuccess(t *testing.T) {
+	brand := model.CreateBrand(false)
+	cate := model.CreateCate(Cate1.ID, 1)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", Spec)
+	shopOrder := model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDeliverying, spu.Skus)
+	re := map[string]interface{}{
+		"status":      0,
+		"page_size":   10,
+		"hospital_no": "9556854545",
+		"id_card_no":  model.IdCardNo,
+	}
+
+	obj := model.GetE(t).GET("/shop/v1/inner/order").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithQueryObject(re).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(model.ShopOrderCount)
+	model.DelShopOrder(shopOrder)
+}
+
+func TestShopOrderStatusForFinishSuccess(t *testing.T) {
+	brand := model.CreateBrand(false)
+	cate := model.CreateCate(Cate1.ID, 1)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", Spec)
+	shopOrder := model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDeliverying, spu.Skus)
+	re := map[string]interface{}{
+		"status":      model.IOrderStatusForFinish,
+		"page_size":   10,
+		"hospital_no": "9556854545",
+		"id_card_no":  model.IdCardNo,
+	}
+
+	obj := model.GetE(t).GET("/shop/v1/inner/order").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithQueryObject(re).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(0)
+	model.DelShopOrder(shopOrder)
+}
+
 func TestShopOrderWithKeyWordSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	cate := model.CreateCate(Cate1.ID, 1)

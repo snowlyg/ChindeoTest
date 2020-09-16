@@ -7,7 +7,7 @@ import (
 )
 
 func TestCommentDeleteOrderCommentSuccess(t *testing.T) {
-	order := model.CreateOrder("I202008241612348468756914", User.ID, model.OrderAppTypeBed, model.IOrderPayTypeWechat)
+	order := model.CreateOrder("I202008241612348468756914", User.ID, model.OrderAppTypeBed, model.IOrderPayTypeWechat, model.IOrderStatusForComment)
 	comemnt := model.CreateOrderComment(User.ID, order.ID, COMMENTABLETYPE)
 	obj := model.GetE(t).DELETE("/common/v1/comment/{id}", comemnt.ID).
 		WithHeaders(model.GetMiniHeader("")).
@@ -21,7 +21,7 @@ func TestCommentDeleteOrderCommentSuccess(t *testing.T) {
 }
 
 func TestCommentDeleteInnerOrderCommentSuccess(t *testing.T) {
-	order := model.CreateOrder("I202008241612348468756914", User.ID, model.OrderAppTypeBed, model.IOrderPayTypeWechat)
+	order := model.CreateOrder("I202008241612348468756914", User.ID, model.OrderAppTypeBed, model.IOrderPayTypeWechat, model.IOrderStatusForComment)
 	comemnt := model.CreateOrderComment(User.ID, order.ID, COMMENTABLETYPE)
 	obj := model.GetE(t).DELETE("/common/v1/inner/comment/{id}", comemnt.ID).
 		WithHeaders(model.GetHeader()).

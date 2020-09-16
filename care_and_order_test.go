@@ -14,7 +14,6 @@ var carePrice decimal.Decimal
 var careTimeTypeText string
 
 func TestCareNoTagIdListSuccess(t *testing.T) {
-
 	obj := model.GetE(t).GET("/care/v1/inner/care").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
@@ -98,7 +97,6 @@ func TestCareListNoPageSuccess(t *testing.T) {
 	careType := fitst.Value("type").Object()
 	careType.Value("id").Equal(CareType.ID)
 	careType.Value("name").Equal(CareType.Name)
-
 }
 
 func TestCareShowSuccess(t *testing.T) {
@@ -125,11 +123,66 @@ func TestCareShowSuccess(t *testing.T) {
 	careType.Value("name").Equal(CareType.Name)
 }
 
-func TestCareOrderListSuccess(t *testing.T) {
+func TestCareOrderListStatusForDeliveryingSuccess(t *testing.T) {
+	careOrder := model.CreateCareOrder(Care.TimeType, "IC202008241612348468756914", User.ID, 0, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.IOrderStatusForDeliverying, model.CareMaxPrice)
 
+	re := map[string]interface{}{
+		"status":      model.IOrderStatusForDeliverying,
+		"page_size":   10,
+		"hospital_no": "9556854545",
+		"id_card_no":  model.IdCardNo,
+	}
 	obj := model.GetE(t).GET("/care/v1/inner/order").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithQueryObject(re).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
+	model.DelCareOrder(careOrder)
+}
+
+func TestCareOrderListStatusForDeliveryingNoIdCardNoSuccess(t *testing.T) {
+	careOrder := model.CreateCareOrder(Care.TimeType, "IC202008241612348468756914", User.ID, 0, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.IOrderStatusForDeliverying, model.CareMaxPrice)
+
+	re := map[string]interface{}{
+		"status":      model.IOrderStatusForDeliverying,
+		"page_size":   10,
+		"hospital_no": "9556854545",
+	}
+	obj := model.GetE(t).GET("/care/v1/inner/order").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithQueryObject(re).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(0)
+	model.DelCareOrder(careOrder)
+}
+
+func TestCareOrderListNoStatusSuccess(t *testing.T) {
+	careOrder := model.CreateCareOrder(Care.TimeType, "IC202008241612348468756914", User.ID, 0, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.IOrderStatusForDeliverying, model.CareMaxPrice)
+
+	re := map[string]interface{}{
+		"status":      0,
+		"page_size":   10,
+		"hospital_no": "9556854545",
+		"id_card_no":  model.IdCardNo,
+	}
+	obj := model.GetE(t).GET("/care/v1/inner/order").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithQueryObject(re).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -138,6 +191,31 @@ func TestCareOrderListSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
 	obj.Value("data").Object().Value("data").Array().Length().Equal(model.CareOrderCount)
+	model.DelCareOrder(careOrder)
+}
+
+func TestCareOrderListStatusForFinishSuccess(t *testing.T) {
+	careOrder := model.CreateCareOrder(Care.TimeType, "IC202008241612348468756914", User.ID, 0, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.IOrderStatusForDeliverying, model.CareMaxPrice)
+
+	re := map[string]interface{}{
+		"status":      model.IOrderStatusForFinish,
+		"page_size":   10,
+		"hospital_no": "9556854545",
+		"id_card_no":  model.IdCardNo,
+	}
+	obj := model.GetE(t).GET("/care/v1/inner/order").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithQueryObject(re).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	obj.Value("data").Object().Value("data").Array().Length().Equal(0)
+	model.DelCareOrder(careOrder)
 }
 
 var careStartAt time.Time
@@ -559,7 +637,6 @@ func TestCareOrderShowReturnSuccess(t *testing.T) {
 	returnOrderInfo.Value("cover").Equal(CareOrder.CareOrderInfo.Cover)
 	returnOrderInfo.Value("care_type").Equal(CareOrder.CareOrderInfo.CareType)
 	returnOrderInfo.Value("care_return_order_id").NotNull()
-
 }
 
 func TestCareOrderDeleteCareSuccess(t *testing.T) {
@@ -576,7 +653,6 @@ func TestCareOrderDeleteCareSuccess(t *testing.T) {
 }
 
 func TestCareOrderDeleteCareRetrunSuccess(t *testing.T) {
-
 	obj := model.GetE(t).DELETE("/care/v1/inner/order/{id}", CareOrder.ID).
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).

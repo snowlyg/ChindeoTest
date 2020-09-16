@@ -19,11 +19,12 @@ const AUTH_TYPE_APP = 2      //APP
 const AUTH_TYPE_WECHAT = 3   //公众号
 const AuthTypeServer = 4     //服务
 
-const IOrderStatusForPay = 1             // 待付款
-const IOrderStatusForDelivery = 2        // 已付款
-const I_ORDER_STATUS_FOR_DELIVERYING = 3 // 配送中/进行中
-const IOrderStatusForCancel = 4          // 已取消
-const I_ORDER_STATUS_FOR_FINISH = 5      // 已完成
+const IOrderStatusForPay = 1         // 待付款
+const IOrderStatusForDelivery = 2    // 已付款
+const IOrderStatusForDeliverying = 3 // 配送中/进行中/待收货
+const IOrderStatusForCancel = 4      // 已取消
+const IOrderStatusForFinish = 5      // 已完成
+const IOrderStatusForComment = 6     // 待评价/已收货
 
 const I_ORDER_PAY_TYPE_NOPAY = 0 // 未支付
 const IOrderPayTypeWechat = 1    // 微信

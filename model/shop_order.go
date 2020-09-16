@@ -121,3 +121,10 @@ func CreateShopOrderComments(userId, shopOrderSkuId, star, num int) []*ShopOrder
 	}
 	return comments
 }
+
+func DelShopOrder(shopOrder *ShopOrders) {
+	if err := DB.Delete(shopOrder).Error; err != nil {
+		fmt.Println(fmt.Sprintf("shopOrder delete error :%v", err))
+	}
+	ShopOrderCount--
+}

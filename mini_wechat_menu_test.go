@@ -36,11 +36,31 @@ func TestMiniWechatMenuNoPageSuccess(t *testing.T) {
 		WithQuery("page_size", "-1").
 		Expect().
 		Status(http.StatusOK).JSON().Object()
-
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Array().Length().Equal(model.MenuCount)
+	obj.Value("data").Array().First().Object().Keys().ContainsOnly(
+		"cover",
+		"pics",
+		"is_deleted",
+		"name",
+		"amount",
+		"application_id",
+		"menu_type_id",
+		"tags",
+		"status",
+		"sort",
+		"type",
+		"id",
+		"desc",
+		"price",
+		"create_at",
+		"update_at",
+		"pivot",
+		"time_type",
+		"users",
+	)
 	obj.Value("data").Array().First().Object().Value("id").Equal(Menu.ID)
 }
 

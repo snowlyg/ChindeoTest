@@ -11,7 +11,7 @@ var miniWechatOrderId int
 
 func TestMiniWechatOrderListSuccess(t *testing.T) {
 	re := map[string]interface{}{
-		"status":         2,
+		"status":         0,
 		"page_size":      10,
 		"application_id": model.AppId,
 	}

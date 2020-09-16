@@ -92,10 +92,10 @@ func CreateOrderComments(num, userId, orderId int, commentableType string) []*Co
 	return comments
 }
 
-func CreateOrder(orderNo string, userId, appType, payType int) *APIOOrders {
+func CreateOrder(orderNo string, userId, appType, payType, status int) *APIOOrders {
 	order := APIOOrders{
 		OrderNo:       orderNo,
-		Status:        IOrderStatusForDelivery,
+		Status:        status,
 		Amount:        0,
 		Total:         10.00,
 		ApplicationID: AppId,
@@ -116,4 +116,11 @@ func CreateOrder(orderNo string, userId, appType, payType int) *APIOOrders {
 
 	OrderCount++
 	return &order
+}
+
+func DelOrder(order *APIOOrders) {
+	if err := DB.Delete(order).Error; err != nil {
+		fmt.Println(fmt.Sprintf("order delete error :%v", err))
+	}
+	OrderCount--
 }
