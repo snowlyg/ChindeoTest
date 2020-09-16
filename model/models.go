@@ -1121,6 +1121,8 @@ type ShopSpus struct {
 	CreateAt  time.Time    `gorm:"column:create_at;type:datetime;not null" json:"create_at"`
 	UpdateAt  time.Time    `gorm:"column:update_at;type:datetime;not null" json:"update_at"`
 	IsDeleted sql.NullTime `gorm:"column:is_deleted;type:datetime" json:"is_deleted"`
+	MinPrice  float64      `gorm:"column:min_price;type:decimal(10,2);not null" json:"min_price"` // 最小价格
+	MaxPrice  float64      `gorm:"column:max_price;type:decimal(10,2);not null" json:"max_price"` // 最大价格
 	Detail    *ShopSpuDetails
 	Skus      []*ShopSkus
 	Specs     []*ShopSpuSpecs

@@ -29,7 +29,7 @@ func TestShopOrderSuccess(t *testing.T) {
 func TestShopOrderStatusForDeliveryingSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	cate := model.CreateCate(Cate1.ID, 1)
-	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 100.00, Spec)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 10.00, 100.00, Spec)
 	shopOrder := model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDeliverying, spu.Skus)
 	re := map[string]interface{}{
 		"status":      model.IOrderStatusForDeliverying,
@@ -56,7 +56,7 @@ func TestShopOrderStatusForDeliveryingSuccess(t *testing.T) {
 func TestShopOrderStatusForDeliveryingNoIdCardNoSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	cate := model.CreateCate(Cate1.ID, 1)
-	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 100.00, Spec)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 10.00, 100.00, Spec)
 	shopOrder := model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDeliverying, spu.Skus)
 	re := map[string]interface{}{
 		"status":      model.IOrderStatusForDeliverying,
@@ -82,7 +82,7 @@ func TestShopOrderStatusForDeliveryingNoIdCardNoSuccess(t *testing.T) {
 func TestShopOrderNoStatusSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	cate := model.CreateCate(Cate1.ID, 1)
-	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 100.00, Spec)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 10.00, 100.00, Spec)
 	shopOrder := model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDeliverying, spu.Skus)
 	re := map[string]interface{}{
 		"status":      0,
@@ -109,7 +109,7 @@ func TestShopOrderNoStatusSuccess(t *testing.T) {
 func TestShopOrderStatusForFinishSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	cate := model.CreateCate(Cate1.ID, 1)
-	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 100.00, Spec)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 10.00, 100.00, Spec)
 	shopOrder := model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDeliverying, spu.Skus)
 	re := map[string]interface{}{
 		"status":      model.IOrderStatusForFinish,
@@ -136,7 +136,7 @@ func TestShopOrderStatusForFinishSuccess(t *testing.T) {
 func TestShopOrderWithKeyWordSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	cate := model.CreateCate(Cate1.ID, 1)
-	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 100.00, Spec)
+	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 10.00, 100.00, Spec)
 	ShopOrder = model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDelivery, spu.Skus)
 	obj := model.GetE(t).GET("/shop/v1/inner/order").
 		WithHeaders(model.GetHeader()).
@@ -158,7 +158,7 @@ func TestShopOrderAddSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
-	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 100.00, Spec)
+	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 10.00, 100.00, Spec)
 	shopOrder := map[string]interface{}{
 		"sku_ids": []map[string]interface{}{
 			{
@@ -210,7 +210,7 @@ func TestShopOrderAddNoBedNumError(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
-	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 100.00, Spec)
+	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 10.00, 100.00, Spec)
 	shopOrder := map[string]interface{}{
 		"sku_ids": []map[string]interface{}{
 			{
@@ -252,7 +252,7 @@ func TestShopOrderNoPatientNameError(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
-	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 100.00, Spec)
+	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 10.00, 100.00, Spec)
 	shopOrder := map[string]interface{}{
 		"sku_ids": []map[string]interface{}{
 			{
@@ -292,7 +292,7 @@ func TestShopOrderNoLocNameError(t *testing.T) {
 	brand := model.CreateBrand(false)
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
-	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 100.00, Spec)
+	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 10.00, 100.00, Spec)
 	shopOrder := map[string]interface{}{
 		"sku_ids": []map[string]interface{}{
 			{
