@@ -25,7 +25,7 @@ func CreateIndexVitalTimes() {
 	t, _ := time.LoadLocation("Asia/Shanghai")
 	n, _ := time.ParseInLocation("15:04", "09:00", t)
 	nn, _ := time.ParseInLocation("15:04", "16:00", t)
-	z, _ := time.ParseInLocation("15:04", "00:00", t)
+	z, _ := time.ParseInLocation("15:04", "23:59", t)
 
 	irs := []map[string]time.Time{
 		{

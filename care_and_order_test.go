@@ -151,9 +151,8 @@ func TestCareOrderListStatusForDeliveryingNoIdCardNoSuccess(t *testing.T) {
 	careOrder := model.CreateCareOrder(Care.TimeType, "IC202008241612348468756914", User.ID, 0, model.OrderAppTypeMini, model.IOrderPayTypeAli, model.IOrderStatusForDeliverying, model.CareMaxPrice)
 
 	re := map[string]interface{}{
-		"status":      model.IOrderStatusForDeliverying,
-		"page_size":   10,
-		"hospital_no": "9556854545",
+		"status":    model.IOrderStatusForDeliverying,
+		"page_size": 10,
 	}
 	obj := model.GetE(t).GET("/care/v1/inner/order").
 		WithHeaders(model.GetHeader()).

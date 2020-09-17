@@ -8,7 +8,7 @@ import (
 
 func TestMiniWechatTempsCareSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/temps").
-		WithHeaders(model.GetMiniHeader("406429e1284a86b92283cbb52dacda6a")).
+		WithHeaders(model.GetMiniHeader("80162def4d0396dec1015acd07ea78f3")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
@@ -48,7 +48,7 @@ func TestMiniWechatTempsShopSuccess(t *testing.T) {
 
 func TestMiniWechatTempsIndexSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/temps").
-		WithHeaders(model.GetMiniHeader("ebba9bb355864815eacf09598515e562")).
+		WithHeaders(model.GetMiniHeader("293287401f47490e7a09160cfc534a12")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

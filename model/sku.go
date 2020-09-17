@@ -13,7 +13,6 @@ func CreateSku(supId int, name string, price float64) *ShopSkus {
 	sku := &ShopSkus{
 		Title:     name,
 		SkuNo:     Fake.PostCode(),
-		Weight:    10,
 		Images:    string(i),
 		Stock:     100,
 		Price:     price,

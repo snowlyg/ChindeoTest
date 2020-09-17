@@ -1047,7 +1047,6 @@ type ShopSkus struct {
 	ID        int          `gorm:"primary_key;column:id;type:int;not null" json:"-"`
 	Title     string       `gorm:"column:title;type:varchar(256);not null" json:"title"`        // 商品标题
 	SkuNo     string       `gorm:"column:sku_no;type:varchar(256);not null" json:"sku_no"`      // 商品编码
-	Weight    float64      `gorm:"column:weight;type:decimal(10,4);not null" json:"weight"`     // 商品重量
 	Images    string       `gorm:"column:images;type:varchar(1024);not null" json:"images"`     // 商品图片 (多个图片用,号分割)
 	Stock     int          `gorm:"column:stock;type:int;not null" json:"stock"`                 // 库存
 	Price     float64      `gorm:"column:price;type:decimal(10,2);not null" json:"price"`       // 价格

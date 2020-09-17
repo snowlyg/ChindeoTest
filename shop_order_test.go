@@ -59,9 +59,8 @@ func TestShopOrderStatusForDeliveryingNoIdCardNoSuccess(t *testing.T) {
 	spu := model.CreateSpu(brand.ID, cate.ID, 1, "这是一个很神奇的中德澳商品", "", 10.00, 100.00, Spec)
 	shopOrder := model.CreateShopOrder("S202008241612348468756915", User.ID, model.IOrderPayTypeAli, model.OrderAppTypeBed, model.IOrderStatusForDeliverying, spu.Skus)
 	re := map[string]interface{}{
-		"status":      model.IOrderStatusForDeliverying,
-		"page_size":   10,
-		"hospital_no": "9556854545",
+		"status":    model.IOrderStatusForDeliverying,
+		"page_size": 10,
 	}
 
 	obj := model.GetE(t).GET("/shop/v1/inner/order").

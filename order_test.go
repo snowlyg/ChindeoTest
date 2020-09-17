@@ -41,9 +41,8 @@ func TestOrderListStatusForDeliveryingSuccess(t *testing.T) {
 func TestOrderListStatusForDeliveryingNoIdCardNoSuccess(t *testing.T) {
 	order := model.CreateOrder("I202008241612348468756914", User.ID, model.OrderAppTypeBed, model.IOrderPayTypeWechat, model.IOrderStatusForDeliverying)
 	re := map[string]interface{}{
-		"status":      model.IOrderStatusForDeliverying,
-		"page_size":   10,
-		"hospital_no": "9556854545",
+		"status":    model.IOrderStatusForDeliverying,
+		"page_size": 10,
 	}
 
 	obj := model.GetE(t).POST("/api/v1/i_order").

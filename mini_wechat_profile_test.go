@@ -54,7 +54,7 @@ func TestMiniWechatProfileSuccess(t *testing.T) {
 		"visit_spus",
 		"collect_spus",
 	)
-	obj.Value("data").Object().Value("id").Equal(15)
+	obj.Value("data").Object().Value("id").Equal(10)
 }
 
 func TestMiniWechatProfileWithCompaniesRelationSuccess(t *testing.T) {
@@ -74,7 +74,8 @@ func TestMiniWechatProfileWithCompaniesRelationSuccess(t *testing.T) {
 		"nickname",
 		"phone",
 		"email",
-		"sex", "password",
+		"sex",
+		"password",
 		"status",
 		"avatar_url",
 		"open_id",
@@ -92,7 +93,7 @@ func TestMiniWechatProfileWithCompaniesRelationSuccess(t *testing.T) {
 		"area",
 		"birthday",
 	)
-	obj.Value("data").Object().Value("id").Equal(15)
+	obj.Value("data").Object().Value("id").Equal(10)
 }
 
 func TestMiniWechatProfileUpdateSuccess(t *testing.T) {
@@ -111,7 +112,7 @@ func TestMiniWechatProfileUpdateSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("操作成功")
-	obj.Value("data").Object().Value("id").Equal(15)
+	obj.Value("data").Object().Value("id").Equal(10)
 	obj.Value("data").Object().Value("id_card_no").Equal(model.IdCardNo)
 	obj.Value("data").Object().Value("realname").Equal("小样")
 }
