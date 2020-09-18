@@ -34,7 +34,7 @@ func TestMiniWechatTempsOrderSuccess(t *testing.T) {
 
 func TestMiniWechatTempsShopSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/api/v1/outline/temps").
-		WithHeaders(model.GetMiniHeader("ebba9bb355864815eacf09598515e562")).
+		WithHeaders(model.GetMiniHeader("be3b0dc021aed4c7f65ad7f4299e83c1")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
 		Expect().
 		Status(http.StatusOK).JSON().Object()

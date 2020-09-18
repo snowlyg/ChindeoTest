@@ -11,7 +11,7 @@ var miniShopOrderId interface{}
 var miniShopOrdeTotal float64
 var miniShopOrderSkuId interface{}
 
-func TestMiniWechatShopOrderSuccess(t *testing.T) {
+func TestMiniWechatShopOrderPaginateSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/shop/v1/order").
 		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
@@ -24,6 +24,21 @@ func TestMiniWechatShopOrderSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("请求成功")
 	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
 	obj.Value("data").Object().Value("data").Array().Length().Equal(model.ShopOrderCount)
+}
+
+func TestMiniWechatShopOrderSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/shop/v1/order").
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithQuery("application_id", model.AppId).
+		WithQuery("page_size", -1).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Array().Length().Equal(model.ShopOrderCount)
 }
 
 func TestMiniWechatShopOrderWithKeyWordSuccess(t *testing.T) {

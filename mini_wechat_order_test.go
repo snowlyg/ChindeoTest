@@ -9,7 +9,7 @@ import (
 
 var miniWechatOrderId int
 
-func TestMiniWechatOrderListSuccess(t *testing.T) {
+func TestMiniWechatOrderPaginateListSuccess(t *testing.T) {
 	re := map[string]interface{}{
 		"status":         0,
 		"page_size":      10,
@@ -27,7 +27,29 @@ func TestMiniWechatOrderListSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
 	obj.Value("data").Object().Value("data").Array().Length().Equal(model.OrderCount)
+}
+
+func TestMiniWechatOrderListSuccess(t *testing.T) {
+	re := map[string]interface{}{
+		"status":         0,
+		"page_size":      -1,
+		"application_id": model.AppId,
+	}
+
+	obj := model.GetE(t).POST("/api/v1/outline/o_order").
+		WithQuery("page", 1).
+		WithHeaders(model.GetMiniHeader("")).
+		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithJSON(re).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Array().Length().Equal(model.OrderCount)
 }
 
 func TestMiniWechatOrderAddSuccess(t *testing.T) {

@@ -91,3 +91,10 @@ func GetSpuByCateId(cateId int) []*ShopSpus {
 
 	return spus
 }
+
+func DelShopSpu(shopSpu *ShopSpus) {
+	if err := DB.Delete(shopSpu).Error; err != nil {
+		fmt.Println(fmt.Sprintf("shopSpu delete error :%v", err))
+	}
+	SpuCount--
+}

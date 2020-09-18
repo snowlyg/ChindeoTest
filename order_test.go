@@ -29,6 +29,7 @@ func TestOrderListStatusForDeliveryingSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
 	obj.Value("data").Object().Value("data").Array().Length().Equal(1)
 
 	last := obj.Value("data").Object().Value("data").Array().Last().Object()
@@ -56,10 +57,12 @@ func TestOrderListStatusForDeliveryingNoIdCardNoSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
 	obj.Value("data").Object().Value("data").Array().Length().Equal(0)
 
 	model.DelOrder(order)
 }
+
 func TestOrderListNoStatusSuccess(t *testing.T) {
 	order := model.CreateOrder("I202008241612348468756914", User.ID, model.OrderAppTypeBed, model.IOrderPayTypeWechat, model.IOrderStatusForDeliverying)
 	re := map[string]interface{}{
@@ -80,6 +83,7 @@ func TestOrderListNoStatusSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
 	obj.Value("data").Object().Value("data").Array().Length().Equal(model.OrderCount)
 
 	model.DelOrder(order)
@@ -105,7 +109,33 @@ func TestOrderListStatusForFinishSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
 	obj.Value("data").Object().Value("data").Array().Length().Equal(0)
+
+	model.DelOrder(order)
+}
+
+func TestOrderNoPaginateListStatusForFinishSuccess(t *testing.T) {
+	order := model.CreateOrder("I202008241612348468756914", User.ID, model.OrderAppTypeBed, model.IOrderPayTypeWechat, model.IOrderStatusForDeliverying)
+	re := map[string]interface{}{
+		"status":      model.IOrderStatusForFinish,
+		"page_size":   -1,
+		"hospital_no": "9556854545",
+		"id_card_no":  model.IdCardNo,
+	}
+
+	obj := model.GetE(t).POST("/api/v1/i_order").
+		WithQuery("page", 1).
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithJSON(re).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("请求成功")
+	obj.Value("data").Array().Length().Equal(0)
 
 	model.DelOrder(order)
 }

@@ -36,9 +36,14 @@ func TestMiniWechatSpuCollectSuccess(t *testing.T) {
 }
 
 func TestMiniWechatSpuCollectCancelSuccess(t *testing.T) {
-	obj := model.GetE(t).GET("/shop/v1/collect/cancel/{id}", collectSpu.ID).
+	ids := map[string]interface{}{
+		"ids": []int{collectSpu.ID},
+	}
+
+	obj := model.GetE(t).POST("/shop/v1/collect/cancel", collectSpu.ID).
 		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
+		WithJSON(ids).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

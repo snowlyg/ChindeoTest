@@ -10,6 +10,7 @@ func TestShopSpuSuccess(t *testing.T) {
 	obj := model.GetE(t).GET("/shop/v1/inner/spu").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
+		WithQuery("page_size", -1).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -18,15 +19,33 @@ func TestShopSpuSuccess(t *testing.T) {
 	obj.Value("message").String().Equal("查询成功")
 	obj.Value("data").Array().Length().Equal(model.SpuCount)
 }
+func TestShopSpuPaginateSuccess(t *testing.T) {
+	obj := model.GetE(t).GET("/shop/v1/inner/spu").
+		WithHeaders(model.GetHeader()).
+		WithCookie("PHPSESSID", model.GetSessionId()).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Keys().ContainsOnly("code", "data", "message")
+	obj.Value("code").Equal(200)
+	obj.Value("message").String().Equal("查询成功")
+	obj.Value("data").Object().Keys().ContainsOnly("total", "per_page", "current_page", "last_page", "data")
+	spuCount := model.SpuCount
+	if spuCount > 10 {
+		spuCount = 10
+	}
+	obj.Value("data").Object().Value("data").Array().Length().Equal(spuCount)
+}
 
 func TestShopSpuSortByPriceAscSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
-	shopOrder := model.CreateSpu(brand.ID, Cate1.ID, 1, "", "", 1.00, 10.00, Spec)
+	shopSpu := model.CreateSpu(brand.ID, Cate1.ID, 1, "", "", 1.00, 10.00, Spec)
 	obj := model.GetE(t).GET("/shop/v1/inner/spu").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("order_by", "min_price").
 		WithQuery("sort", "asc").
+		WithQuery("page_size", -1).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -34,17 +53,20 @@ func TestShopSpuSortByPriceAscSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("查询成功")
 	obj.Value("data").Array().Length().Equal(model.SpuCount)
-	obj.Value("data").Array().First().Object().Value("id").Equal(shopOrder.ID)
+	obj.Value("data").Array().First().Object().Value("id").Equal(shopSpu.ID)
+	model.DelShopSpu(shopSpu)
+
 }
 
 func TestShopSpuSortByPriceDescSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
-	shopOrder := model.CreateSpu(brand.ID, Cate1.ID, 1, "", "", 500.00, 600.00, Spec)
+	shopSpu := model.CreateSpu(brand.ID, Cate1.ID, 1, "", "", 500.00, 600.00, Spec)
 	obj := model.GetE(t).GET("/shop/v1/inner/spu").
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("order_by", "min_price").
 		WithQuery("sort", "desc").
+		WithQuery("page_size", -1).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -52,7 +74,8 @@ func TestShopSpuSortByPriceDescSuccess(t *testing.T) {
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("查询成功")
 	obj.Value("data").Array().Length().Equal(model.SpuCount)
-	obj.Value("data").Array().First().Object().Value("id").Equal(shopOrder.ID)
+	obj.Value("data").Array().First().Object().Value("id").Equal(shopSpu.ID)
+	model.DelShopSpu(shopSpu)
 }
 
 func TestShopSpuWithBrandIdSuccess(t *testing.T) {
@@ -62,6 +85,7 @@ func TestShopSpuWithBrandIdSuccess(t *testing.T) {
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("brand_id", Brand.ID).
+		WithQuery("page_size", -1).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -78,6 +102,7 @@ func TestShopSpuWithCateIdSuccess(t *testing.T) {
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("cate_id", Cate2.ID).
+		WithQuery("page_size", -1).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -98,6 +123,7 @@ func TestShopSpuWithCateIdAndBrandSuccess(t *testing.T) {
 		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("cate_id", Cate2.ID).
 		WithQuery("brand_id", brand.ID).
+		WithQuery("page_size", -1).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -115,6 +141,7 @@ func TestShopSpuWithKeyWordSuccess(t *testing.T) {
 		WithHeaders(model.GetHeader()).
 		WithCookie("PHPSESSID", model.GetSessionId()).
 		WithQuery("key_word", "牛逼").
+		WithQuery("page_size", -1).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
@@ -135,6 +162,7 @@ func TestShopSpuWithCateIdAndBrandAndKeyWordSuccess(t *testing.T) {
 		WithQuery("key_word", "神奇").
 		WithQuery("cate_id", Cate2.ID).
 		WithQuery("brand_id", brand.ID).
+		WithQuery("page_size", -1).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
