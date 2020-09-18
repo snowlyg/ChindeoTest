@@ -28,8 +28,8 @@ func init() {
 
 func CWD() string {
 	// 兼容 travis 集成测试
-	if os.Getenv("TRAVIS_BUILD_DIR") != "" {
-		return os.Getenv("TRAVIS_BUILD_DIR")
+	if os.Getenv("CHINDEO_TEST") != "" {
+		return os.Getenv("CHINDEO_TEST")
 	}
 
 	path, err := os.Executable()
