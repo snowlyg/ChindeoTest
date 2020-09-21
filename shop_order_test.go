@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/snowlyg/ChindeoTest/model"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
 )
@@ -158,15 +159,18 @@ func TestShopOrderAddSuccess(t *testing.T) {
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
 	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 10.00, 100.00, Spec)
+	stock1 := spu.Skus[0].Stock
+	stock2 := spu.Skus[1].Stock
+	mun := 3
 	shopOrder := map[string]interface{}{
 		"sku_ids": []map[string]interface{}{
 			{
 				"id":  spu.Skus[0].ID,
-				"num": 3,
+				"num": mun,
 			},
 			{
 				"id":  spu.Skus[1].ID,
-				"num": 3,
+				"num": mun,
 			},
 		},
 		"rmk":            "年轻貌美",
@@ -202,7 +206,13 @@ func TestShopOrderAddSuccess(t *testing.T) {
 	obj.Value("data").Object().Value("app_type").Object().Value("text").Equal("小程序")
 	obj.Value("data").Object().Value("application_id").Equal(13)
 	shopOrderId = obj.Value("data").Object().Value("id").Raw()
+
+	skus := model.GetSkuByIds([]int{spu.Skus[0].ID, spu.Skus[1].ID})
+	assert.Equal(t, stock1-mun, skus[0].Stock)
+	assert.Equal(t, stock2-mun, skus[1].Stock)
+
 	model.ShopOrderCount++
+
 }
 
 func TestShopOrderAddNoBedNumError(t *testing.T) {
@@ -210,15 +220,18 @@ func TestShopOrderAddNoBedNumError(t *testing.T) {
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
 	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 10.00, 100.00, Spec)
+	stock1 := spu.Skus[0].Stock
+	stock2 := spu.Skus[1].Stock
+	mun := 3
 	shopOrder := map[string]interface{}{
 		"sku_ids": []map[string]interface{}{
 			{
 				"id":  spu.Skus[0].ID,
-				"num": 3,
+				"num": mun,
 			},
 			{
 				"id":  spu.Skus[1].ID,
-				"num": 3,
+				"num": mun,
 			},
 		},
 		"rmk":            "年轻貌美",
@@ -245,6 +258,10 @@ func TestShopOrderAddNoBedNumError(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(400)
 	obj.Value("message").String().Equal("床号不能为空！")
+
+	skus := model.GetSkuByIds([]int{spu.Skus[0].ID, spu.Skus[1].ID})
+	assert.Equal(t, skus[0].Stock, stock1)
+	assert.Equal(t, skus[1].Stock, stock2)
 }
 
 func TestShopOrderNoPatientNameError(t *testing.T) {
@@ -252,15 +269,18 @@ func TestShopOrderNoPatientNameError(t *testing.T) {
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
 	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 10.00, 100.00, Spec)
+	stock1 := spu.Skus[0].Stock
+	stock2 := spu.Skus[1].Stock
+	mun := 3
 	shopOrder := map[string]interface{}{
 		"sku_ids": []map[string]interface{}{
 			{
 				"id":  spu.Skus[0].ID,
-				"num": 3,
+				"num": mun,
 			},
 			{
 				"id":  spu.Skus[1].ID,
-				"num": 3,
+				"num": mun,
 			},
 		},
 		"rmk":            "年轻貌美",
@@ -285,6 +305,9 @@ func TestShopOrderNoPatientNameError(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(400)
 	obj.Value("message").String().Equal("患者名称不能为空！")
+	skus := model.GetSkuByIds([]int{spu.Skus[0].ID, spu.Skus[1].ID})
+	assert.Equal(t, skus[0].Stock, stock1)
+	assert.Equal(t, skus[1].Stock, stock2)
 }
 
 func TestShopOrderNoLocNameError(t *testing.T) {
@@ -292,15 +315,18 @@ func TestShopOrderNoLocNameError(t *testing.T) {
 	name := "这是一个很神奇的商品"
 	title := "这是一个很神奇的商品的超厉害的副标题"
 	spu := model.CreateSpu(brand.ID, Cate1.ID, 3, name, title, 10.00, 100.00, Spec)
+	stock1 := spu.Skus[0].Stock
+	stock2 := spu.Skus[1].Stock
+	mun := 3
 	shopOrder := map[string]interface{}{
 		"sku_ids": []map[string]interface{}{
 			{
 				"id":  spu.Skus[0].ID,
-				"num": 3,
+				"num": mun,
 			},
 			{
 				"id":  spu.Skus[1].ID,
-				"num": 3,
+				"num": mun,
 			},
 		},
 		"rmk":          "年轻貌美",
@@ -323,6 +349,9 @@ func TestShopOrderNoLocNameError(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(400)
 	obj.Value("message").String().Equal("病区/科室不能为空！")
+	skus := model.GetSkuByIds([]int{spu.Skus[0].ID, spu.Skus[1].ID})
+	assert.Equal(t, skus[0].Stock, stock1)
+	assert.Equal(t, skus[1].Stock, stock2)
 }
 
 func TestShopOrderShowSuccess(t *testing.T) {

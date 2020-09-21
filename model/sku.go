@@ -30,3 +30,12 @@ func CreateSku(supId int, name string, price float64) *ShopSkus {
 
 	return sku
 }
+
+func GetSkuByIds(skuIds []int) []*ShopSkus {
+	var skus []*ShopSkus
+	if err := DB.Model(&ShopSkus{}).Find(&skus, skuIds).Error; err != nil {
+		fmt.Println(fmt.Sprintf("skus find error :%v", err))
+	}
+
+	return skus
+}
