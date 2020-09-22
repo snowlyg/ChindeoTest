@@ -10,7 +10,7 @@ var collectSpu *model.ShopSpus
 
 func TestMiniWechatSpuCollectAddSuccess(t *testing.T) {
 	brand := model.CreateBrand(false)
-	collectSpu = model.CreateSpu(brand.ID, Cate2.ID, 1, "这是一个很神奇的商品", "这是一个很神奇的商品的超厉害的副标题", 10.00, 100.00, Spec)
+	collectSpu = model.CreateSpu(brand.ID, Cate1.ID, 1, "这是一个很神奇的商品", "这是一个很神奇的商品的超厉害的副标题", 10.00, 100.00, Spec)
 	obj := model.GetE(t).GET("/shop/v1/collect/add/{id}", collectSpu.ID).
 		WithHeaders(model.GetMiniHeader("")).
 		WithCookie("PHPSESSID", model.GetMiniSessionId()).
@@ -20,6 +20,7 @@ func TestMiniWechatSpuCollectAddSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("收藏成功")
+
 }
 
 func TestMiniWechatSpuCollectSuccess(t *testing.T) {
@@ -50,4 +51,6 @@ func TestMiniWechatSpuCollectCancelSuccess(t *testing.T) {
 	obj.Keys().ContainsOnly("code", "data", "message")
 	obj.Value("code").Equal(200)
 	obj.Value("message").String().Equal("取消成功")
+
+	model.DelShopSpu(collectSpu)
 }
